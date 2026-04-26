@@ -1,0 +1,18 @@
+# system
+.DS_Store
+Thumbs.db
+
+# env / secrets
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+settings.json
+
+# editor
+.vscode/
+.idea/
+
+# node (if added later)
+node_modules/
