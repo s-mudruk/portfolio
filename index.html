@@ -963,11 +963,11 @@
 <!-- ===== MAINTENANCE OVERLAY ===== -->
 <div class="maint" id="maint">
   <div class="maint-inner">
-    <pre class="maint-cat">
- /\   /\
-( ='w'= )
- )   (  )
-(__ __)_)</pre>
+    <pre class="maint-cat" id="maint-cat">
+  /\   /\
+ ( ='w'= )
+  )     (
+ (__)_(__)~</pre>
     <p class="maint-title">скоро вернусь</p>
     <a class="maint-tg" href="https://t.me/mudruks">@mudruks</a>
   </div>
@@ -1396,6 +1396,43 @@
 </div>
 
 <script>
+/* ============ ASCII CAT ============ */
+(() => {
+  const pre = document.getElementById('maint-cat');
+  if (!pre) return;
+
+  let mx = window.innerWidth / 2;
+  let my = window.innerHeight / 2;
+
+  // tail ping-pong: ~  _~  __~  _~  ~
+  const TAILS = ['~', ' ~', '  ~', '   ~', '  ~', ' ~'];
+  let tailIdx = 0;
+
+  function eyes() {
+    const r = pre.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top  + r.height / 2;
+    const dx = mx - cx, dy = my - cy;
+    const a = Math.atan2(dy, dx) * 180 / Math.PI;
+    if (Math.hypot(dx, dy) < 80) return "'w'";
+    if (a > -45  && a <=  45)  return '>w>';
+    if (a >  45  && a <= 135)  return 'uwu';
+    if (a > 135  || a <= -135) return '<w<';
+    return '^w^';
+  }
+
+  function draw() {
+    const e = eyes();
+    const t = TAILS[tailIdx % TAILS.length];
+    pre.textContent =
+`\n  /\\   /\\\n ( =${e}= )\n  )     (\n (__)_(__)${t}`;
+  }
+
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; draw(); });
+  setInterval(() => { tailIdx++; draw(); }, 260);
+  draw();
+})();
+
 /* ============ TOUCH DETECT ============ */
 const IS_TOUCH = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 document.documentElement.classList.toggle('is-touch', IS_TOUCH);
