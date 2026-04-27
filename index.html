@@ -956,6 +956,7 @@
     transition: opacity .15s;
   }
   .maint-tg:hover { opacity: .7; }
+  #ct { display: inline-block; width: 4ch; overflow: visible; }
 </style>
 </head>
 <body>
@@ -964,9 +965,9 @@
 <div class="maint" id="maint">
   <div class="maint-inner">
     <pre class="maint-cat" id="maint-cat">  /\   /\
- ( <span id="ce">o . o</span> )
+ ( o . o )
   )     (
- (__)_(__)<span id="ct">~  </span></pre>
+ (__)_(__)<span id="ct">~   </span></pre>
     <p class="maint-title">скоро вернусь</p>
     <a class="maint-tg" href="https://t.me/mudruks">@mudruks</a>
   </div>
@@ -1397,39 +1398,12 @@
 <script>
 /* ============ ASCII CAT ============ */
 (() => {
-  const ceEl = document.getElementById('ce');
-  const ctEl = document.getElementById('ct');
-  const pre  = document.getElementById('maint-cat');
-  if (!ceEl || !ctEl || !pre) return;
-
-  let mx = window.innerWidth / 2;
-  let my = window.innerHeight / 2;
-
-  // fixed 3-char tail strings so layout never shifts
-  const TAILS = ['~  ', ' ~ ', '  ~', ' ~ '];
-  let tailIdx = 0;
-
-  function eyes() {
-    const r = pre.getBoundingClientRect();
-    const cx = r.left + r.width / 2;
-    const cy = r.top  + r.height / 2;
-    const dx = mx - cx, dy = my - cy;
-    const a = Math.atan2(dy, dx) * 180 / Math.PI;
-    if (Math.hypot(dx, dy) < 80) return 'o . o';
-    if (a > -45  && a <=  45)  return '> . >';
-    if (a >  45  && a <= 135)  return 'v . v';
-    if (a > 135  || a <= -135) return '< . <';
-    return '^ . ^';
-  }
-
-  function draw() {
-    ceEl.textContent = eyes();
-    ctEl.textContent = TAILS[tailIdx % TAILS.length];
-  }
-
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; draw(); });
-  setInterval(() => { tailIdx++; draw(); }, 260);
-  draw();
+  const ct = document.getElementById('ct');
+  if (!ct) return;
+  // 4-char fixed-width frames — tilde slides back and forth like a wagging tail
+  const T = ['~   ', '~   ', ' ~  ', '  ~ ', '   ~', '  ~ ', ' ~  '];
+  let i = 0;
+  setInterval(() => { ct.textContent = T[i++ % T.length]; }, 200);
 })();
 
 /* ============ TOUCH DETECT ============ */
