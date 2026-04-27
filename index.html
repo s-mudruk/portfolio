@@ -956,7 +956,6 @@
     transition: opacity .15s;
   }
   .maint-tg:hover { opacity: .7; }
-  #ct { display: inline-block; width: 4ch; overflow: visible; }
 </style>
 </head>
 <body>
@@ -964,10 +963,11 @@
 <!-- ===== MAINTENANCE OVERLAY ===== -->
 <div class="maint" id="maint">
   <div class="maint-inner">
-    <pre class="maint-cat" id="maint-cat">  /\   /\
- ( o . o )
-  )     (
- (__)_(__)<span id="ct">~   </span></pre>
+    <pre class="maint-cat">
+ /\   /\
+( ='w'= )
+ )   (  )
+(__ __)_)</pre>
     <p class="maint-title">скоро вернусь</p>
     <a class="maint-tg" href="https://t.me/mudruks">@mudruks</a>
   </div>
@@ -1396,15 +1396,6 @@
 </div>
 
 <script>
-/* ============ ASCII CAT ============ */
-(() => {
-  const ct = document.getElementById('ct');
-  if (!ct) return;
-  // 4-char fixed-width frames — tilde slides back and forth like a wagging tail
-  const T = ['~   ', '~   ', ' ~  ', '  ~ ', '   ~', '  ~ ', ' ~  '];
-  let i = 0;
-  setInterval(() => { ct.textContent = T[i++ % T.length]; }, 200);
-})();
 
 /* ============ TOUCH DETECT ============ */
 const IS_TOUCH = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
