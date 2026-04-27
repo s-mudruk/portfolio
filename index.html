@@ -963,11 +963,10 @@
 <!-- ===== MAINTENANCE OVERLAY ===== -->
 <div class="maint" id="maint">
   <div class="maint-inner">
-    <pre class="maint-cat" id="maint-cat">
-  /\   /\
- ( ='w'= )
+    <pre class="maint-cat" id="maint-cat">  /\   /\
+ ( <span id="ce">o . o</span> )
   )     (
- (__)_(__)~</pre>
+ (__)_(__)<span id="ct">~  </span></pre>
     <p class="maint-title">скоро вернусь</p>
     <a class="maint-tg" href="https://t.me/mudruks">@mudruks</a>
   </div>
@@ -1398,14 +1397,16 @@
 <script>
 /* ============ ASCII CAT ============ */
 (() => {
-  const pre = document.getElementById('maint-cat');
-  if (!pre) return;
+  const ceEl = document.getElementById('ce');
+  const ctEl = document.getElementById('ct');
+  const pre  = document.getElementById('maint-cat');
+  if (!ceEl || !ctEl || !pre) return;
 
   let mx = window.innerWidth / 2;
   let my = window.innerHeight / 2;
 
-  // tail ping-pong: ~  _~  __~  _~  ~
-  const TAILS = ['~', ' ~', '  ~', '   ~', '  ~', ' ~'];
+  // fixed 3-char tail strings so layout never shifts
+  const TAILS = ['~  ', ' ~ ', '  ~', ' ~ '];
   let tailIdx = 0;
 
   function eyes() {
@@ -1414,18 +1415,16 @@
     const cy = r.top  + r.height / 2;
     const dx = mx - cx, dy = my - cy;
     const a = Math.atan2(dy, dx) * 180 / Math.PI;
-    if (Math.hypot(dx, dy) < 80) return "'w'";
-    if (a > -45  && a <=  45)  return '>w>';
-    if (a >  45  && a <= 135)  return 'uwu';
-    if (a > 135  || a <= -135) return '<w<';
-    return '^w^';
+    if (Math.hypot(dx, dy) < 80) return 'o . o';
+    if (a > -45  && a <=  45)  return '> . >';
+    if (a >  45  && a <= 135)  return 'v . v';
+    if (a > 135  || a <= -135) return '< . <';
+    return '^ . ^';
   }
 
   function draw() {
-    const e = eyes();
-    const t = TAILS[tailIdx % TAILS.length];
-    pre.textContent =
-`\n  /\\   /\\\n ( =${e}= )\n  )     (\n (__)_(__)${t}`;
+    ceEl.textContent = eyes();
+    ctEl.textContent = TAILS[tailIdx % TAILS.length];
   }
 
   document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; draw(); });
