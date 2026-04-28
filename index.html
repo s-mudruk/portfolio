@@ -86,6 +86,23 @@
   button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: none; }
   ::selection { background: var(--accent); color: #fff; }
 
+  /* iOS 26 / Comet glass-bar hint: transparent fixed element at bottom edge
+     overrides the toolbar tinting algorithm → glass composites actual content */
+  #glass-hint {
+    display: none;
+  }
+  @media (pointer: coarse) {
+    #glass-hint {
+      display: block;
+      position: fixed;
+      bottom: -2px; left: 0; right: 0;
+      height: 8px;
+      background: transparent;
+      z-index: 2;
+      pointer-events: none;
+    }
+  }
+
   /* ============ FIXED BACKGROUND ============ */
   .bg {
     position: fixed; inset: 0;
@@ -1260,7 +1277,10 @@
     .nav-center { gap: 36px; }
   }
   @media (max-width: 1024px) {
-    /* Скрываем сетку: glass-bar блюрит её в видимую серую «заглушку» */
+    /* Убираем fixed-фон: Safari/Comet читает background-color fixed-элементов
+       для тинтинга glass-toolbar → #131313 = непрозрачная тёмная «заглушка».
+       body { background } не является fixed-элементом и не влияет на тинтинг. */
+    .bg { display: none; }
     .bg-grid { display: none; }
     html, body,
     .win .bar,
@@ -1435,6 +1455,9 @@
     <a class="maint-tg" href="https://t.me/mudruks">@mudruks</a>
   </div>
 </div>
+
+<!-- iOS glass toolbar hint: transparent fixed element overrides dark-bg tinting -->
+<div id="glass-hint" aria-hidden="true"></div>
 
 <!-- ===== FIXED BACKGROUND ===== -->
 <div class="bg" aria-hidden="true">
