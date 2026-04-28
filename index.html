@@ -2,8 +2,15 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Сергей Мудрук — Портфолио</title>
+<!-- theme-color: красит системную плашку Safari/Chrome/Comet в цвет фона,
+     чтобы при скрытии тулбаров не было "чёрного перекрытия" сверху/снизу.
+     Дублируется для светлой/тёмной системной темы. -->
+<meta name="theme-color" content="#131313" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#131313" media="(prefers-color-scheme: light)" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <link rel="icon" type="image/png" href="SPORTF-icon.png">
 <meta property="og:title" content="Сергей Мудрук — Портфолио">
 <meta property="og:description" content="Бренд-платформы, продуктовый UX, кампании. 5 лет в B2B и продукте.">
@@ -17,6 +24,7 @@
 <meta name="twitter:title" content="Сергей Мудрук — Портфолио">
 <meta name="twitter:description" content="Бренд-платформы, продуктовый UX, кампании. 5 лет в B2B и продукте.">
 <meta name="twitter:image" content="https://me.sergun.space/SPORTF-banner.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Bitter:wght@400;500&display=swap" rel="stylesheet">
@@ -56,7 +64,15 @@
     font-size: 14px;
     line-height: 1.4;
     cursor: none;
+    /* предотвращает белую полоску в Safari при overscroll */
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
   }
+  /* При открытой модалке блокируем скролл body — остаётся ОДИН скроллбар
+     (внутри .sheet). На <html> прячем overflow и ширину фиксируем via padding-right,
+     чтобы layout не дёргался при исчезновении системного скроллбара. */
+  html.modal-open { overflow: hidden; }
+  html.modal-open body { overflow: hidden; padding-right: var(--sbw, 0); }
   @media (pointer: coarse) { html, body { cursor: auto; } }
 
   a { color: inherit; text-decoration: none; }
@@ -104,7 +120,9 @@
     color: var(--muted);
   }
   .bg-meta.tl { bottom: 28px; left: 32px; }
-  .bg-meta.br { bottom: 28px; right: 32px; text-align: right; }
+  .bg-meta.br { bottom: 28px; right: 32px; text-align: right; display: inline-flex; align-items: center; gap: 8px; }
+  .bg-weather-icon { color: var(--muted); flex-shrink: 0; display: inline-flex; align-items: center; }
+  .bg-weather-icon svg { width: 14px; height: 14px; display: block; }
 
   /* ============ HEADER ============ */
   .header {
@@ -239,7 +257,7 @@
     background: var(--bg);
     display: none;
     flex-direction: column;
-    padding: 28px 24px;
+    padding: calc(28px + env(safe-area-inset-top)) calc(24px + env(safe-area-inset-right)) calc(28px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left));
   }
   .mobile-menu.open { display: flex; }
   .mobile-menu .top {
@@ -258,12 +276,13 @@
   }
   .mobile-menu nav a {
     padding: 18px 0;
-    border-bottom: 1px solid var(--divider);
+    border-bottom: 2px solid rgb(90,90,90);
     font-family: var(--mono);
-    font-weight: 700;
+    font-weight: 450;
     font-size: 32px;
     letter-spacing: -.02em;
   }
+  .mobile-menu nav a:first-child { border-top: 2px solid rgb(90,90,90); }
   .mobile-menu .footer-of-menu {
     margin-top: auto;
     display: flex; justify-content: space-between; align-items: end;
@@ -279,79 +298,133 @@
   }
   .scene {
     position: relative;
-    min-height: 100vh;
     padding: 80px 40px 40px;
   }
   .scene-label {
     font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    display: flex; gap: 14px; align-items: center;
-    margin-bottom: 24px;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: rgb(90,90,90);
+    display: flex; gap: 24px; align-items: center;
+    margin-bottom: 36px;
+    padding: 0 0px;
     pointer-events: none;
   }
   .scene-label .num {
-    border: 1px solid var(--divider);
-    padding: 4px 10px;
-    border-radius: 100px;
-    color: var(--text);
-    background: var(--surface-3);
+    border: 2px solid rgb(90,90,90);
+    background: rgb(42,42,42);
+    color: #fff;
+    border-radius: 9999px;
+    padding: 4px 14px;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 32px;
+    box-sizing: border-box;
   }
-  .scene-label .line { flex: 1; height: 1px; background: var(--divider); }
+  .scene-label .title { display: none; }
+  .scene-label .line {
+    flex: 1; height: 0;
+    border-top: 2px solid rgb(90,90,90);
+  }
+  .scene-label .tag {
+    color: rgb(90,90,90);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
 
-  /* ============ WINDOWS ============ */
+  /* ============ WINDOWS ============
+     Новый формат окон по DS:
+     - Внешняя обёртка — тёмный фон (--surface-3 #1A1A1A), радиус 24px,
+       небольшой паддинг (16px сверху, 8px по бокам/снизу).
+     - В шапке — маленький лейбл-имя файла (Inter mono, 12-13px, --muted),
+       центрируется. Это и есть drag handle.
+     - Внутренняя панель .body — фон --surface (#2A2A2A), радиус 20px,
+       основной контент. Без бордера и разделителя — фон сам разделяет.
+  */
   .win {
     position: absolute;
     z-index: 6;
-    background: var(--surface);
-    border: 1px solid var(--divider);
-    border-radius: var(--r-md);
-    overflow: hidden;
+    background: var(--surface-3);
+    border-radius: 24px;
+    padding: 8px;
     will-change: transform;
     user-select: none;
+    box-sizing: border-box;
   }
-  .win.dragging { z-index: 50 !important; box-shadow: 0 24px 60px rgba(0,0,0,.6); }
+  .win.dragging { z-index: 50 !important; box-shadow: 0 8px 24px rgba(0,0,0,.28); }
+  /* Шапка-лейбл: высота 24px = (12px текст + 6px по 2) → симметричные паддинги
+     сверху и снизу у внешней обёртки получаются равными. */
   .win .bar {
     display: flex; align-items: center; justify-content: flex-start;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--divider);
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: .04em;
+    height: 24px;
+    /* Левый паддинг лейбла — фиксированный, чтобы визуальный зазор
+       от внешнего скруглённого угла до текста был одинаковым на всех окнах независимо
+       от внутренних паддингов .body. */
+    padding: 0 12px;
+    margin-bottom: 8px;
+    font-family: var(--sans);
+    font-size: 12px;
+    line-height: 1;
     color: var(--muted);
-    background: var(--surface-3);
     cursor: none;
     gap: 12px;
+    background: transparent;
   }
-  .win .bar .dots { display: none; }
+  .win .bar .dots,
   .win .bar .dots span { display: none; }
-  .win .bar .title { font-weight: 600; color: var(--secondary); margin-left: 4px; }
-  .win .bar .drag-hint { font-size: 10px; color: var(--inactive); margin-left: auto; }
-  .win .body { padding: 20px; color: var(--text); }
+  .win .bar .title { font-weight: 400; color: var(--muted); letter-spacing: 0; }
+  .win .bar .drag-hint {
+    margin-left: auto;
+    font-family: var(--sans); font-size: 12px;
+    color: var(--inactive);
+  }
+  .win .body {
+    padding: 20px;
+    color: var(--text);
+    background: var(--surface);
+    border-radius: 20px;
+  }
 
-  /* hero */
-  .win--hero { width: 580px; }
+  /* hero — intro.txt по фигме: большое имя + italic "дизайнер.", subtext в моно, пилюли-теги */
+  .win--hero { width: 600px; }
+  .win--hero .body { padding: 28px 28px 28px; display: flex; flex-direction: column; gap: 28px; }
   .win--hero h1 {
     font-family: var(--display);
     font-weight: 500;
-    font-size: 52px;
-    line-height: .98;
-    letter-spacing: -.02em;
-    margin: 0 0 18px;
+    font-size: 48px;
+    line-height: 1;
+    letter-spacing: -.01em;
+    margin: 0;
   }
-  .win--hero p { margin: 0 0 12px; font-size: 14px; max-width: 50ch; color: var(--secondary); font-family: var(--mono); }
+  .win--hero h1 .em {
+    font-style: italic;
+    font-weight: 500;
+  }
+  .win--hero h1 .line2 { display: inline-flex; align-items: baseline; gap: 12px; }
+  .win--hero p {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 16px;
+    line-height: 1.4;
+    color: var(--secondary);
+    max-width: 56ch;
+  }
   .win--hero .tags {
-    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px;
-    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    display: flex; flex-wrap: wrap; gap: 6px;
+    font-family: var(--mono); font-size: 14px; font-weight: 400;
   }
   .win--hero .tags span {
-    border: 1px solid var(--divider);
-    background: var(--surface-2);
-    padding: 6px 10px;
-    border-radius: 100px;
+    border: 1px solid var(--secondary);
+    background: var(--bg);
+    padding: 4px 12px;
+    border-radius: 9999px;
     color: var(--text);
+    line-height: 1.4;
   }
 
   /* about */
@@ -375,25 +448,129 @@
   .win--about p { margin: 0; font-size: 13px; color: var(--secondary); }
   .win--about p b { color: var(--text); font-weight: 600; }
 
-  /* stats */
-  .win--stats { width: 280px; }
-  .win--stats .row {
-    display: flex; justify-content: space-between; align-items: baseline;
-    padding: 14px 0;
-    border-bottom: 1px dashed var(--divider);
+  /* stats — папка с белым листом цифр внутри (per Figma).
+     По референсу: плоский синий фон, белый лист со статистикой,
+     тёмная "лицевая" карточка снизу с округлым вырезом-табом сверху-слева.
+     На hover лист выезжает вправо-вверх с поворотом. */
+  .win--stats {
+    width: 340px;
+    background: var(--surface-3) !important;
+    border-radius: 24px;
+    padding: 8px !important;
+    box-shadow: none;
+    overflow: visible !important;
   }
-  .win--stats .row:last-child { border: 0; }
-  .win--stats .big {
-    font-family: var(--display);
-    font-weight: 500;
-    font-size: 38px;
+  .win--stats > .bar {
+    position: relative; inset: auto;
+    z-index: 12;
+    background: transparent;
+    pointer-events: auto;
+  }
+  .win--stats > .bar .title { display: block; }
+
+  /* Сцена папки — квадратная, плоский синий фон */
+  .win--stats .folder-wrap {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 16px;
+    background: #1395FF;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  /* Белый ЛИСТ — лежит почти от края до края, сверху виден из-за тёмного фронта */
+  .win--stats .sheet-paper {
+    position: absolute;
+    left: 5%;
+    right: 5%;
+    top: 7%;
+    height: 86%;
+    background: #FFFFFF;
+    border-radius: 14px;
+    padding: 18px 22px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transform: translate(0, 0) rotate(0deg);
+    transform-origin: 25% 100%;
+    transition: transform .6s cubic-bezier(.22,.9,.28,1.05);
+    box-shadow: 0 2px 14px rgba(0,0,0,.22);
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .win--stats .sheet-paper .row {
+    display: flex; flex-direction: column;
     line-height: 1;
-    letter-spacing: -.02em;
-    color: var(--text);
   }
-  .win--stats .lbl {
-    font-family: var(--mono); font-size: 11px;
-    color: var(--muted); max-width: 130px; text-align: right;
+  .win--stats .sheet-paper .big {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.1;
+    color: #1395FF;
+    letter-spacing: -.02em;
+    text-transform: uppercase;
+  }
+  .win--stats .sheet-paper .lbl {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.2;
+    color: #6E6E6E;
+    letter-spacing: -.01em;
+    margin-top: 4px;
+  }
+
+  /* Тёмная "лицевая часть" — нижние ~55%, с округлым вырезом-табом сверху-слева.
+     Используем SVG path: верхний край имеет плавную выпуклую выемку слева. */
+  .win--stats .folder-front {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 55%;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .win--stats .folder-front svg {
+    display: block;
+    width: 100%; height: 100%;
+  }
+  .win--stats .folder-front-label {
+    position: absolute;
+    left: 22px; bottom: 22px;
+    z-index: 4;
+    pointer-events: none;
+  }
+  .win--stats .folder-label {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.15;
+    color: #FFFFFF;
+    letter-spacing: -.02em;
+  }
+  .win--stats .folder-sub {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.15;
+    color: #6E6E6E;
+    letter-spacing: -.01em;
+    margin-top: 2px;
+  }
+
+  /* Hover — лист выезжает вправо-вверх и поворачивается */
+  .win--stats:hover .sheet-paper,
+  .win--stats.is-hover .sheet-paper {
+    transform: translate(14%, -32%) rotate(8deg);
+  }
+
+  /* Тач — лист выдвинут постоянно */
+  @media (hover: none) and (pointer: coarse) {
+    .win--stats { width: 100%; max-width: 360px; }
+    .win--stats .sheet-paper {
+      transform: translate(10%, -22%) rotate(6deg);
+    }
   }
 
   /* services list */
@@ -499,32 +676,113 @@
     color: var(--text);
   }
 
-  /* process */
-  .win--process { width: 460px; }
+  /* process — чекбоксы вместо шагов; кликабельны */
+  .win--process { width: 480px; }
+  .win--process .body { padding: 20px 22px; }
   .win--process .step {
-    display: grid; grid-template-columns: 36px 1fr auto;
-    gap: 14px; align-items: baseline;
-    padding: 14px 2px; border-bottom: 1px dashed var(--divider);
-    font-family: var(--mono); font-size: 14px;
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 14px; align-items: center;
+    padding: 14px 4px;
+    border-bottom: 1px dashed var(--divider);
+    font-family: var(--mono); font-size: 15px;
     color: var(--text);
+    cursor: pointer;
+    user-select: none;
+    transition: opacity .2s ease;
   }
   .win--process .step:last-child { border: 0; }
-  .win--process .step .n {
-    font-family: var(--mono); font-size: 11px; font-weight: 600;
-    color: var(--step);
-    background: var(--surface-2);
-    border: 1px solid var(--divider);
-    border-radius: var(--r-sm);
-    padding: 4px 8px;
-    text-align: center;
-    align-self: start;
+  .win--process .step .box {
+    width: 22px; height: 22px;
+    border: 1.5px solid var(--secondary);
+    border-radius: 6px;
+    background: var(--bg);
+    display: grid; place-items: center;
+    transition: background .2s, border-color .2s;
+    flex-shrink: 0;
   }
-  .win--process .step .t { color: var(--muted); font-size: 11px; }
+  .win--process .step .box::after {
+    content: "";
+    width: 12px; height: 7px;
+    border-left: 2px solid var(--text);
+    border-bottom: 2px solid var(--text);
+    transform: rotate(-45deg) translate(1px, -1px) scale(0);
+    transition: transform .18s ease;
+  }
+  .win--process .step.checked .box {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .win--process .step.checked .box::after {
+    transform: rotate(-45deg) translate(1px, -1px) scale(1);
+  }
+  .win--process .step.checked .label { color: var(--muted); text-decoration: line-through; }
+  .win--process .step .label { line-height: 1.35; transition: color .2s; }
+  .win--process .all-done {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border: 1px dashed var(--accent);
+    border-radius: var(--r-sm);
+    font-family: var(--mono); font-size: 13px;
+    color: var(--accent);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .35s, transform .35s;
+    pointer-events: none;
+  }
+  .win--process .all-done.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .win--process .all-done b { color: var(--text); }
+
+  /* services — чуть приятнее: hover, мини-индикатор */
+  .win--list .item {
+    transition: padding-left .2s ease, color .2s;
+    border-radius: 4px;
+  }
+  .win--list .item:hover { padding-left: 12px; color: var(--accent); }
+  .win--list .item:hover .num { color: var(--accent); }
+
+  /* ============ ASCII STICKERS (removed) ============
+     Класс .sticker оставлен пустым для совместимости JS, разметки нет.
+     Без подписей. Не в футере. */
+  .sticker {
+    position: absolute;
+    z-index: 7;
+    background: #FFFFFF;
+    color: #131313;
+    font-family: var(--mono);
+    font-weight: 600;
+    line-height: 1.05;
+    white-space: pre;
+    padding: 10px 14px;
+    border-radius: 4px;
+    /* Обводка как у "вырезанного" стикера: белая толстая обводка + лёгкая тень */
+    box-shadow:
+      0 0 0 6px #ffffff,
+      0 6px 14px rgba(0,0,0,.35),
+      0 1px 2px rgba(0,0,0,.25);
+    user-select: none;
+    transform-origin: center;
+    transition: transform .25s cubic-bezier(.2,.9,.25,1.05);
+    cursor: grab;
+    pointer-events: auto;
+  }
+  .sticker:hover { transform: scale(1.06) rotate(var(--rot, 0deg)); }
+  .sticker.dragging { z-index: 60 !important; transition: none; cursor: grabbing; }
+  /* Размеры */
+  .sticker--xs { font-size: 9px; }
+  .sticker--sm { font-size: 11px; }
+  .sticker--md { font-size: 13px; }
+  .sticker--lg { font-size: 15px; }
+  /* Цветные акценты */
+  .sticker--blue { color: #1395FF; }
+  .sticker--mono { color: #131313; }
+  .sticker--ink  { color: #2A2A2A; }
 
   /* case */
   .win--case { width: 420px; }
   .win--case .thumb {
-    aspect-ratio: 4/3;
+    aspect-ratio: 16/9;
     background:
       linear-gradient(135deg, rgba(255,255,255,.04) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.04) 50%, rgba(255,255,255,.04) 75%, transparent 75%) 0/16px 16px,
       var(--surface-2);
@@ -554,17 +812,40 @@
   .win--case .open:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
   .win--case .open:hover::after { color: #fff; }
 
-  /* quote */
-  .win--quote { width: 380px; }
-  .win--quote blockquote {
-    margin: 0; font-size: 18px; line-height: 1.4;
-    font-family: var(--display); font-weight: 400;
-    letter-spacing: -.01em;
-    color: var(--text);
+  /* quote — DS код-блок: { "quote": "…" } в Bitter, ключ синим в моно */
+  .win--quote { width: 460px; }
+  .win--quote .body {
+    padding: 24px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    justify-content: flex-start;
   }
-  .win--quote .by {
-    margin-top: 14px;
-    font-family: var(--mono); font-size: 11px; color: var(--muted);
+  .win--quote .brace {
+    font-family: var(--display); font-weight: 700;
+    font-size: 28px; line-height: 1;
+    color: var(--muted);
+    flex: 0 0 auto;
+  }
+  .win--quote .q-line {
+    font-family: var(--display); font-weight: 700;
+    font-size: 26px; line-height: 1.25;
+    letter-spacing: -.02em;
+    color: var(--text);
+    text-wrap: pretty;
+    margin: 0;
+  }
+  .win--quote .q-key {
+    font-family: var(--mono); font-weight: 600;
+    font-size: 22px;
+    color: #5B8DEF; /* json-key blue */
+    letter-spacing: 0;
+  }
+  .win--quote .q-colon {
+    font-family: var(--mono); font-weight: 400;
+    font-size: 22px;
+    color: var(--muted);
+    margin: 0 .35em 0 .15em;
   }
 
   /* links */
@@ -622,87 +903,116 @@
     display: none;
   }
 
-  /* ============ FOOTER ============ */
+  /* ============ FOOTER (terminal) ============ */
   .footer {
     position: relative;
     z-index: 10;
-    min-height: 100vh;
-    background: var(--surface-3);
+    min-height: 88dvh;
+    background: transparent;
     color: var(--text);
-    padding: 48px 40px 28px;
-    display: flex; flex-direction: column; justify-content: space-between;
-    border-top: 1px solid var(--divider);
-    border-top-left-radius: var(--r-lg);
-    border-top-right-radius: var(--r-lg);
+    padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+    padding-top: 12px;
+    display: flex; flex-direction: column;
   }
-  .footer .top {
-    display: flex; justify-content: space-between;
-    font-family: var(--mono); font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 24px;
-  }
-  .footer .huge {
-    border: 1px solid var(--divider);
-    border-radius: var(--r-lg);
+  .footer .terminal {
+    flex: 1;
     background: var(--surface);
-    padding: 6vh 4vw;
+    border-radius: 40px 40px 10px 10px;
+    padding: 32px 32px 32px;
+    display: flex; flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+  }
+  .footer .ascii-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    padding: 20px;
   }
-  .footer .huge .kicker {
-    font-family: var(--mono); font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
-  .footer .huge h2 {
-    font-family: var(--display);
+  .footer .ascii .face-mobile { display: none; }
+  .footer .term-channels { display: none; }
+  .footer .ascii {
+    font-family: var(--mono);
     font-weight: 500;
-    font-size: clamp(72px, 12vw, 200px);
-    letter-spacing: -.04em;
-    line-height: .9;
-    margin: 0 0 14px;
+    font-size: clamp(28px, 5vw, 64px);
+    line-height: 1;
+    letter-spacing: -.02em;
+    color: var(--text);
+    user-select: none;
+    white-space: nowrap;
+    display: inline-flex; align-items: baseline; gap: 0;
+  }
+  .footer .ascii .heart {
+    color: #ff4d57;
+    font: inherit;
+    font-weight: 500;
+    margin: 0 .35em;
+  }
+  .footer .ascii .target {
+    color: var(--accent);
+    text-decoration: none;
+    transition: opacity .2s;
+  }
+  .footer .ascii .target:hover { opacity: .8; }
+
+  .footer .term-input {
+    border-top: 2px solid rgb(90,90,90);
+    border-bottom: 2px solid rgb(90,90,90);
+    padding: 8px 0;
+    display: flex; align-items: baseline;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: clamp(14px, 1.3vw, 18px);
+    line-height: 1.4;
     color: var(--text);
   }
-  .footer .huge h2 .accent { color: var(--accent); }
-  .footer .huge .sub { font-family: var(--mono); font-size: 13px; color: var(--muted); }
-
-  .footer .grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
-    gap: 10px;
-    margin-top: 24px;
+  .footer .term-input .prompt { color: var(--text); flex-shrink: 0; }
+  .footer .term-input .cmd { color: var(--text); flex-shrink: 0; }
+  .footer .term-input .target-toggle {
+    color: var(--accent);
+    background: none; border: 0; padding: 0;
+    font: inherit; cursor: pointer;
+    flex-shrink: 0;
   }
-  .footer .cell {
-    border: 1px solid var(--divider);
-    background: var(--surface);
-    border-radius: var(--r-sm);
-    padding: 18px 20px;
-    min-height: 90px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--mono); font-size: 12px;
+  .footer .term-input .target-toggle:hover { text-decoration: underline; }
+  .footer .term-input .text-label { color: var(--muted); flex-shrink: 0; }
+  .footer .term-input .bracket { color: var(--muted); flex-shrink: 0; }
+  .footer .term-input .field {
+    flex: 0 1 auto;
+    min-width: 4ch;
+    max-width: 100%;
+    background: transparent;
+    border: 0;
+    outline: 0;
     color: var(--text);
-    transition: background .2s, border-color .2s;
+    font: inherit;
+    padding: 0;
+    caret-color: var(--text);
+    width: var(--w, 22ch);
   }
-  .footer .cell:hover { background: var(--surface-2); border-color: var(--secondary); }
-  .footer .cell.primary {
-    justify-content: flex-start;
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-    font-weight: 600;
-    font-size: 14px;
+  .footer .term-input .field::placeholder { color: rgba(232,232,232,0.28); }
+  .footer .term-input .send {
+    background: none; border: 0; padding: 0;
+    font: inherit; color: var(--muted);
+    cursor: pointer; flex-shrink: 0;
+    margin-right: auto;
   }
-  .footer .cell.primary:hover { background: var(--accent-2); border-color: var(--accent-2); }
+  .footer .term-input .send:hover { color: var(--text); }
+  .footer .term-input .row-break { display: none; }
 
-  .footer .bottom {
-    display: flex; justify-content: space-between; align-items: end;
+  .footer .term-meta {
+    display: flex; justify-content: space-between;
     margin-top: 32px;
-    font-family: var(--mono); font-size: 11px;
+    font-family: var(--mono);
+    font-size: 12px;
     color: var(--muted);
+    letter-spacing: .04em;
   }
-  .footer .bottom .big-num {
-    font-family: var(--display); font-weight: 500;
-    font-size: 38px; letter-spacing: -.02em;
-    color: var(--text);
+  .footer .term-meta .footer-weather {
+    display: inline-flex; align-items: center; gap: 8px;
   }
 
   /* ============ CUSTOM CURSOR ============ */
@@ -745,37 +1055,41 @@
     position: fixed; inset: 0;
     z-index: 200;
     display: none;
-    background: rgba(0,0,0,.7);
-    backdrop-filter: blur(6px);
-    padding: 40px;
+    background: var(--bg);
+    /* Полноэкранная страница кейса — никаких рамок/блюра, как отдельный layout */
+    padding: 0;
   }
   .modal.open { display: flex; }
   .modal .sheet {
-    margin: auto;
-    width: min(1100px, 100%);
-    max-height: 90vh;
-    overflow: auto;
-    background: var(--surface);
-    border: 1px solid var(--divider);
-    border-radius: var(--r-lg);
+    margin: 0;
+    width: 100%;
+    height: 100dvh;
+    max-height: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--bg);
+    border: 0;
+    border-radius: 0;
+    /* iOS smooth scroll */
+    -webkit-overflow-scrolling: touch;
   }
-  .modal .sheet .top {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--divider);
-    font-family: var(--mono); font-size: 11px;
+  .modal-close-text {
+    display: inline-block;
+    margin-bottom: 24px;
+    padding: 6px 0;
+    background: none;
+    border: 0;
+    font-family: var(--mono);
+    font-size: 14px;
     color: var(--muted);
-    position: sticky; top: 0; background: var(--surface); z-index: 2;
+    cursor: pointer;
+    text-align: left;
+    transition: color .15s ease;
   }
-  .modal .close {
-    border: 1px solid var(--divider); border-radius: var(--r-sm); padding: 8px 14px;
-    font-family: var(--mono); font-size: 12px;
-    background: var(--surface-2);
-    color: var(--text);
-  }
-  .modal .close:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .modal-close-text:hover { color: var(--text); }
   .modal .hero {
-    aspect-ratio: 16/7;
+    display: none; /* убрали верхний hero-баннер — теперь картинки идут стопкой справа */
+    aspect-ratio: 16/9;
     background:
       repeating-linear-gradient(135deg, rgba(255,255,255,.04) 0 10px, transparent 10px 20px),
       var(--surface-2);
@@ -783,41 +1097,89 @@
     display: grid; place-items: center;
     font-family: var(--mono); font-size: 11px; color: var(--muted);
   }
-  .modal .content { padding: 36px 40px 48px; }
+  .modal .content {
+    /* Отступы как у .header (40px на десктопе) — слева и справа одинаковые. */
+    padding: 56px 40px 80px;
+    max-width: none;
+    margin: 0;
+    width: 100%;
+  }
+  .modal .content .cols {
+    display: grid;
+    /* Левый sidebar узкий, правая колонка тянется до края страницы */
+    grid-template-columns: 300px 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .modal .content .sidebar {
+    position: sticky;
+    top: 56px;
+    align-self: start;
+    max-height: calc(100dvh - 80px);
+    overflow-y: auto;
+    /* спрятать скроллбар, если он появится при очень коротком экране */
+    scrollbar-width: none;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .modal .content .sidebar::-webkit-scrollbar { display: none; }
+  .modal .content .sidebar .modal-close-text { margin-bottom: 0; }
+  .modal .content .sidebar h1 { margin-top: 4px; }
+  .modal .content .back-link {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--muted); text-decoration: none;
+    letter-spacing: .04em;
+    display: inline-flex; align-items: center; gap: 8px;
+    cursor: pointer; background: none; border: 0; padding: 0;
+    text-transform: uppercase; align-self: flex-start;
+  }
+  .modal .content .back-link:hover { color: var(--text); }
   .modal .content h1 {
     font-family: var(--display); font-weight: 500;
-    font-size: 56px; letter-spacing: -.03em; line-height: 1;
-    margin: 0 0 12px;
+    font-size: 44px; letter-spacing: -.03em; line-height: 1.05;
+    margin: 0;
     color: var(--text);
   }
   .modal .content .meta {
     font-family: var(--mono); font-size: 11px;
-    color: var(--muted); margin-bottom: 28px;
+    color: var(--text); margin: 0;
+    letter-spacing: .04em;
+    line-height: 1.7;
+    text-transform: uppercase;
   }
-  .modal .content .cols {
-    display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px;
+  .modal .content .meta .year { color: var(--muted); display: block; }
+  .modal .content p {
+    font-size: 11px; line-height: 1.7; color: var(--secondary);
+    font-family: var(--mono); margin: 0;
+    letter-spacing: .04em;
+    text-transform: uppercase;
   }
-  .modal .content p { font-size: 14px; line-height: 1.6; color: var(--secondary); font-family: var(--mono); }
+  .modal .content .facts {
+    display: flex; flex-direction: column;
+  }
   .modal .content .facts .f {
     border-top: 1px solid var(--divider);
-    padding: 12px 0;
-    display: flex; justify-content: space-between;
-    font-family: var(--mono); font-size: 12px;
+    padding: 10px 0;
+    display: flex; justify-content: space-between; gap: 12px;
+    font-family: var(--mono); font-size: 11px;
     color: var(--text);
+    letter-spacing: .04em;
+    text-transform: uppercase;
   }
   .modal .content .facts .f span { color: var(--muted); }
+  /* медиа-стопка справа: одно изображение в ряду, 16:9 */
   .modal .shots {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 32px;
+    display: flex; flex-direction: column; gap: 16px; margin: 0;
   }
   .modal .shots .shot {
-    aspect-ratio: 4/3;
+    aspect-ratio: 16/9;
     background:
       repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0 8px, transparent 8px 16px),
       var(--surface-2);
     border: 1px solid var(--divider);
-    border-radius: var(--r-sm);
+    border-radius: var(--r-md);
     display: grid; place-items: center;
     font-family: var(--mono); font-size: 11px; color: var(--muted);
+    width: 100%;
   }
 
   /* ============ SCROLL HINT ============ */
@@ -834,14 +1196,14 @@
   @media (min-width: 1600px) {
     html, body { font-size: 15px; }
     .header { padding: 40px 56px; }
+    .scene { padding-left: 56px; padding-right: 56px; }
     .nav-name, .nav-center a, .nav-status { font-size: 18px; }
     .nav-status .glyph { font-size: 18px; }
     .nav-name .caret { width: 8px; height: 19px; }
-    .scene { padding: 96px 56px 56px; }
     .win--hero { width: 660px; }
     .win--hero h1 { font-size: 60px; }
     .win--about { width: 420px; }
-    .win--stats { width: 320px; }
+    .win--stats { width: 300px; }
     .win--list { width: 500px; }
     .win--media { width: 420px; }
     .win--gallery { width: 620px; }
@@ -854,15 +1216,15 @@
   @media (min-width: 2000px) {
     html, body { font-size: 16px; }
     .header { padding: 48px 72px; }
+    .scene { padding-left: 72px; padding-right: 72px; }
     .nav-name, .nav-center a, .nav-status { font-size: 18px; }
     .nav-status .glyph { font-size: 18px; }
     .nav-name .caret { width: 8px; height: 19px; }
     .nav-center { gap: 64px; }
-    .scene { padding: 120px 72px 72px; }
     .win--hero { width: 760px; }
     .win--hero h1 { font-size: 70px; }
     .win--about { width: 480px; }
-    .win--stats { width: 360px; }
+    .win--stats { width: 320px; }
     .win--list { width: 580px; }
     .win--media { width: 480px; }
     .win--gallery { width: 720px; }
@@ -872,7 +1234,6 @@
     .win--links { width: 420px; }
     .win--form { width: 580px; }
     .win--case h4 { font-size: 26px; }
-    .win--quote blockquote { font-size: 22px; }
   }
 
   /* ============ RESPONSIVE ============ */
@@ -880,16 +1241,27 @@
     .nav-center { gap: 36px; }
   }
   @media (max-width: 1024px) {
-    html, body { cursor: auto; }
+    html, body,
+    .win .bar,
+    .win--form input,
+    .win--form textarea { cursor: auto; }
+    button,
+    a, .chip, .cell, .item, nav a,
+    .burger,
+    [data-handle], [data-open-case] { cursor: pointer; }
     .cursor, .cursor-label { display: none !important; }
-    .header { padding: 16px 20px; }
+    /* Safe-area для мобильных браузеров со скрывающимися тулбарами
+       (Safari, Comet, Chrome iOS): хедер сдвигается под notch/Dynamic Island,
+       контент — под нижнюю плашку. theme-color наверху красит саму плашку
+       в #131313, чтобы не было видимого "чёрного перекрытия". */
+    .header { padding: calc(16px + env(safe-area-inset-top)) calc(20px + env(safe-area-inset-right)) 16px calc(20px + env(safe-area-inset-left)); }
     .nav-center, .nav-status { display: none; }
-    .header { grid-template-columns: 1fr auto; padding: 16px 20px; }
+    .header { grid-template-columns: 1fr auto; }
     .burger { display: inline-flex; }
     .nav-name { font-size: 18px; }
     .nav-name .caret { width: 8px; height: 19px; }
 
-    main { padding-top: 84px; padding-left: 0; padding-right: 0; }
+    main { padding-top: calc(84px + env(safe-area-inset-top)); padding-left: 0; padding-right: 0; }
     .scene {
       min-height: auto !important;
       padding: 32px 20px 32px;
@@ -904,17 +1276,60 @@
     }
     .win--hero h1 { font-size: 36px; }
     .modal { padding: 0; }
-    .modal .sheet { border-radius: 0; max-height: 100vh; height: 100vh; width: 100%; border: 0; }
-    .modal .content { padding: 24px 20px 40px; }
-    .modal .content h1 { font-size: 36px; }
-    .modal .content .cols { grid-template-columns: 1fr; gap: 20px; }
-    .modal .shots { grid-template-columns: 1fr; }
-    .modal .hero { aspect-ratio: 16/9; }
-    .footer { padding: 28px 20px 20px; border-radius: 0; }
-    .footer .grid { grid-template-columns: 1fr 1fr; }
-    .footer .cell.primary { grid-column: 1 / -1; }
-    .footer .bottom { flex-direction: column; gap: 14px; align-items: flex-start; }
-    .footer .bottom .big-num { font-size: 22px; }
+    .modal .sheet { border-radius: 0; height: 100dvh; width: 100%; border: 0; }
+    .modal .content { padding: calc(20px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom)); max-width: none; }
+    .modal .content .cols { grid-template-columns: 1fr; gap: 28px; }
+    .modal .shots { max-width: none; }
+    .modal .content h1 { font-size: 32px; }
+    /* На мобиле sidebar становится верхним блоком, медиа — стопкой снизу */
+    .modal .content .cols { grid-template-columns: 1fr; gap: 28px; }
+    .modal .content .sidebar { position: static; gap: 16px; }
+    .modal .shots { gap: 12px; }
+    .modal .hero { display: none; }
+    /* Футер на мобиле: верхний край плашки = нижняя граница хедера.
+       АСКИИ-челик меньше и влезает по ширине. Инпут одной строкой, ] и ↵ впритык к тексту. */
+    .footer { padding: calc(86px + 12px) 12px calc(12px + env(safe-area-inset-bottom)); min-height: auto; }
+    .footer .terminal {
+      flex: 0 0 auto;
+      min-height: calc(100dvh - 86px - 24px - env(safe-area-inset-bottom));
+      border-radius: 32px 32px 10px 10px;
+      padding: 28px 22px 22px;
+    }
+    .footer .ascii {
+      font-size: clamp(20px, 7vw, 32px);
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      white-space: normal;
+    }
+    .footer .ascii .face-desktop { display: none; }
+    .footer .ascii .face-mobile {
+      display: block;
+      font: 500 clamp(28px, 9vw, 44px)/1.05 var(--mono);
+      letter-spacing: -.02em;
+      white-space: pre;
+      text-align: center;
+    }
+    .footer .ascii .addr-row { display: inline-flex; align-items: baseline; gap: 0; font-size: clamp(20px, 7vw, 28px); }
+    .footer .ascii .heart { margin: 0 .35em 0 0; }
+
+    /* Инпут скрыт на мобилке, вместо него — выбор канала. */
+    .footer .term-input { display: none !important; }
+    .footer .ascii .heart { display: none; }
+    .footer .term-channels {
+      display: flex; flex-direction: column; gap: 10px;
+      padding: 16px 0;
+      font-family: var(--mono);
+      font-size: 14px;
+      text-align: left;
+    }
+    .footer .term-channels .chan {
+      color: var(--text);
+      text-decoration: none;
+      transition: color .15s;
+    }
+    .footer .term-channels .chan:hover { color: var(--accent); }
+    .footer .term-meta { font-size: 11px; margin-top: 22px; }
   }
   @media (max-width: 640px) {
     .header { padding: 12px 16px; }
@@ -922,8 +1337,11 @@
     .nav-name .caret { width: 7px; height: 18px; }
     .scene { padding: 24px 16px; }
     .win .body { padding: 16px; }
+    .win .bar { padding: 0 12px; }
+    .win--quote .body { padding: 16px; }
     .win--hero h1 { font-size: 30px; }
   }
+
   /* ============ MAINTENANCE OVERLAY ============ */
   /* To activate: change display:none → display:flex */
   .maint {
@@ -979,8 +1397,7 @@
   <div class="bg-grid"></div>
   <div class="bg-word">Это&nbsp;кейс-
 портфолио</div>
-  <div class="bg-meta tl">© 2026 / Сергей Мудрук</div>
-  <div class="bg-meta br">brand &amp; product designer · v0.3</div>
+  <!-- Блоки с датой и погодой переехали в футер (.footer-meta) -->
 </div>
 
 <!-- ===== HEADER ===== -->
@@ -1012,7 +1429,7 @@
     <button class="close" id="mobileClose" aria-label="закрыть">✕</button>
   </div>
   <nav>
-    <a href="#services" data-mclose>Услуги</a>
+    <a href="#services" data-mclose style="border-width: 0px 0px 2px">Делаю</a>
     <a href="#process" data-mclose>Процесс</a>
     <a href="#work" data-mclose>Работы</a>
     <a href="#contact" data-mclose>Написать</a>
@@ -1030,24 +1447,30 @@
 <main>
 
   <!-- SCENE 1 — О СЕБЕ -->
-  <section class="scene" id="about" data-screen-label="01 О себе" style="min-height: 170vh;">
-    <div class="scene-label"><div class="num">01</div><div>О&nbsp;себе</div><div class="line"></div><div># about.txt</div></div>
+  <section class="scene" id="about" data-screen-label="01 О себе" style="min-height: 1180px;">
+    <div class="scene-label"><div class="num">01</div><div class="line"></div><div class="tag"># КТО Я</div></div>
 
     <div class="win win--hero" data-draggable style="left: 4%; top: 140px;">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">intro.txt</div>
-        <div class="drag-hint">окна можно передвинуть</div>
+        <div class="drag-hint">окна можно двигать</div>
       </div>
       <div class="body">
-        <h1>Привет, это Сергей</h1>
-        <p>Помогаю компаниям превращать размытое позиционирование в&nbsp;измеримый рост: бренд-платформы, коммуникационные стратегии, продуктовый UX и&nbsp;креативы, которые реально двигают цифры. 5&nbsp;лет в&nbsp;дизайне, фокус&nbsp;— B2B, иногда B2C-продукты.</p>
+        <h1>
+          <span>Привет, это Сергей,</span><br/>
+          <span class="line2">я <span class="em">дизайнер.</span></span>
+        </h1>
+        <p>Являюсь специалистом в&nbsp;сферах продуктового и&nbsp;коммуникативного дизайна, разработке дизайн и&nbsp;маркетинговых систем. Работаю над удобством по-человечески понятных продуктов, ориентируясь на&nbsp;уникальность каждого кейса.</p>
         <div class="tags">
-          <span>Бренд-платформа</span>
-          <span>Продукт / UX</span>
-          <span>SMM &amp; Influence</span>
-          <span>CJM &amp; A/B</span>
-          <span>Event-маркетинг</span>
+          <span>Продукт-дизайн</span>
+          <span>Дизайн-системы</span>
+          <span>Ресерч и&nbsp;CJM</span>
+          <span>Коммуникативный дизайн</span>
+          <span>Ивент-дизайн</span>
+          <span>Арт-дирекшн</span>
+          <span>SMM &amp; Инфлюэнс</span>
+          <span>Маркетинг и&nbsp;PR</span>
         </div>
       </div>
     </div>
@@ -1069,29 +1492,57 @@
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">numbers.json</div>
       </div>
-      <div class="body">
-        <div class="row"><div class="big">5&nbsp;лет</div><div class="lbl">в B2B и&nbsp;продукте</div></div>
-        <div class="row"><div class="big">150%+</div><div class="lbl">средний ROI на&nbsp;запущенных кампаниях</div></div>
-        <div class="row"><div class="big">4%</div><div class="lbl">ER кампании (КАМАЗ)</div></div>
-        <div class="row"><div class="big">20+</div><div class="lbl">бренд- и&nbsp;продуктовых проектов</div></div>
+      <div class="folder-wrap">
+        <!-- Белый лист со статистикой — видна верхняя часть из-за тёмной "лицевой части папки" -->
+        <div class="sheet-paper" aria-hidden="true">
+          <div class="row"><div class="big">5&nbsp;ЛЕТ</div><div class="lbl">в&nbsp;проектах</div></div>
+          <div class="row"><div class="big">50+</div><div class="lbl">коммерческих кейсов</div></div>
+          <div class="row"><div class="big">−5</div><div class="lbl">зрение</div></div>
+          <div class="row"><div class="big">150%+</div><div class="lbl">средний ROI</div></div>
+        </div>
+        <!-- Тёмная "лицевая часть" папки с округлым вырезом-табом сверху-слева -->
+        <div class="folder-front" aria-hidden="true">
+          <svg viewBox="0 0 384 210" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Прямоугольник с плавной выемкой сверху, в левой трети.
+                 0,40 → закругление, до 18,40 → начало "холма" дугой вниз до 158,40 -->
+            <path d="
+              M 0 16
+              Q 0 0 16 0
+              L 18 0
+              Q 30 0 36 12
+              C 60 64 130 64 154 12
+              Q 160 0 172 0
+              L 368 0
+              Q 384 0 384 16
+              L 384 210
+              L 0 210
+              Z
+            " fill="#1A1A1A"/>
+          </svg>
+        </div>
+        <div class="folder-front-label" aria-hidden="true">
+          <div class="folder-label">Обо мне</div>
+          <div class="folder-sub">В&nbsp;циферках</div>
+        </div>
       </div>
     </div>
 
     <div class="win win--quote" data-draggable style="left: 6%; top: 820px;">
-      <div class="bar" data-handle>
+      <div class="bar" data-handle style="padding: 0px 12px">
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">quote.md</div>
       </div>
       <div class="body">
-        <blockquote>«Эмпатия в&nbsp;первую очередь&nbsp;— к&nbsp;пользователю, к&nbsp;клиенту и&nbsp;к&nbsp;цифрам. Дизайн просто их&nbsp;носитель».</blockquote>
-        <div class="by">— рабочий принцип</div>
+        <span class="brace">{</span>
+        <p class="q-line"><span class="q-key">"quote"</span><span class="q-colon">:</span>"Эмпатия всегда в&nbsp;первую очередь&nbsp;– к&nbsp;любому пользователю, к&nbsp;заказчику."</p>
+        <span class="brace">}</span>
       </div>
     </div>
   </section>
 
-  <!-- SCENE 2 — УСЛУГИ -->
-  <section class="scene" id="services" data-screen-label="02 Услуги" style="min-height: 120vh;">
-    <div class="scene-label"><div class="num">02</div><div>Услуги</div><div class="line"></div><div># what-i-do</div></div>
+  <!-- SCENE 2 — ДЕЛАЮ -->
+  <section class="scene" id="services" data-screen-label="02 Делаю" style="min-height: 820px;">
+    <div class="scene-label"><div class="num">02</div><div class="line"></div><div class="tag"># ДЕЛАЮ</div></div>
 
     <div class="win win--list" data-draggable style="left: 6%; top: 120px;">
       <div class="bar" data-handle>
@@ -1106,7 +1557,6 @@
         <div class="item"><span>Лендинги, MVP, Telegram MiniApps</span><span class="num">05</span></div>
         <div class="item"><span>CJM, A/B-тестирование &amp; аналитика</span><span class="num">06</span></div>
         <div class="item"><span>Event-маркетинг &amp; PR-кампании</span><span class="num">07</span></div>
-        <div class="note"># B2B в первую очередь, иногда B2C-продукты</div>
       </div>
     </div>
 
@@ -1137,8 +1587,8 @@
   </section>
 
   <!-- SCENE 3 — ПРОЦЕСС -->
-  <section class="scene" id="process" data-screen-label="03 Процесс" style="min-height: 120vh;">
-    <div class="scene-label"><div class="num">03</div><div>Процесс</div><div class="line"></div><div># process</div></div>
+  <section class="scene" id="process" data-screen-label="03 Процесс" style="min-height: 920px;">
+    <div class="scene-label"><div class="num">03</div><div class="line"></div><div class="tag"># ПРОЦЕСС</div></div>
 
     <div class="win win--process" data-draggable style="left: 8%; top: 140px;">
       <div class="bar" data-handle>
@@ -1146,11 +1596,14 @@
         <div class="title">process.md</div>
       </div>
       <div class="body">
-        <div class="step"><div class="n">01</div><div>Бриф &amp; бизнес-цели — KPI, аудитория, рынок</div><div class="t">~1 нед</div></div>
-        <div class="step"><div class="n">02</div><div>Ресёрч — аудит, фокус-группы, CJM, конкуренты</div><div class="t">~1–2 нед</div></div>
-        <div class="step"><div class="n">03</div><div>Стратегия &amp; концепт — позиционирование, ToV, контент-направления</div><div class="t">~2 нед</div></div>
-        <div class="step"><div class="n">04</div><div>Дизайн &amp; система — бренд, UX, креативы, прототипы</div><div class="t">~3–4 нед</div></div>
-        <div class="step"><div class="n">05</div><div>Запуск &amp; A/B — измеряем, итерируем, масштабируем</div><div class="t">постоянно</div></div>
+        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Бриф &amp; бизнес-цели — KPI, аудитория, рынок</div></div>
+        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Ресёрч — аудит, фокус-группы, CJM, конкуренты</div></div>
+        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Стратегия &amp; концепт — позиционирование, ToV, контент</div></div>
+        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Дизайн &amp; система — бренд, UX, креативы, прототипы</div></div>
+        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Запуск &amp; A/B — измеряем, итерируем, масштабируем</div></div>
+        <div class="all-done" id="processAllDone">
+          <b>✦ Чек-лист закрыт.</b><br/>Кейс готов к&nbsp;запуску — пишите в&nbsp;<a href="https://t.me/mudruks" target="_blank" rel="noopener" style="color:var(--accent); text-decoration: underline;">@mudruks</a>.
+        </div>
       </div>
     </div>
 
@@ -1165,49 +1618,24 @@
       </div>
     </div>
 
-    <div class="win win--quote" data-draggable style="left: 14%; top: 640px;">
+    <div class="win win--quote" data-draggable style="left: 14%; top: 640px; width: 472px">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">principle.md</div>
       </div>
       <div class="body">
-        <blockquote>«Цифры не убивают крафт&nbsp;— они его подтверждают. Каждый креатив выходит с&nbsp;привязанной метрикой».</blockquote>
-        <div class="by">— как принимаются решения</div>
+        <span class="brace">{</span>
+        <p class="q-line"><span class="q-key">"rule"</span><span class="q-colon">:</span>"Цифры не убивают крафт&nbsp;— они его подтверждают. Люблю и&nbsp;креатив, и&nbsp;циферки."</p>
+        <span class="brace">}</span>
       </div>
     </div>
   </section>
 
   <!-- SCENE 4 — РАБОТЫ -->
-  <section class="scene" id="work" data-screen-label="04 Работы" style="min-height: 360vh;">
-    <div class="scene-label"><div class="num">04</div><div>Работы</div><div class="line"></div><div># selected cases</div></div>
+  <section class="scene" id="work" data-screen-label="04 Работы" style="min-height: 2520px;">
+    <div class="scene-label"><div class="num">04</div><div class="line"></div><div class="tag"># РАБОТЫ</div></div>
 
-    <div class="win win--gallery" data-draggable style="left: 4%; top: 140px;">
-      <div class="bar" data-handle>
-        <div class="dots"><span></span><span></span><span></span></div>
-        <div class="title">gallery · последние</div>
-      </div>
-      <div class="body">
-        <div class="viewport" id="gallery">
-          <div class="slide active"><div><b>Lamoda B2B Media</b>медиа-платформа · 2025</div></div>
-          <div class="slide"><div><b>КАМАЗ</b>бренд &amp; lead-gen · 2024</div></div>
-          <div class="slide"><div><b>VetCity Clinic</b>коммуникационная стратегия · 2024</div></div>
-          <div class="slide"><div><b>GiftSpin</b>Telegram MiniApp · 2025</div></div>
-          <div class="slide"><div><b>Liberty / МИФИ</b>бренд &amp; SMM · 2023</div></div>
-          <div class="slide"><div><b>Форум «Траектория»</b>event &amp; PR · 2023</div></div>
-        </div>
-        <div class="ctrls">
-          <div class="dots" id="galleryDots">
-            <span class="on"></span><span></span><span></span><span></span><span></span><span></span>
-          </div>
-          <div class="arrows">
-            <button id="galPrev" aria-label="назад">‹</button>
-            <button id="galNext" aria-label="вперед">›</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="win win--case" data-draggable data-case="lamoda" style="right: 5%; top: 280px;">
+    <div class="win win--case" data-draggable data-case="lamoda" style="left: 6%; top: 140px;">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">case · 001</div>
@@ -1220,7 +1648,7 @@
       </div>
     </div>
 
-    <div class="win win--case" data-draggable data-case="kamaz" style="left: 28%; top: 880px;">
+    <div class="win win--case" data-draggable data-case="kamaz" style="right: 7%; top: 320px;">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">case · 002</div>
@@ -1233,7 +1661,7 @@
       </div>
     </div>
 
-    <div class="win win--case" data-draggable data-case="vetcity" style="right: 4%; top: 1140px;">
+    <div class="win win--case" data-draggable data-case="vetcity" style="left: 30%; top: 760px;">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">case · 003</div>
@@ -1246,7 +1674,7 @@
       </div>
     </div>
 
-    <div class="win win--case" data-draggable data-case="giftspin" style="left: 5%; top: 1480px;">
+    <div class="win win--case" data-draggable data-case="giftspin" style="right: 5%; top: 1100px;">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">case · 004</div>
@@ -1259,7 +1687,7 @@
       </div>
     </div>
 
-    <div class="win win--case" data-draggable data-case="liberty" style="right: 6%; top: 1820px;">
+    <div class="win win--case" data-draggable data-case="liberty" style="left: 5%; top: 1440px;">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">case · 005</div>
@@ -1272,7 +1700,7 @@
       </div>
     </div>
 
-    <div class="win win--case" data-draggable data-case="trajectory" style="left: 22%; top: 2180px;">
+    <div class="win win--case" data-draggable data-case="trajectory" style="right: 8%; top: 1860px;">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">case · 006</div>
@@ -1286,76 +1714,44 @@
     </div>
   </section>
 
-  <!-- SCENE 5 — ФОРМА -->
-  <section class="scene" id="contact-teaser" data-screen-label="05 Форма" style="min-height: 90vh;">
-    <div class="scene-label"><div class="num">05</div><div>Быстрое сообщение</div><div class="line"></div><div># quick message</div></div>
-
-    <div class="win win--form" data-draggable style="left: 10%; top: 120px;">
-      <div class="bar" data-handle>
-        <div class="dots"><span></span><span></span><span></span></div>
-        <div class="title">message.txt</div>
-      </div>
-      <div class="body">
-        <div class="field">
-          <label>Имя / компания</label>
-          <input placeholder="напр. Алексей / Lamoda"/>
-        </div>
-        <div class="field">
-          <label>Email или Telegram</label>
-          <input placeholder="you@company.com / @handle"/>
-        </div>
-        <div class="field">
-          <label>Бриф — задача, цель, бюджет</label>
-          <textarea placeholder="Расскажите о&nbsp;проекте. KPI приветствуются."></textarea>
-        </div>
-        <button class="send" style="border-radius: 999px">Отправить</button>
-        <div class="err">[!] not found: name — заполните хотя бы&nbsp;имя и&nbsp;контакт</div>
-      </div>
-    </div>
-
-    <div class="win win--quote" data-draggable style="right: 10%; top: 180px;">
-      <div class="bar" data-handle>
-        <div class="dots"><span></span><span></span><span></span></div>
-        <div class="title">note.md</div>
-      </div>
-      <div class="body">
-        <blockquote>Открыт для&nbsp;B2B бренд- и&nbsp;продуктовых задач, MVP и&nbsp;коротких кампаний.</blockquote>
-        <div class="by">— отвечаю в&nbsp;течение 24ч, пн–пт</div>
-      </div>
-    </div>
-  </section>
-
 </main>
 
 <!-- ===== FOOTER ===== -->
 <footer class="footer" id="contact" data-screen-label="06 Контакты">
-  <div>
-    <div class="top">
-      <span>[ Контакты ]</span>
-      <span>06 / 06</span>
-      <span>прокрути вверх для навигации</span>
+  <div class="terminal">
+    <div class="ascii-area">
+      <div class="ascii">
+        <span class="face face-desktop">( ´ ∀ `)ノ～</span>
+        <span class="face face-mobile" aria-hidden="true">/\_/\<br/>(•ω•)</span>
+        <span class="addr-row"><span class="heart">♡</span><span>[</span><a class="target" id="asciiTarget" href="https://t.me/mudruks" target="_blank" rel="noopener">@mudruks</a><span>]</span></span>
+      </div>
     </div>
 
-    <div class="huge">
-      <div class="kicker">[ давайте растить ваши цифры ]</div>
-      <h2>Напишите<br/><span class="accent">мне.</span></h2>
-      <div class="sub">бренд · продукт · кампании · MVP · MiniApps</div>
+    <form class="term-input" id="termForm" autocomplete="off">
+      <span class="prompt">&gt;</span>
+      <span class="cmd">/send to</span>
+      <button type="button" class="target-toggle" id="targetToggle" data-tip="поменять">@mudruks</button>
+      <span class="text-label">text</span>
+      <span class="bracket">[</span>
+      <span class="row-break" aria-hidden="true"></span>
+      <input class="field" id="termField" type="text" placeholder="Введите сообщение" />
+      <span class="bracket">]</span>
+      <button type="submit" class="send" title="Отправить">↵</button>
+    </form>
+
+    <!-- Мобильный выбор канала связи вместо инпута -->
+    <div class="term-channels">
+      <a class="chan" href="https://t.me/mudruks" target="_blank" rel="noopener">[ Telegram · @mudruks ]</a>
+      <a class="chan" href="mailto:s@mudruk.ru">[ Email · s@mudruk.ru ]</a>
     </div>
 
-    <div class="grid">
-      <div class="cell primary">Записаться на&nbsp;30-минутный созвон →</div>
-      <a class="cell" href="mailto:s@mudruk.ru">s@mudruk.ru</a>
-      <a class="cell" href="https://t.me/mudruks">@mudruks</a>
-      <a class="cell" href="tel:+79873971117">+7 987 397-11-17</a>
-      <div class="cell">WNS Design</div>
-      <div class="cell">Behance</div>
+    <div class="term-meta">
+      <span>СМ, <span id="footerDate">04/26</span></span>
+      <span class="footer-weather">
+        <span class="bg-weather-icon" id="footerWeatherIcon" aria-hidden="true"></span>
+        <span id="footerWeather">—°, Москва</span>
+      </span>
     </div>
-  </div>
-
-  <div class="bottom">
-    <div>© 2026 · Сергей Мудрук<br/>brand &amp; product designer</div>
-    <div class="big-num">→ s@mudruk.ru</div>
-    <div style="text-align:right">Со-основатель WNS Design<br/>portfolio v 0.3 · wireframe</div>
   </div>
 </footer>
 
@@ -1366,43 +1762,193 @@
 <!-- ===== CASE MODAL ===== -->
 <div class="modal" id="modal" role="dialog" aria-modal="true">
   <div class="sheet">
-    <div class="top">
-      <div id="modalBreadcrumb">[ case · 001 ] — Lamoda B2B Media Platform</div>
-      <button class="close" id="modalClose">Закрыть ✕</button>
-    </div>
-    <div class="hero" id="modalHero">[ hero-изображение · 16:7 placeholder ]</div>
     <div class="content">
-      <h1 id="modalTitle">Lamoda B2B Media Platform</h1>
-      <div class="meta" id="modalMeta">research · UX · MVP-фреймворк · 2025 · 10 недель</div>
       <div class="cols">
-        <div>
+        <aside class="sidebar">
+          <button class="modal-close-text" id="modalClose" type="button">Закрыть ✕</button>
+          <h1 id="modalTitle">Lamoda B2B Media Platform</h1>
+          <div class="meta" id="modalMeta">research · UX · MVP-фреймворк <span class="year">2025 · 10 недель</span></div>
           <p id="modalDesc">Концепт B2B-медиа-платформы для&nbsp;Lamoda&nbsp;— fashion-аналог Pulse / T-Journal / VC.RU. Цель — построить контентный фреймворк, который привлекает бренд-партнёров, ключевых стейкхолдеров и&nbsp;инфлюенсеров в&nbsp;экосистему.</p>
-          <p>Работал в&nbsp;analytics &amp; MVP-команде&nbsp;— конкурентный ресёрч, фокус-группы с&nbsp;игроками индустрии, ToV и&nbsp;копирайт-фрейм, контент-направления и&nbsp;UX-вайрфрейм для&nbsp;старта разработки.</p>
+          <div class="facts">
+            <div class="f"><span>Роль</span>Research / UX</div>
+            <div class="f"><span>Команда</span>5 человек</div>
+            <div class="f"><span>Год</span>2025</div>
+            <div class="f"><span>Output</span>MVP-фреймворк</div>
+          </div>
+        </aside>
+        <div class="shots">
+          <div class="shot">[ изображение 01 · 16:9 ]</div>
+          <div class="shot">[ изображение 02 · 16:9 ]</div>
+          <div class="shot">[ изображение 03 · 16:9 ]</div>
+          <div class="shot">[ изображение 04 · 16:9 ]</div>
         </div>
-        <div class="facts">
-          <div class="f"><span>Роль</span>Research / UX</div>
-          <div class="f"><span>Команда</span>5 человек</div>
-          <div class="f"><span>Год</span>2025</div>
-          <div class="f"><span>Output</span>MVP-фреймворк</div>
-        </div>
-      </div>
-      <div class="shots">
-        <div class="shot">[ скрин 01 ]</div>
-        <div class="shot">[ скрин 02 ]</div>
-        <div class="shot">[ скрин 03 ]</div>
-        <div class="shot">[ скрин 04 ]</div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-
 /* ============ TOUCH DETECT ============ */
+/* Only flag as touch if the device truly lacks hover and uses a coarse pointer.
+   Don't conflate "narrow viewport" with "touchscreen" — a small desktop window is still a desktop. */
 const IS_TOUCH = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 document.documentElement.classList.toggle('is-touch', IS_TOUCH);
 
-/* ============ TYPEWRITER NAME ============ */
+/* ============ DATE + WEATHER (footer meta) ============
+   Дата: локальная, формат MM/YY.
+   Погода: Open-Meteo (https://open-meteo.com) — бесплатный публичный API
+   без ключа, с открытым CORS. Запрос:
+     https://api.open-meteo.com/v1/forecast?latitude=55.75&longitude=37.62
+       &current=temperature_2m,weather_code&timezone=Europe/Moscow
+   Координаты ≈ центр Москвы (55.7558, 37.6173).
+   Иконки: inline SVG (vuesax-style outline, как в DS), выбираются по
+   weather_code согласно таблице WMO:
+     https://open-meteo.com/en/docs#weathervariables
+   Маппинг кода → иконка живёт в WEATHER_ICONS ниже.
+*/
+(() => {
+  const dateEl = document.getElementById('footerDate');
+  const wxEl = document.getElementById('footerWeather');
+  const iconEl = document.getElementById('footerWeatherIcon');
+
+  // — дата —
+  if (dateEl) {
+    const d = new Date();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yy = String(d.getFullYear()).slice(-2);
+    dateEl.textContent = `${mm}/${yy}`;
+  }
+
+  // — иконки погоды (WMO weather_code → SVG) —
+  // 24×24 viewBox, currentColor, stroke-only, чтобы легко перекрашивать.
+  const SVG = (path) =>
+    `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
+  const ICONS = {
+    sun:    SVG('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>'),
+    moon:   SVG('<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'),
+    cloud:  SVG('<path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.78 6 6 0 0 0-11.6 2.28A4 4 0 0 0 5 19h12.5z"/>'),
+    fog:    SVG('<path d="M3 8h18M3 12h18M3 16h12M3 20h18"/>'),
+    rain:   SVG('<path d="M17 14a4 4 0 1 0-1.27-7.78A6 6 0 0 0 4 8a4 4 0 0 0 1 7.87"/><path d="M9 18l-1 3M14 18l-1 3M19 18l-1 3"/>'),
+    sleet:  SVG('<path d="M17 13a4 4 0 1 0-1.27-7.78A6 6 0 0 0 4 7a4 4 0 0 0 1 7.87"/><path d="M8 18l1-1M13 18l1-1M9 21l-1 1M14 21l-1 1M18 18v3M16.5 19.5h3"/>'),
+    snow:   SVG('<path d="M17 13a4 4 0 1 0-1.27-7.78A6 6 0 0 0 4 7a4 4 0 0 0 1 7.87"/><path d="M9 19v3M14 19v3M7.5 20.5l3 1M10.5 20.5l-3 1M12.5 20.5l3 1M15.5 20.5l-3 1"/>'),
+    storm:  SVG('<path d="M17 13a4 4 0 1 0-1.27-7.78A6 6 0 0 0 4 7a4 4 0 0 0 1 7.87"/><polyline points="13 11 9 17 12 17 11 22 15 16 12 16 13 11"/>'),
+  };
+  // WMO weather_code → ключ иконки. https://open-meteo.com/en/docs#weathervariables
+  function pickIcon(code, isDay) {
+    if (code === 0) return isDay ? ICONS.sun : ICONS.moon;            // ясно
+    if (code === 1 || code === 2) return ICONS.cloud;                 // переменная облачность
+    if (code === 3) return ICONS.cloud;                               // пасмурно
+    if (code === 45 || code === 48) return ICONS.fog;                 // туман
+    if (code >= 51 && code <= 67) return ICONS.rain;                  // морось / дождь
+    if (code >= 71 && code <= 77) return ICONS.snow;                  // снег
+    if (code >= 80 && code <= 82) return ICONS.rain;                  // ливни
+    if (code === 85 || code === 86) return ICONS.snow;                // снежные ливни
+    if (code >= 95) return ICONS.storm;                               // гроза
+    return ICONS.cloud;
+  }
+
+  // — live-подгрузка через Open-Meteo —
+  async function loadWeather() {
+    if (!wxEl) return;
+    const url = 'https://api.open-meteo.com/v1/forecast'
+      + '?latitude=55.7558&longitude=37.6173'
+      + '&current=temperature_2m,weather_code,is_day'
+      + '&timezone=Europe%2FMoscow';
+    try {
+      const r = await fetch(url, { cache: 'no-store' });
+      if (!r.ok) throw new Error(r.status);
+      const j = await r.json();
+      const t = Math.round(j.current.temperature_2m);
+      const code = j.current.weather_code;
+      const isDay = j.current.is_day === 1;
+      const sign = t > 0 ? '+' : '';
+      wxEl.textContent = `${sign}${t}°, Москва`;
+      if (iconEl) iconEl.innerHTML = pickIcon(code, isDay);
+    } catch (e) {
+      // оффлайн / API недоступен → ставим нейтральную иконку и сезонный fallback
+      const m = new Date().getMonth();
+      const seasonal = [-7,-7,-1,7,14,19,22,20,14,7,1,-4][m];
+      const sign = seasonal > 0 ? '+' : '';
+      wxEl.textContent = `${sign}${seasonal}°, Москва`;
+      if (iconEl) iconEl.innerHTML = ICONS.cloud;
+    }
+  }
+  loadWeather();
+})();
+
+/* ============ FOOTER TERMINAL ============
+   Toggle target between Telegram (@mudruks) and email (s@mudruk.ru).
+   Submit opens the corresponding link with the typed message prefilled.
+*/
+(() => {
+  const TARGETS = [
+    { key: 'tg',   label: '@mudruks',     ascii: '@mudruks',     href: 'https://t.me/mudruks' },
+    { key: 'mail', label: 's@mudruk.ru',  ascii: 's@mudruk.ru',  href: 'mailto:s@mudruk.ru' },
+  ];
+  let i = 0;
+
+  const toggle  = document.getElementById('targetToggle');
+  const asciiT  = document.getElementById('asciiTarget');
+  const form    = document.getElementById('termForm');
+  const field   = document.getElementById('termField');
+  if (!toggle || !form) return;
+
+  // Авто-рост инпута: по тексту если введён, иначе по плейсхолдеру.
+  function resize() {
+    if (!field) return;
+    const v = field.value || '';
+    const len = v.length > 0 ? v.length : (field.placeholder || '').length;
+    field.style.width = Math.max(len, 2) + 'ch';
+  }
+  if (field) {
+    resize();
+    field.addEventListener('input', resize);
+    field.addEventListener('focus', resize);
+  }
+
+  function paint() {
+    const t = TARGETS[i];
+    toggle.textContent = t.label;
+    if (asciiT) { asciiT.textContent = t.ascii; asciiT.href = t.href; }
+  }
+  toggle.addEventListener('click', () => { i = (i + 1) % TARGETS.length; paint(); });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const t = TARGETS[i];
+    const text = (field?.value || '').trim();
+    if (t.key === 'mail') {
+      // Почта: текст из поля передаётся в body, тема фикс.
+      const url = 'mailto:s@mudruk.ru'
+        + '?subject=' + encodeURIComponent('С сайта')
+        + (text ? '&body=' + encodeURIComponent(text) : '');
+      window.location.href = url;
+    } else {
+      // Телеграм: TODO интеграция бота.
+      // ===========================================================
+      // CLAUDE / DEV: сюда встроить вызов бота Telegram, напр.:
+      //   await fetch('https://api.telegram.org/bot<TOKEN>/sendMessage', {
+      //     method: 'POST',
+      //     headers: { 'Content-Type': 'application/json' },
+      //     body: JSON.stringify({ chat_id: '<CHAT_ID>', text })
+      //   });
+      // Токен/CHAT_ID прокидывать через backend (Cloudflare Workers / serverless),
+      // чтобы не выкладывать в фронтенде.
+      // На время разработки — копируем в буфер и открываем чат:
+      // ===========================================================
+      if (text && navigator.clipboard) navigator.clipboard.writeText(text).catch(()=>{});
+      window.open('https://t.me/mudruks', '_blank', 'noopener');
+    }
+  });
+  paint();
+})();
+
+/* ============ TYPEWRITER NAME ============
+   Variants from DS Navigation-Name. Plays:
+   - randomly picks a name (no repeat in a row)
+   - types it char-by-char at medium speed (~70ms with jitter)
+   - holds with blinking caret 15s
+   - then deletes & types next variant
+*/
 (() => {
   const NAMES = [
     'Sergey Mudruk',
@@ -1416,6 +1962,7 @@ document.documentElement.classList.toggle('is-touch', IS_TOUCH);
     'а чьё портфолио?'
   ];
 
+  // sync target nodes (header + mobile menu)
   const targets = [
     { text: document.getElementById('typeText'), caret: document.getElementById('typeCaret') },
     { text: document.getElementById('typeTextMobile'), caret: document.getElementById('typeCaretMobile') }
@@ -1424,9 +1971,9 @@ document.documentElement.classList.toggle('is-touch', IS_TOUCH);
   if (!targets.length) return;
 
   const HOLD_MS = 15000;
-  const TYPE_MS = 70;
-  const TYPE_JITTER = 50;
-  const DELETE_MS = 35;
+  const TYPE_MS = 70;       // base typing speed
+  const TYPE_JITTER = 50;   // human jitter
+  const DELETE_MS = 35;     // backspace speed
 
   let lastIdx = -1;
   function pickNext() {
@@ -1470,6 +2017,7 @@ document.documentElement.classList.toggle('is-touch', IS_TOUCH);
   }
 
   async function loop() {
+    // First load: always start with the canonical name, then go random.
     let current = 'Сергей Мудрук';
     lastIdx = NAMES.indexOf(current);
     await typeOne(current);
@@ -1482,6 +2030,7 @@ document.documentElement.classList.toggle('is-touch', IS_TOUCH);
     }
   }
 
+  // start once fonts loaded (or immediate fallback)
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => loop());
   } else {
@@ -1511,7 +2060,7 @@ if (!IS_TOUCH) (() => {
     const t = e.target;
     cursor.classList.remove('ring', 'grab');
     label.classList.remove('show');
-    if (t.closest('[data-handle]')) {
+    if (t.closest('[data-handle]') || t.closest('[data-sticker]')) {
       cursor.classList.add('grab');
       label.textContent = 'потянуть';
       label.classList.add('show');
@@ -1519,15 +2068,24 @@ if (!IS_TOUCH) (() => {
       cursor.classList.add('ring');
       label.textContent = 'открыть';
       label.classList.add('show');
+    } else if (t.closest('[data-tip]')) {
+      cursor.classList.add('ring');
+      label.textContent = t.closest('[data-tip]').dataset.tip;
+      label.classList.add('show');
     } else if (t.closest('a, button, .chip, .cell, .item, nav a')) {
       cursor.classList.add('ring');
     }
   });
 })();
 
-/* ============ HEADER HIDE ON SCROLL ============ */
+/* ============ HEADER HIDE ON SCROLL ============
+   Behavior: header is visible at the very top AND at the very bottom (footer).
+   - Hides when user scrolls past 60px into the page.
+   - Reappears near the top (< 30px) OR when the footer is in view.
+*/
 (() => {
   const header = document.getElementById('header');
+  const footer = document.querySelector('.footer');
   let ticking = false;
   const HIDE_AT = 60;
   const SHOW_AT = 30;
@@ -1535,10 +2093,18 @@ if (!IS_TOUCH) (() => {
   function update() {
     const y = window.scrollY;
     header.classList.toggle('scrolled', y > 8);
-    if (y > HIDE_AT) {
-      header.classList.add('hide');
-    } else if (y < SHOW_AT) {
+
+    // Show header when footer is in viewport (any part visible).
+    let inFooter = false;
+    if (footer) {
+      const r = footer.getBoundingClientRect();
+      inFooter = r.top < window.innerHeight && r.bottom > 0;
+    }
+
+    if (inFooter || y < SHOW_AT) {
       header.classList.remove('hide');
+    } else if (y > HIDE_AT) {
+      header.classList.add('hide');
     }
     ticking = false;
   }
@@ -1565,9 +2131,11 @@ if (!IS_TOUCH) (() => {
 /* ============ DRAGGABLE WINDOWS ============ */
 if (!IS_TOUCH) (() => {
   let z = 10;
-  document.querySelectorAll('[data-draggable]').forEach(win => {
+  document.querySelectorAll('[data-draggable], [data-sticker]').forEach(win => {
     const handle = win.querySelector('[data-handle]') || win;
     let dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
+    // Сохраняем поворот (для стикеров)
+    const initialRot = (win.style.transform.match(/rotate\(([^)]+)\)/) || [])[1] || '';
 
     handle.addEventListener('mousedown', (e) => {
       if (e.target.closest('button, a, input, textarea') && !e.target.closest('[data-handle]')) return;
@@ -1577,6 +2145,7 @@ if (!IS_TOUCH) (() => {
 
       const rect = win.getBoundingClientRect();
       const parent = win.offsetParent.getBoundingClientRect();
+      win.style.transform = initialRot ? `rotate(${initialRot})` : 'none';
       win.style.left = (rect.left - parent.left) + 'px';
       win.style.top  = (rect.top  - parent.top)  + 'px';
       win.style.right = 'auto';
@@ -1603,8 +2172,12 @@ if (!IS_TOUCH) (() => {
   });
 })();
 
-/* ============ GALLERY ============ */
+/* ============ GALLERY ============
+   Галерея удалена из секции "Работы" — JS сохранён в виде no-op-обёртки
+   с null-защитой, на случай если в будущем добавим обратно. */
 (() => {
+  const vp = document.getElementById('gallery');
+  if (!vp) return; // галереи нет — выходим без ошибок
   const slides = document.querySelectorAll('#gallery .slide');
   const dots = document.querySelectorAll('#galleryDots span');
   let i = 0;
@@ -1613,22 +2186,118 @@ if (!IS_TOUCH) (() => {
     slides.forEach((s, k) => s.classList.toggle('active', k === i));
     dots.forEach((d, k) => d.classList.toggle('on', k === i));
   };
-  document.getElementById('galPrev').addEventListener('click', () => go(i - 1));
-  document.getElementById('galNext').addEventListener('click', () => go(i + 1));
+  const prev = document.getElementById('galPrev');
+  const next = document.getElementById('galNext');
+  if (prev) prev.addEventListener('click', () => go(i - 1));
+  if (next) next.addEventListener('click', () => go(i + 1));
   dots.forEach((d, k) => d.addEventListener('click', () => go(k)));
 
-  const vp = document.getElementById('gallery');
-  if (vp) {
-    let sx = 0, dx = 0, active = false;
-    vp.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; dx = 0; active = true; }, { passive: true });
-    vp.addEventListener('touchmove', (e) => { if (active) dx = e.touches[0].clientX - sx; }, { passive: true });
-    vp.addEventListener('touchend', () => {
-      if (!active) return;
-      if (dx < -40) go(i + 1);
-      else if (dx > 40) go(i - 1);
-      active = false;
+  let sx = 0, dx = 0, active = false;
+  vp.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; dx = 0; active = true; }, { passive: true });
+  vp.addEventListener('touchmove', (e) => { if (active) dx = e.touches[0].clientX - sx; }, { passive: true });
+  vp.addEventListener('touchend', () => {
+    if (!active) return;
+    if (dx < -40) go(i + 1);
+    else if (dx > 40) go(i - 1);
+    active = false;
+  });
+})();
+
+/* ============ PROCESS CHECKBOXES ============ */
+(() => {
+  const steps = document.querySelectorAll('.win--process [data-step]');
+  const allDone = document.getElementById('processAllDone');
+  if (!steps.length) return;
+  steps.forEach(s => {
+    s.addEventListener('click', () => {
+      s.classList.toggle('checked');
+      const all = [...steps].every(x => x.classList.contains('checked'));
+      if (all) allDone?.classList.add('show');
+      else allDone?.classList.remove('show');
+    });
+  });
+})();
+
+/* ============ CASE THUMB AVERAGE COLOR TINT ============
+   Для каждой карточки кейса достаём средний цвет её превью и подкрашиваем
+   фон карточки лёгким градиентом — эффект как в Apple Music / Spotify. */
+(() => {
+  const cases = document.querySelectorAll('.win--case');
+  if (!cases.length) return;
+
+  // палитра-fallback по case-key (как обложки альбомов в Apple Music)
+  const CASE_TINT = {
+    'lamoda':     [19, 149, 255],   // accent blue
+    'kamaz':      [210, 80, 60],    // тёплый красно-оранж
+    'vetcity':    [90, 175, 130],   // зелёный (vet/pet)
+    'giftspin':   [170, 110, 230],  // фиолетовый (NFT/gamification)
+    'liberty':    [230, 165, 70],   // янтарный (vintage / ребренд)
+    'trajectory': [80, 180, 200],   // циан (event/phygital)
+  };
+  const FALLBACK = Object.values(CASE_TINT);
+
+  function applyTint(win, rgb) {
+    const [r, g, b] = rgb;
+    // насыщенный градиент сверху → прозрачный к низу
+    const top = `rgba(${r}, ${g}, ${b}, 0.22)`;
+    const mid = `rgba(${r}, ${g}, ${b}, 0.07)`;
+    const body = win.querySelector('.body');
+    if (!body) return;
+    body.style.background =
+      `linear-gradient(180deg, ${top} 0%, ${mid} 50%, var(--surface) 100%)`;
+    body.style.transition = 'background .6s ease';
+    // акцент тонкой рамкой
+    body.style.boxShadow = `inset 0 0 0 1px rgba(${r}, ${g}, ${b}, 0.18)`;
+  }
+
+  function avgColorFromImage(img) {
+    return new Promise((resolve, reject) => {
+      const c = document.createElement('canvas');
+      const W = 32, H = 18;
+      c.width = W; c.height = H;
+      const ctx = c.getContext('2d', { willReadFrequently: true });
+      try {
+        ctx.drawImage(img, 0, 0, W, H);
+        const d = ctx.getImageData(0, 0, W, H).data;
+        let r = 0, g = 0, b = 0, n = 0;
+        for (let i = 0; i < d.length; i += 4) {
+          const a = d[i + 3]; if (a < 128) continue;
+          r += d[i]; g += d[i+1]; b += d[i+2]; n++;
+        }
+        if (!n) return reject('empty');
+        // лёгкая буст-насыщенности, чтобы цвет был "живее"
+        r = Math.round(r / n);
+        g = Math.round(g / n);
+        b = Math.round(b / n);
+        resolve([r, g, b]);
+      } catch (e) { reject(e); }
     });
   }
+
+  cases.forEach((win, idx) => {
+    const thumb = win.querySelector('.thumb');
+    if (!thumb) return;
+    const key = win.getAttribute('data-case');
+    const fallback = (key && CASE_TINT[key]) || FALLBACK[idx % FALLBACK.length];
+    // если внутри thumb есть <img> — берём средний цвет с него
+    const img = thumb.querySelector('img');
+    if (img) {
+      const go = () => avgColorFromImage(img)
+        .then(rgb => applyTint(win, rgb))
+        .catch(() => applyTint(win, fallback));
+      if (img.complete && img.naturalWidth) go();
+      else img.addEventListener('load', go, { once: true });
+    } else {
+      // нет реальной картинки — используем bind по case-key
+      applyTint(win, fallback);
+      // плюс тонируем сам thumb тем же цветом, чтобы плейсхолдер выглядел осмысленно
+      const [r,g,b] = fallback;
+      thumb.style.background =
+        `linear-gradient(135deg, rgba(${r},${g},${b},0.45) 0%, rgba(${r},${g},${b},0.15) 100%),
+         repeating-linear-gradient(135deg, rgba(0,0,0,0.18) 0 8px, transparent 8px 16px)`;
+      thumb.style.color = '#fff';
+    }
+  });
 })();
 
 /* ============ CASE MODAL ============ */
@@ -1681,17 +2350,85 @@ if (!IS_TOUCH) (() => {
       const key = btn.getAttribute('data-open-case');
       const c = cases[key]; if (!c) return;
       document.getElementById('modalTitle').textContent = c.title;
-      document.getElementById('modalMeta').textContent = c.meta;
-      document.getElementById('modalBreadcrumb').textContent = c.crumb;
+      // Если в meta есть год (4 цифры) — выносим всё начиная с года на новую строку
+      // (по референсу: "BRANDING WORKS / 2022")
+      const metaEl = document.getElementById('modalMeta');
+      const yearMatch = c.meta.match(/^(.*?)(?:\s*[·•]\s*)?(\b(?:19|20)\d{2}\b.*)$/);
+      if (yearMatch) {
+        metaEl.innerHTML = `${yearMatch[1].trim()}<span class="year">${yearMatch[2].trim()}</span>`;
+      } else {
+        metaEl.textContent = c.meta;
+      }
       document.getElementById('modalDesc').textContent = c.desc;
       modal.classList.add('open');
+      // Компенсируем исчезновение системного скроллбара — на десктопе с мышкой
+      // body теряет ~15px ширины, и весь layout (включая модалку) дёргался бы.
+      // Запоминаем ширину скроллбара и кладём её в CSS-переменную.
+      const sbw = window.innerWidth - document.documentElement.clientWidth;
+      document.documentElement.style.setProperty('--sbw', sbw + 'px');
+      document.documentElement.classList.add('modal-open');
     });
   });
-  close.addEventListener('click', () => modal.classList.remove('open'));
-  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modal.classList.remove('open'); });
+  function closeModal() {
+    modal.classList.remove('open');
+    document.documentElement.classList.remove('modal-open');
+    document.documentElement.style.removeProperty('--sbw');
+  }
+  close.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 })();
 
+
+</script>
+
+<!-- ============ SMOOTH SCROLL (Lenis) ============ -->
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+  // Лёгкий smooth scroll для колеса мыши и для модалки кейса.
+  // Инициализируем только если устройство НЕ touch (на тачах нативный inertia уже работает идеально).
+  if (!document.documentElement.classList.contains('is-touch') && window.Lenis) {
+    // Главная страница (window scroll)
+    const lenisMain = new Lenis({
+      duration: 0.9,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      smoothTouch: false,
+      wheelMultiplier: 1,
+    });
+    function raf(time) { lenisMain.raf(time); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+    // Когда открывается модалка — главный Lenis ставим на паузу (body заблокирован overflow:hidden),
+    // и запускаем отдельный Lenis на .modal .sheet для плавного скролла внутри кейса.
+    let lenisModal = null;
+    const modalSheet = document.querySelector('.modal .sheet');
+    const modalRoot = document.getElementById('modal');
+    if (modalSheet && modalRoot) {
+      const observer = new MutationObserver(() => {
+        const isOpen = modalRoot.classList.contains('open');
+        if (isOpen && !lenisModal) {
+          lenisMain.stop();
+          lenisModal = new Lenis({
+            wrapper: modalSheet,
+            content: modalSheet.firstElementChild,
+            duration: 0.9,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true,
+            smoothTouch: false,
+          });
+          function rafModal(time) {
+            if (lenisModal) { lenisModal.raf(time); requestAnimationFrame(rafModal); }
+          }
+          requestAnimationFrame(rafModal);
+        } else if (!isOpen && lenisModal) {
+          lenisModal.destroy();
+          lenisModal = null;
+          lenisMain.start();
+        }
+      });
+      observer.observe(modalRoot, { attributes: true, attributeFilter: ['class'] });
+    }
+  }
 </script>
 </body>
 </html>
