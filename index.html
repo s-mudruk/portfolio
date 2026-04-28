@@ -396,7 +396,7 @@
   .win--hero h1 {
     font-family: var(--display);
     font-weight: 500;
-    font-size: 42px;
+    font-size: 36px;
     line-height: 1;
     letter-spacing: -.01em;
     margin: 0;
@@ -409,6 +409,7 @@
     color: var(--muted);
     font-style: italic;
     font-weight: 400;
+    font-size: .72em;
     letter-spacing: -.01em;
   }
   .win--hero h1 .em-code { display: inline-flex; align-items: baseline; gap: 0; }
@@ -571,12 +572,11 @@
     height: 46%;
   }
 
-  /* Тач — лист выдвинут постоянно */
+  /* Тач — лист не выдвигается, overflow обрезан чтобы sheet не улетел за экран */
   @media (hover: none) and (pointer: coarse) {
-    .win--stats { width: 100%; max-width: 360px; }
-    .win--stats .sheet-paper {
-      transform: translate(10%, -22%) rotate(6deg);
-    }
+    .win--stats { width: 100%; max-width: 320px; }
+    .win--stats .folder-wrap { overflow: hidden; }
+    .win--stats .sheet-paper { transform: none; }
   }
 
   /* services list */
@@ -698,6 +698,7 @@
     transition: opacity .2s ease;
   }
   .win--process .step:last-child { border: 0; }
+  .win--process .step:nth-last-child(2) { border-bottom: 0; }
   .win--process .step .box {
     width: 22px; height: 22px;
     border: 1.5px solid var(--secondary);
@@ -1211,7 +1212,7 @@
     .nav-status .glyph { font-size: 18px; }
     .nav-name .caret { width: 8px; height: 19px; }
     .win--hero { width: 660px; }
-    .win--hero h1 { font-size: 60px; }
+    .win--hero h1 { font-size: 52px; }
     .win--about { width: 420px; }
     .win--stats { width: 300px; }
     .win--list { width: 500px; }
@@ -1232,7 +1233,7 @@
     .nav-name .caret { width: 8px; height: 19px; }
     .nav-center { gap: 64px; }
     .win--hero { width: 760px; }
-    .win--hero h1 { font-size: 70px; }
+    .win--hero h1 { font-size: 60px; }
     .win--about { width: 480px; }
     .win--stats { width: 320px; }
     .win--list { width: 580px; }
@@ -1284,7 +1285,7 @@
       width: min(520px, 100%) !important;
       transform: none !important;
     }
-    .win--hero h1 { font-size: 36px; }
+    .win--hero h1 { font-size: 30px; }
     .modal { padding: 0; }
     .modal .sheet { border-radius: 0; height: 100dvh; width: 100%; border: 0; }
     .modal .content { padding: calc(20px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom)); max-width: none; }
@@ -1349,7 +1350,7 @@
     .win .body { padding: 16px; }
     .win .bar { padding: 0 12px; }
     .win--quote .body { padding: 16px; }
-    .win--hero h1 { font-size: 30px; }
+    .win--hero h1 { font-size: 26px; }
   }
 
   /* ============ MAINTENANCE OVERLAY ============ */
@@ -1523,8 +1524,10 @@
               Q 160 0 172 0
               L 368 0
               Q 384 0 384 16
-              L 384 210
-              L 0 210
+              L 384 194
+              Q 384 210 368 210
+              L 16 210
+              Q 0 210 0 194
               Z
             " fill="#1A1A1A"/>
           </svg>
@@ -1608,9 +1611,7 @@
         <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Стратегия &amp; концепт — позиционирование, ToV, контент</div></div>
         <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Дизайн &amp; система — бренд, UX, креативы, прототипы</div></div>
         <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Запуск &amp; A/B — измеряем, итерируем, масштабируем</div></div>
-        <div class="all-done" id="processAllDone">
-          Кейс готов к&nbsp;запуску — пишите в&nbsp;<a href="https://t.me/mudruks" target="_blank" rel="noopener" style="color:var(--accent); text-decoration: underline;">@mudruks</a>.
-        </div>
+        <div class="all-done" id="processAllDone">Кейс готов к&nbsp;запуску</div>
       </div>
     </div>
 
