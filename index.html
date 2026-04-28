@@ -488,123 +488,77 @@
      По референсу: плоский синий фон, белый лист со статистикой,
      тёмная "лицевая" карточка снизу с округлым вырезом-табом сверху-слева.
      На hover лист выезжает вправо-вверх с поворотом. */
+  /* ── win--stats: clean CSS folder ── */
   .win--stats {
-    width: 340px;
-    background: var(--surface-3) !important;
-    border-radius: 24px;
-    padding: 8px !important;
-    box-shadow: none;
+    width: 320px;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 32px 0 0 !important;
     overflow: visible !important;
   }
   .win--stats > .bar { display: none; }
-
-  /* Сцена папки — квадратная, плоский синий фон */
   .win--stats .folder-wrap {
     position: relative;
-    aspect-ratio: 1 / 1;
-    border-radius: 16px;
-    background: #1395FF;
-    overflow: visible;
-    pointer-events: none;
+    overflow: hidden;
+    border-radius: 0 14px 14px 14px;
+    background: var(--surface);
+    box-shadow: 0 4px 28px rgba(0,0,0,.38);
   }
-
-  /* Белый ЛИСТ — лежит почти от края до края, сверху виден из-за тёмного фронта */
-  .win--stats .sheet-paper {
+  .win--stats .folder-wrap::before {
+    content: '';
     position: absolute;
-    left: 5%;
-    right: 5%;
-    top: 7%;
-    height: 86%;
-    background: #FFFFFF;
-    border-radius: 14px;
-    padding: 18px 22px;
-    z-index: 2;
+    top: -32px; left: 0;
+    width: 92px; height: 34px;
+    background: var(--accent);
+    border-radius: 8px 8px 0 0;
+  }
+  .win--stats .folder-body {
+    padding: 22px 22px 20px;
     display: flex;
     flex-direction: column;
     gap: 14px;
-    transform: translate(0, 0) rotate(0deg);
-    transform-origin: 25% 100%;
-    transition: transform .6s cubic-bezier(.22,.9,.28,1.05);
-    box-shadow: 0 2px 14px rgba(0,0,0,.22);
-    pointer-events: none;
-    overflow: hidden;
   }
-  .win--stats .sheet-paper .row {
-    display: flex; flex-direction: column;
-    line-height: 1;
-  }
-  .win--stats .sheet-paper .big {
+  .win--stats .row { display: flex; flex-direction: column; }
+  .win--stats .big {
     font-family: var(--mono);
     font-weight: 700;
-    font-size: 22px;
+    font-size: 24px;
     line-height: 1.1;
-    color: #1395FF;
+    color: var(--accent);
     letter-spacing: -.02em;
     text-transform: uppercase;
+    transition: transform .2s;
   }
-  .win--stats .sheet-paper .lbl {
+  .win--stats:hover .big { transform: translateX(4px); }
+  .win--stats .lbl {
     font-family: var(--mono);
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 1.2;
-    color: #6E6E6E;
+    font-size: 14px;
+    color: var(--muted);
     letter-spacing: -.01em;
+    margin-top: 3px;
+  }
+  .win--stats .folder-bottom {
+    border-top: 1px solid var(--divider);
+    padding-top: 14px;
     margin-top: 4px;
-  }
-
-  /* Тёмная "лицевая часть" — нижние ~55%, с округлым вырезом-табом сверху-слева.
-     Используем SVG path: верхний край имеет плавную выпуклую выемку слева. */
-  .win--stats .folder-front {
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    height: 55%;
-    z-index: 3;
-    pointer-events: none;
-    transition: height .6s cubic-bezier(.22,.9,.28,1.05);
-  }
-  .win--stats .folder-front svg {
-    display: block;
-    width: 100%; height: 100%;
-  }
-  .win--stats .folder-front-label {
-    position: absolute;
-    left: 22px; bottom: 22px;
-    z-index: 4;
-    pointer-events: none;
   }
   .win--stats .folder-label {
     font-family: var(--mono);
     font-weight: 700;
-    font-size: 22px;
-    line-height: 1.15;
-    color: #FFFFFF;
+    font-size: 18px;
+    color: var(--text);
     letter-spacing: -.02em;
   }
   .win--stats .folder-sub {
     font-family: var(--mono);
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 1.15;
-    color: #6E6E6E;
+    font-size: 13px;
+    color: var(--muted);
     letter-spacing: -.01em;
     margin-top: 2px;
   }
-
-  /* Hover — лист выезжает вправо-вверх и поворачивается, тёмный фронт немного оседает */
-  .win--stats:hover .sheet-paper,
-  .win--stats.is-hover .sheet-paper {
-    transform: translate(14%, -36%) rotate(8deg);
-  }
-  .win--stats:hover .folder-front,
-  .win--stats.is-hover .folder-front {
-    height: 46%;
-  }
-
-  /* Тач — лист не выдвигается, overflow обрезан чтобы sheet не улетел за экран */
-  @media (hover: none) and (pointer: coarse) {
+  @media (max-width: 1024px) {
     .win--stats { width: 100%; max-width: 320px; }
-    .win--stats .folder-wrap { overflow: hidden; }
-    .win--stats .sheet-paper { transform: none; }
   }
 
   /* services list */
@@ -1641,37 +1595,14 @@
         <div class="title">numbers.json</div>
       </div>
       <div class="folder-wrap">
-        <!-- Белый лист со статистикой — видна верхняя часть из-за тёмной "лицевой части папки" -->
-        <div class="sheet-paper" aria-hidden="true">
+        <div class="folder-body">
           <div class="row"><div class="big">5&nbsp;ЛЕТ</div><div class="lbl">в&nbsp;проектах</div></div>
           <div class="row"><div class="big">50+</div><div class="lbl">коммерческих кейсов</div></div>
           <div class="row"><div class="big">−5</div><div class="lbl">зрение</div></div>
-        </div>
-        <!-- Тёмная "лицевая часть" папки с округлым вырезом-табом сверху-слева -->
-        <div class="folder-front" aria-hidden="true">
-          <svg viewBox="0 0 384 210" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Прямоугольник с плавной выемкой сверху, в левой трети.
-                 0,40 → закругление, до 18,40 → начало "холма" дугой вниз до 158,40 -->
-            <path d="
-              M 0 16
-              Q 0 0 16 0
-              L 18 0
-              Q 30 0 36 12
-              C 60 64 130 64 154 12
-              Q 160 0 172 0
-              L 368 0
-              Q 384 0 384 16
-              L 384 194
-              Q 384 210 368 210
-              L 16 210
-              Q 0 210 0 194
-              Z
-            " fill="#1A1A1A"/>
-          </svg>
-        </div>
-        <div class="folder-front-label" aria-hidden="true">
-          <div class="folder-label">Обо мне</div>
-          <div class="folder-sub">В&nbsp;циферках</div>
+          <div class="folder-bottom">
+            <div class="folder-label">Обо мне</div>
+            <div class="folder-sub">В&nbsp;циферках</div>
+          </div>
         </div>
       </div>
     </div>
