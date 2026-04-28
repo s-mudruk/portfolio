@@ -1470,27 +1470,6 @@
   }
   .sticker.s-lift .stk-inner { filter: drop-shadow(7px 14px 26px rgba(0,0,0,.58)); }
   .stk-3 .stk-inner { font-size: 22px; padding: 16px 20px; }
-  /* React folder tab */
-  .r-folder-tab {
-    position: absolute;
-    top: -22px; left: 14px;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--muted);
-    background: var(--surface);
-    border: 1px solid var(--divider);
-    border-bottom: none;
-    border-radius: 4px 4px 0 0;
-    padding: 4px 10px 3px;
-    letter-spacing: -.01em;
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity .35s, transform .45s cubic-bezier(.34,1.56,.64,1);
-  }
-  .r-folder-tab.r-show { opacity: 1; transform: translateY(0); }
-  .win .bar { overflow: visible; position: relative; }
   /* 1 – yellow, torn top */
   .stk-1 .stk-inner {
     background: #f5df3a; color: #191100;
@@ -1708,7 +1687,7 @@
         <span class="brace">}</span>
       </div>
     </div>
-    <div class="sticker stk-1" style="left:46%;top:88px;--rot:-6deg"><div class="stk-inner">=^.^=</div></div>
+    <div class="sticker stk-1" style="left:28%;top:158px;--rot:-6deg"><div class="stk-inner">=^.^=</div></div>
   </section>
 
   <!-- SCENE 2 — ДЕЛАЮ -->
@@ -1753,7 +1732,7 @@
         <a class="chip" href="#">Студия WNS</a>
       </div>
     </div>
-    <div class="sticker stk-2" style="left:64%;top:100px;--rot:5deg"><div class="stk-inner">ʕ·ᴥ·ʔ</div></div>
+    <div class="sticker stk-2" style="left:60%;top:152px;--rot:5deg"><div class="stk-inner">ʕ·ᴥ·ʔ</div></div>
   </section>
 
   <!-- SCENE 3 — ПРОЦЕСС -->
@@ -1797,7 +1776,7 @@
         <span class="brace">}</span>
       </div>
     </div>
-    <div class="sticker stk-3" style="left:50%;top:172px;--rot:-3deg"><div class="stk-inner">♡</div></div>
+    <div class="sticker stk-3" style="left:34%;top:158px;--rot:-3deg"><div class="stk-inner">♡</div></div>
   </section>
 
   <!-- SCENE 4 — РАБОТЫ -->
@@ -1881,7 +1860,7 @@
         <button class="open" data-open-case="trajectory">Открыть кейс</button>
       </div>
     </div>
-    <div class="sticker stk-4" style="left:43%;top:540px;--rot:4deg"><div class="stk-inner">( ˘ᵕ˘ )</div></div>
+    <div class="sticker stk-4" style="left:26%;top:220px;--rot:4deg"><div class="stk-inner">( ˘ᵕ˘ )</div></div>
   </section>
 
 </main>
@@ -2628,37 +2607,6 @@ if (!IS_TOUCH) (() => {
   })();
 </script>
 
-<!-- React (folder tabs) -->
-<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script>
-/* folder tab via React — slides down above each window bar */
-(function () {
-  if (!window.React || !window.ReactDOM) return;
-  const { createElement: h, useEffect, useRef } = React;
-
-  function FolderTab({ label }) {
-    const ref = useRef(null);
-    useEffect(function () {
-      const t = setTimeout(function () {
-        if (ref.current) ref.current.classList.add('r-show');
-      }, 900);
-      return function () { clearTimeout(t); };
-    }, []);
-    return h('div', { ref: ref, className: 'r-folder-tab' }, label);
-  }
-
-  document.querySelectorAll('.win').forEach(function (win) {
-    const bar = win.querySelector('[data-handle]');
-    const titleEl = bar && bar.querySelector('.title');
-    if (!bar || !titleEl) return;
-    const label = titleEl.textContent.trim();
-    const mount = document.createElement('span');
-    bar.appendChild(mount);
-    ReactDOM.createRoot(mount).render(h(FolderTab, { label: label }));
-  });
-})();
-</script>
 
 <script>
 /* stickers drag — position: absolute within scene */
