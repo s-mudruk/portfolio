@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8" />
+<style>html,body{background:#131313}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Сергей Мудрук — Портфолио</title>
 <!-- theme-color: красит системную плашку Safari/Chrome/Comet в цвет фона,
@@ -58,7 +59,11 @@
     --display: "Bitter", Georgia, serif;
   }
 
-  html, body {
+  html {
+    height: 100%;
+    background: var(--bg);
+  }
+  body {
     height: 100%;
     background: var(--bg);
     color: var(--text);
@@ -66,7 +71,7 @@
     font-size: 14px;
     line-height: 1.4;
     cursor: none;
-    /* предотвращает белую полоску в Safari при overscroll */
+    /* только на body — не мешает нативной scroll-compositing iOS */
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
   }
@@ -1255,6 +1260,8 @@
     .nav-center { gap: 36px; }
   }
   @media (max-width: 1024px) {
+    /* Скрываем сетку: glass-bar блюрит её в видимую серую «заглушку» */
+    .bg-grid { display: none; }
     html, body,
     .win .bar,
     .win--form input,
