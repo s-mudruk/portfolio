@@ -464,19 +464,19 @@
     line-height: 1.4;
   }
   .circles-intro {
-    position: relative;
-    width: 234px;
-    height: 176px;
+    display: flex;
+    align-items: center;
   }
   .ci {
-    position: absolute;
     border-radius: 50%;
     background: var(--surface);
     border: 1.5px solid var(--divider);
+    flex-shrink: 0;
   }
-  .ci-a { width: 164px; height: 164px; top: 0; left: 0; }
-  .ci-b { width: 114px; height: 114px; top: 30px; left: 120px; }
-  .ci-c { width: 78px; height: 78px; top: 98px; left: 56px; background: transparent; border-color: var(--accent); opacity: .25; }
+  .ci + .ci { margin-left: -18px; }
+  .ci-a { width: 72px; height: 72px; }
+  .ci-b { width: 60px; height: 60px; }
+  .ci-c { width: 48px; height: 48px; border-color: var(--accent); background: transparent; opacity: .35; }
 
   /* about */
   .win--about { width: 380px; }
@@ -1552,6 +1552,17 @@
           <div class="ci ci-a"></div>
           <div class="ci ci-b"></div>
           <div class="ci ci-c"></div>
+        </div>
+        <p>Являюсь специалистом в&nbsp;сферах продуктового и&nbsp;коммуникативного дизайна, разработке дизайн и&nbsp;маркетинговых систем. Работаю над удобством по-человечески понятных продуктов, ориентируясь на&nbsp;уникальность каждого кейса.</p>
+        <div class="tags">
+          <span>Продукт-дизайн</span>
+          <span>Дизайн-системы</span>
+          <span>Ресерч и&nbsp;CJM</span>
+          <span>Коммуникативный дизайн</span>
+          <span>Ивент-дизайн</span>
+          <span>Арт-дирекшн</span>
+          <span>SMM &amp; Инфлюэнс</span>
+          <span>Маркетинг и&nbsp;PR</span>
         </div>
       </div>
     </div>
