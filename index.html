@@ -1354,6 +1354,24 @@
     .win--hero h1 { font-size: 26px; }
   }
 
+  /* ============ PAGE LOADER ============ */
+  #page-loader {
+    position: fixed; inset: 0;
+    z-index: 9999;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: all;
+    transition: opacity .3s ease;
+  }
+  #page-loader .loader-line {
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    letter-spacing: -.01em;
+  }
+
   /* ============ MAINTENANCE OVERLAY ============ */
   /* To activate: change display:none → display:flex */
   .maint {
@@ -1390,6 +1408,11 @@
 </style>
 </head>
 <body>
+
+<!-- ===== PAGE LOADER ===== -->
+<div id="page-loader">
+  <div class="loader-line">[<span id="loader-fill"></span><span id="loader-pct">0%]</span></div>
+</div>
 
 <!-- ===== MAINTENANCE OVERLAY ===== -->
 <div class="maint" id="maint">
@@ -2442,6 +2465,29 @@ if (!IS_TOUCH) (() => {
       observer.observe(modalRoot, { attributes: true, attributeFilter: ['class'] });
     }
   }
+</script>
+
+<script>
+  // ── Page loader ──
+  (function () {
+    const MAX = 14, DUR = 900;
+    const fill = document.getElementById('loader-fill');
+    const pct  = document.getElementById('loader-pct');
+    let start  = null;
+    function tick(ts) {
+      if (!start) start = ts;
+      const t = Math.min((ts - start) / DUR, 1);
+      fill.textContent = ' ' + '|'.repeat(Math.round(t * MAX)) + ' ';
+      pct.textContent  = Math.round(t * 100) + '%]';
+      t < 1 ? requestAnimationFrame(tick) : setTimeout(hide, 120);
+    }
+    function hide() {
+      const el = document.getElementById('page-loader');
+      el.style.opacity = '0';
+      setTimeout(() => el.remove(), 300);
+    }
+    requestAnimationFrame(tick);
+  })();
 </script>
 </body>
 </html>
