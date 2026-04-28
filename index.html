@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Сергей Мудрук — Портфолио</title>
 <!-- theme-color: красит системную плашку Safari/Chrome/Comet в цвет фона,
      чтобы при скрытии тулбаров не было "чёрного перекрытия" сверху/снизу.
@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#131313" media="(prefers-color-scheme: dark)" />
 <meta name="theme-color" content="#131313" media="(prefers-color-scheme: light)" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <link rel="icon" type="image/png" href="SPORTF-icon.png">
 <meta property="og:title" content="Сергей Мудрук — Портфолио">
 <meta property="og:description" content="Бренд-платформы, продуктовый UX, кампании. 5 лет в B2B и продукте.">
@@ -137,7 +137,7 @@
     -webkit-backdrop-filter: blur(0px);
     backdrop-filter: blur(0px);
     transition:
-      transform .55s cubic-bezier(.16,1,.3,1),
+      transform .28s cubic-bezier(.16,1,.3,1),
       opacity .35s ease,
       background .35s ease,
       backdrop-filter .35s ease,
@@ -402,9 +402,18 @@
     margin: 0;
   }
   .win--hero h1 .em {
-    font-style: italic;
-    font-weight: 500;
+    color: var(--accent);
+    font-style: normal;
   }
+  .win--hero h1 .tag {
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: .5em;
+    font-weight: 400;
+    letter-spacing: 0;
+    vertical-align: middle;
+  }
+  .win--hero h1 .em-code { display: inline-flex; align-items: baseline; }
   .win--hero h1 .line2 { display: inline-flex; align-items: baseline; gap: 12px; }
   .win--hero p {
     margin: 0;
@@ -474,7 +483,7 @@
     aspect-ratio: 1 / 1;
     border-radius: 16px;
     background: #1395FF;
-    overflow: hidden;
+    overflow: visible;
     pointer-events: none;
   }
 
@@ -530,6 +539,7 @@
     height: 55%;
     z-index: 3;
     pointer-events: none;
+    transition: height .6s cubic-bezier(.22,.9,.28,1.05);
   }
   .win--stats .folder-front svg {
     display: block;
@@ -559,10 +569,14 @@
     margin-top: 2px;
   }
 
-  /* Hover — лист выезжает вправо-вверх и поворачивается */
+  /* Hover — лист выезжает вправо-вверх и поворачивается, тёмный фронт немного оседает */
   .win--stats:hover .sheet-paper,
   .win--stats.is-hover .sheet-paper {
-    transform: translate(14%, -32%) rotate(8deg);
+    transform: translate(14%, -36%) rotate(8deg);
+  }
+  .win--stats:hover .folder-front,
+  .win--stats.is-hover .folder-front {
+    height: 46%;
   }
 
   /* Тач — лист выдвинут постоянно */
@@ -1453,13 +1467,13 @@
     <div class="win win--hero" data-draggable style="left: 4%; top: 140px;">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
-        <div class="title">intro.txt</div>
+        <div class="title">intro.md</div>
         <div class="drag-hint">окна можно двигать</div>
       </div>
       <div class="body">
         <h1>
           <span>Привет, это Сергей,</span><br/>
-          <span class="line2">я <span class="em">дизайнер.</span></span>
+          <span class="line2"><span>я</span><span class="em-code"><span class="tag">&lt;em&gt;</span><span class="em">дизайнер.</span><span class="tag">&lt;/em&gt;</span></span></span>
         </h1>
         <p>Являюсь специалистом в&nbsp;сферах продуктового и&nbsp;коммуникативного дизайна, разработке дизайн и&nbsp;маркетинговых систем. Работаю над удобством по-человечески понятных продуктов, ориентируясь на&nbsp;уникальность каждого кейса.</p>
         <div class="tags">
@@ -2098,7 +2112,7 @@ if (!IS_TOUCH) (() => {
     let inFooter = false;
     if (footer) {
       const r = footer.getBoundingClientRect();
-      inFooter = r.top < window.innerHeight && r.bottom > 0;
+      inFooter = r.top < window.innerHeight * 0.25 && r.bottom > 0;
     }
 
     if (inFooter || y < SHOW_AT) {
