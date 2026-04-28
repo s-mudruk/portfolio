@@ -2,15 +2,16 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Сергей Мудрук — Портфолио</title>
 <!-- theme-color: красит системную плашку Safari/Chrome/Comet в цвет фона,
      чтобы при скрытии тулбаров не было "чёрного перекрытия" сверху/снизу.
      Дублируется для светлой/тёмной системной темы. -->
 <meta name="theme-color" content="#131313" media="(prefers-color-scheme: dark)" />
 <meta name="theme-color" content="#131313" media="(prefers-color-scheme: light)" />
+<meta name="color-scheme" content="dark" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <link rel="icon" type="image/png" href="SPORTF-icon.png">
 <meta property="og:title" content="Сергей Мудрук — Портфолио">
 <meta property="og:description" content="Бренд-платформы, продуктовый UX, кампании. 5 лет в B2B и продукте.">
@@ -33,6 +34,7 @@
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   :root {
+    color-scheme: dark;
     --bg:        #131313;   /* page background */
     --surface:   #2A2A2A;   /* cards, inputs */
     --surface-2: #1F1F1F;   /* alt rows */
