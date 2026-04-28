@@ -425,7 +425,7 @@
     letter-spacing: -.02em;
     margin: 0;
   }
-  .win--hero h1 .mono-intro { font-size: .65em; }
+  .win--hero h1 .mono-intro { font-size: 1.1em; }
   .win--hero h1 .em {
     font-family: var(--display);
     font-weight: 500;
@@ -485,57 +485,58 @@
   .win--about p { margin: 0; font-size: 13px; color: var(--secondary); }
   .win--about p b { color: var(--text); font-weight: 600; }
 
-  /* stats — папка с белым листом цифр внутри (per Figma).
-     По референсу: плоский синий фон, белый лист со статистикой,
-     тёмная "лицевая" карточка снизу с округлым вырезом-табом сверху-слева.
-     На hover лист выезжает вправо-вверх с поворотом. */
-  /* ── win--stats: clean stats card ── */
-  .win--stats {
-    width: 320px;
+  /* ── win--stats: terminal JSON ── */
+  .win--stats { width: 340px; }
+  .stats-term { font-family: var(--mono); }
+  .st-prompt {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 13px; margin-bottom: 16px;
+    color: var(--muted); cursor: pointer;
+    transition: color .15s; user-select: none;
   }
-  .win--stats .body {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+  .st-prompt:hover { color: var(--text); }
+  .st-ps1 { color: var(--accent); font-weight: 700; }
+  .st-cursor {
+    display: inline-block; width: 7px; height: 13px;
+    background: var(--accent); opacity: .8;
+    animation: termBlink 1.1s step-end infinite;
+    vertical-align: middle;
   }
-  .win--stats .row { display: flex; flex-direction: column; }
-  .win--stats .big {
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 1.1;
-    color: var(--accent);
-    letter-spacing: -.02em;
-    text-transform: uppercase;
-    transition: transform .2s;
+  @keyframes termBlink { 0%,100%{opacity:.8} 50%{opacity:0} }
+  .st-out {
+    border-left: 2px solid var(--divider);
+    padding-left: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 16px;
   }
-  .win--stats:hover .big { transform: translateX(4px); }
-  .win--stats .lbl {
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--muted);
-    letter-spacing: -.01em;
-    margin-top: 3px;
+  .st-brace { font-size: 14px; color: var(--divider); line-height: 1; }
+  .st-row {
+    display: flex; align-items: baseline; flex-wrap: nowrap; gap: 0;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity .28s ease, transform .28s ease;
   }
-  .win--stats .folder-bottom {
-    border-top: 1px solid var(--divider);
-    padding-top: 14px;
-    margin-top: 4px;
+  .st-row.st-in { opacity: 1; transform: none; }
+  .st-key { font-size: 13px; color: var(--secondary); min-width: 68px; }
+  .st-sep { font-size: 13px; color: var(--muted); margin: 0 7px 0 2px; }
+  .st-val {
+    font-size: 22px; font-weight: 700;
+    color: var(--accent); letter-spacing: -.03em; line-height: 1;
   }
-  .win--stats .folder-label {
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: 18px;
-    color: var(--text);
-    letter-spacing: -.02em;
+  .st-neg { color: var(--error); }
+  .st-comma { font-size: 13px; color: var(--muted); }
+  .st-cmt { font-size: 11px; color: var(--muted); opacity: .45; margin-left: 9px; letter-spacing: 0; }
+  .st-foot {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 12px; border-top: 1px solid var(--divider); font-size: 12px;
   }
-  .win--stats .folder-sub {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--muted);
-    letter-spacing: -.01em;
-    margin-top: 2px;
+  .st-status { color: var(--accent); letter-spacing: .03em; }
+  .st-rerun {
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    background: none; border: 1px solid var(--divider);
+    border-radius: 4px; padding: 3px 9px; cursor: pointer;
+    transition: color .15s, border-color .15s;
   }
+  .st-rerun:hover { color: var(--text); border-color: var(--muted); }
   @media (max-width: 1024px) {
     .win--stats { width: 100%; max-width: none; }
   }
@@ -1572,15 +1573,32 @@
     <div class="win win--stats" data-draggable style="left: 50%; top: 760px; transform: translateX(-50%);">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
-        <div class="title">numbers.json</div>
+        <div class="title">stats.json</div>
       </div>
       <div class="body">
-        <div class="row"><div class="big">5&nbsp;ЛЕТ</div><div class="lbl">в&nbsp;проектах</div></div>
-        <div class="row"><div class="big">50+</div><div class="lbl">коммерческих кейсов</div></div>
-        <div class="row"><div class="big">−5</div><div class="lbl">зрение</div></div>
-        <div class="folder-bottom">
-          <div class="folder-label">Обо мне</div>
-          <div class="folder-sub">В&nbsp;циферках</div>
+        <div class="stats-term">
+          <div class="st-prompt" id="statsPrompt">
+            <span class="st-ps1">$</span>
+            <span>cat stats.json</span>
+            <span class="st-cursor"></span>
+          </div>
+          <div class="st-out">
+            <div class="st-brace">{</div>
+            <div class="st-row" data-stdelay="0">
+              <span class="st-key">"years"</span><span class="st-sep">:</span><span class="st-val">5&nbsp;ЛЕТ</span><span class="st-comma">,</span><span class="st-cmt">// в&nbsp;проектах</span>
+            </div>
+            <div class="st-row" data-stdelay="130">
+              <span class="st-key">"cases"</span><span class="st-sep">:</span><span class="st-val">50+</span><span class="st-comma">,</span><span class="st-cmt">// кейсов</span>
+            </div>
+            <div class="st-row" data-stdelay="260">
+              <span class="st-key">"vision"</span><span class="st-sep">:</span><span class="st-val st-neg">-5</span><span class="st-cmt">// зрение&nbsp;💀</span>
+            </div>
+            <div class="st-brace">}</div>
+          </div>
+          <div class="st-foot">
+            <span class="st-status">200&nbsp;OK&nbsp;·&nbsp;12ms</span>
+            <button class="st-rerun" id="statsRerun">↺&nbsp;rerun</button>
+          </div>
         </div>
       </div>
     </div>
@@ -2516,6 +2534,34 @@ if (!IS_TOUCH) (() => {
   })();
 </script>
 
+
+<script>
+/* stats terminal animation */
+(function () {
+  function runStats() {
+    document.querySelectorAll('.st-row').forEach(function (row) {
+      row.classList.remove('st-in');
+    });
+    document.querySelectorAll('.st-row').forEach(function (row) {
+      var d = parseInt(row.dataset.stdelay || 0);
+      setTimeout(function () { row.classList.add('st-in'); }, d + 80);
+    });
+  }
+  var block = document.querySelector('.win--stats');
+  if (block && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { runStats(); io.disconnect(); }
+    }, { threshold: 0.4 });
+    io.observe(block);
+  } else {
+    setTimeout(runStats, 600);
+  }
+  var btn = document.getElementById('statsRerun');
+  if (btn) btn.addEventListener('click', runStats);
+  var prompt = document.getElementById('statsPrompt');
+  if (prompt) prompt.addEventListener('click', runStats);
+})();
+</script>
 
 <script>
 /* stickers drag — position: absolute within scene */
