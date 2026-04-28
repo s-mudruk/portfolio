@@ -925,10 +925,11 @@
     .win--hero h1 { font-size: 30px; }
   }
   /* ============ MAINTENANCE OVERLAY ============ */
+  /* To activate: change display:none → display:flex */
   .maint {
     position: fixed; inset: 0; z-index: 10000;
     background: var(--bg);
-    display: flex; align-items: center; justify-content: center;
+    display: none; align-items: center; justify-content: center;
     font-family: var(--mono);
   }
   .maint-inner {
