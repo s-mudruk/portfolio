@@ -729,7 +729,7 @@
     margin-top: 0;
     max-height: 0;
     overflow: hidden;
-    padding: 14px 16px;
+    padding: 0 16px;
     border: 1px dashed var(--accent);
     border-radius: var(--r-sm);
     font-family: var(--mono); font-size: 13px;
@@ -737,11 +737,12 @@
     text-align: center;
     opacity: 0;
     transform: translateY(8px);
-    transition: opacity .35s, transform .35s, max-height .4s ease, margin-top .35s;
+    transition: opacity .35s, transform .35s, max-height .4s ease, margin-top .35s, padding .35s;
     pointer-events: none;
   }
   .win--process .all-done.show {
     margin-top: 14px; max-height: 80px;
+    padding: 14px 16px;
     opacity: 1; transform: translateY(0); pointer-events: auto;
   }
 
