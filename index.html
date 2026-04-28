@@ -396,24 +396,22 @@
   .win--hero h1 {
     font-family: var(--display);
     font-weight: 500;
-    font-size: 48px;
+    font-size: 42px;
     line-height: 1;
     letter-spacing: -.01em;
     margin: 0;
   }
   .win--hero h1 .em {
     color: var(--accent);
-    font-style: normal;
+    font-style: italic;
   }
   .win--hero h1 .tag {
     color: var(--muted);
-    font-family: var(--mono);
-    font-size: .5em;
+    font-style: italic;
     font-weight: 400;
-    letter-spacing: 0;
-    vertical-align: middle;
+    letter-spacing: -.01em;
   }
-  .win--hero h1 .em-code { display: inline-flex; align-items: baseline; }
+  .win--hero h1 .em-code { display: inline-flex; align-items: baseline; gap: 0; }
   .win--hero h1 .line2 { display: inline-flex; align-items: baseline; gap: 12px; }
   .win--hero p {
     margin: 0;
@@ -469,13 +467,7 @@
     box-shadow: none;
     overflow: visible !important;
   }
-  .win--stats > .bar {
-    position: relative; inset: auto;
-    z-index: 12;
-    background: transparent;
-    pointer-events: auto;
-  }
-  .win--stats > .bar .title { display: block; }
+  .win--stats > .bar { display: none; }
 
   /* Сцена папки — квадратная, плоский синий фон */
   .win--stats .folder-wrap {
@@ -733,7 +725,9 @@
   .win--process .step.checked .label { color: var(--muted); text-decoration: line-through; }
   .win--process .step .label { line-height: 1.35; transition: color .2s; }
   .win--process .all-done {
-    margin-top: 14px;
+    margin-top: 0;
+    max-height: 0;
+    overflow: hidden;
     padding: 14px 16px;
     border: 1px dashed var(--accent);
     border-radius: var(--r-sm);
@@ -742,11 +736,13 @@
     text-align: center;
     opacity: 0;
     transform: translateY(8px);
-    transition: opacity .35s, transform .35s;
+    transition: opacity .35s, transform .35s, max-height .4s ease, margin-top .35s;
     pointer-events: none;
   }
-  .win--process .all-done.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-  .win--process .all-done b { color: var(--text); }
+  .win--process .all-done.show {
+    margin-top: 14px; max-height: 80px;
+    opacity: 1; transform: translateY(0); pointer-events: auto;
+  }
 
   /* services — чуть приятнее: hover, мини-индикатор */
   .win--list .item {
@@ -1512,7 +1508,6 @@
           <div class="row"><div class="big">5&nbsp;ЛЕТ</div><div class="lbl">в&nbsp;проектах</div></div>
           <div class="row"><div class="big">50+</div><div class="lbl">коммерческих кейсов</div></div>
           <div class="row"><div class="big">−5</div><div class="lbl">зрение</div></div>
-          <div class="row"><div class="big">150%+</div><div class="lbl">средний ROI</div></div>
         </div>
         <!-- Тёмная "лицевая часть" папки с округлым вырезом-табом сверху-слева -->
         <div class="folder-front" aria-hidden="true">
@@ -1593,9 +1588,7 @@
       <div class="body">
         <a class="chip" href="https://t.me/mudruks">Telegram · @mudruks</a>
         <a class="chip" href="mailto:s@mudruk.ru">s@mudruk.ru</a>
-        <a class="chip" href="#">WNS Design — студия</a>
-        <a class="chip" href="#">Behance</a>
-        <a class="chip" href="#">LinkedIn</a>
+        <a class="chip" href="#">Студия WNS</a>
       </div>
     </div>
   </section>
@@ -1616,7 +1609,7 @@
         <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Дизайн &amp; система — бренд, UX, креативы, прототипы</div></div>
         <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Запуск &amp; A/B — измеряем, итерируем, масштабируем</div></div>
         <div class="all-done" id="processAllDone">
-          <b>✦ Чек-лист закрыт.</b><br/>Кейс готов к&nbsp;запуску — пишите в&nbsp;<a href="https://t.me/mudruks" target="_blank" rel="noopener" style="color:var(--accent); text-decoration: underline;">@mudruks</a>.
+          Кейс готов к&nbsp;запуску — пишите в&nbsp;<a href="https://t.me/mudruks" target="_blank" rel="noopener" style="color:var(--accent); text-decoration: underline;">@mudruks</a>.
         </div>
       </div>
     </div>
@@ -2252,38 +2245,42 @@ if (!IS_TOUCH) (() => {
 
   function applyTint(win, rgb) {
     const [r, g, b] = rgb;
-    // насыщенный градиент сверху → прозрачный к низу
-    const top = `rgba(${r}, ${g}, ${b}, 0.22)`;
-    const mid = `rgba(${r}, ${g}, ${b}, 0.07)`;
+    // насыщенный градиент сверху → прозрачный к низу (Apple Music style)
+    const top = `rgba(${r}, ${g}, ${b}, 0.38)`;
+    const mid = `rgba(${r}, ${g}, ${b}, 0.10)`;
     const body = win.querySelector('.body');
     if (!body) return;
     body.style.background =
       `linear-gradient(180deg, ${top} 0%, ${mid} 50%, var(--surface) 100%)`;
     body.style.transition = 'background .6s ease';
-    // акцент тонкой рамкой
-    body.style.boxShadow = `inset 0 0 0 1px rgba(${r}, ${g}, ${b}, 0.18)`;
   }
 
+  // Доминантный насыщенный цвет — как в Apple Music / Spotify
   function avgColorFromImage(img) {
     return new Promise((resolve, reject) => {
       const c = document.createElement('canvas');
-      const W = 32, H = 18;
+      const W = 48, H = 27;
       c.width = W; c.height = H;
       const ctx = c.getContext('2d', { willReadFrequently: true });
       try {
         ctx.drawImage(img, 0, 0, W, H);
         const d = ctx.getImageData(0, 0, W, H).data;
-        let r = 0, g = 0, b = 0, n = 0;
+        const pixels = [];
         for (let i = 0; i < d.length; i += 4) {
-          const a = d[i + 3]; if (a < 128) continue;
-          r += d[i]; g += d[i+1]; b += d[i+2]; n++;
+          const a = d[i+3]; if (a < 128) continue;
+          const r = d[i], g = d[i+1], b = d[i+2];
+          const max = Math.max(r,g,b)/255, min = Math.min(r,g,b)/255;
+          const l = (max+min)/2;
+          const s = max===min ? 0 : (max-min)/(1-Math.abs(2*l-1));
+          // отдаём предпочтение насыщенным, не слишком тёмным и не слишком ярким
+          const score = s * (1 - Math.abs(l - 0.45) * 1.4);
+          pixels.push({r,g,b,score});
         }
-        if (!n) return reject('empty');
-        // лёгкая буст-насыщенности, чтобы цвет был "живее"
-        r = Math.round(r / n);
-        g = Math.round(g / n);
-        b = Math.round(b / n);
-        resolve([r, g, b]);
+        if (!pixels.length) return reject('empty');
+        pixels.sort((a,b) => b.score - a.score);
+        const top = pixels.slice(0, Math.max(1, Math.floor(pixels.length * 0.2)));
+        const sum = top.reduce((acc,p)=>({r:acc.r+p.r,g:acc.g+p.g,b:acc.b+p.b}),{r:0,g:0,b:0});
+        resolve([Math.round(sum.r/top.length), Math.round(sum.g/top.length), Math.round(sum.b/top.length)]);
       } catch (e) { reject(e); }
     });
   }
