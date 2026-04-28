@@ -500,7 +500,7 @@
   .win--about p b { color: var(--text); font-weight: 600; }
 
   /* ── win--stats: terminal JSON ── */
-  .win--stats { width: 340px; }
+  .win--stats { width: 400px; }
   .stats-term { font-family: var(--mono); }
   .st-prompt {
     display: inline-flex; align-items: center; gap: 7px;
@@ -511,7 +511,7 @@
   .st-prompt:hover { color: var(--text); }
   .st-ps1 { color: var(--accent); font-weight: 500; }
   .st-out {
-    display: flex; flex-direction: column; gap: 10px;
+    display: flex; flex-direction: column; gap: 12px;
     margin-bottom: 16px;
   }
   .st-row {
@@ -521,11 +521,32 @@
   }
   .st-row.st-in { opacity: 1; transform: none; }
   .st-val {
-    font-size: 20px; font-weight: 500;
+    font-size: 22px; font-weight: 500;
     color: var(--accent); letter-spacing: -.02em; line-height: 1;
   }
   .st-neg { color: var(--error); }
-  .st-lbl { font-size: 12px; color: var(--muted); opacity: .6; }
+  .st-lbl { font-size: 13px; color: var(--muted); opacity: .6; }
+  .st-refresh {
+    margin-left: auto;
+    width: 22px; height: 22px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 16px; line-height: 1;
+    color: var(--muted);
+    transition: color .15s, transform .45s cubic-bezier(.34,1.56,.64,1);
+    user-select: none; cursor: pointer;
+  }
+  .st-refresh:hover { color: var(--text); transform: rotate(-180deg); }
+  .cap-gif {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--divider);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--mono);
+  }
+  .cap-gif .cg-title { font-size: 13px; color: var(--text); font-weight: 500; }
+  .cap-gif .cg-sub { font-size: 11px; color: var(--muted); }
   @media (max-width: 1024px) {
     .win--stats { width: 100%; max-width: none; }
   }
@@ -551,7 +572,7 @@
   /* media */
   .win--media { width: 360px; }
   .win--media .frame {
-    aspect-ratio: 16/10;
+    aspect-ratio: 1/1;
     background:
       repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 2px, transparent 2px 10px),
       var(--surface-2);
@@ -560,6 +581,12 @@
     display: grid; place-items: center;
     position: relative;
     overflow: hidden;
+  }
+  .win--media .frame img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: calc(var(--r-sm) - 1px);
+    display: block;
   }
   .win--media .frame .play {
     width: 56px; height: 56px; border-radius: 50%;
@@ -1166,7 +1193,7 @@
     .win--hero { width: 660px; }
     .win--hero h1 { font-size: 52px; }
     .win--about { width: 420px; }
-    .win--stats { width: 300px; }
+    .win--stats { width: 360px; }
     .win--list { width: 500px; }
     .win--media { width: 420px; }
     .win--gallery { width: 620px; }
@@ -1187,7 +1214,7 @@
     .win--hero { width: 760px; }
     .win--hero h1 { font-size: 60px; }
     .win--about { width: 480px; }
-    .win--stats { width: 320px; }
+    .win--stats { width: 380px; }
     .win--list { width: 580px; }
     .win--media { width: 480px; }
     .win--gallery { width: 720px; }
@@ -1567,22 +1594,47 @@
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">stats.json</div>
+        <button class="st-refresh" id="statsRerun" title="ещё данные">↺</button>
       </div>
       <div class="body">
         <div class="stats-term">
           <div class="st-prompt" id="statsPrompt">
             <span class="st-ps1">$</span>
-            <span>cat stats.json</span>
+            <span id="statsCmd">cat stats.json</span>
           </div>
           <div class="st-out">
-            <div class="st-row" data-stdelay="0">
+            <div class="st-row" data-stdelay="0" data-page="a">
               <span class="st-val">5&nbsp;ЛЕТ</span><span class="st-lbl">в&nbsp;проектах</span>
             </div>
-            <div class="st-row" data-stdelay="130">
+            <div class="st-row" data-stdelay="130" data-page="a">
               <span class="st-val">50+</span><span class="st-lbl">кейсов</span>
             </div>
-            <div class="st-row" data-stdelay="260">
+            <div class="st-row" data-stdelay="260" data-page="a">
               <span class="st-val st-neg">-5</span><span class="st-lbl">зрение</span>
+            </div>
+            <div class="st-row" data-stdelay="0" data-page="b" style="display:none">
+              <span class="st-val">12+</span><span class="st-lbl">брендов с&nbsp;нуля</span>
+            </div>
+            <div class="st-row" data-stdelay="80" data-page="b" style="display:none">
+              <span class="st-val">7&nbsp;ЛЕТ</span><span class="st-lbl">в&nbsp;Figma</span>
+            </div>
+            <div class="st-row" data-stdelay="160" data-page="b" style="display:none">
+              <span class="st-val">2+</span><span class="st-lbl">студии основал</span>
+            </div>
+            <div class="st-row" data-stdelay="240" data-page="b" style="display:none">
+              <span class="st-val">B2B&nbsp;&amp;&nbsp;B2C</span><span class="st-lbl">оба фронта</span>
+            </div>
+            <div class="st-row" data-stdelay="320" data-page="b" style="display:none">
+              <span class="st-val">∞</span><span class="st-lbl">итераций до&nbsp;финала</span>
+            </div>
+            <div class="st-row" data-stdelay="400" data-page="b" style="display:none">
+              <span class="st-val">3&nbsp;AM</span><span class="st-lbl">последний коммит</span>
+            </div>
+            <div class="st-row" data-stdelay="480" data-page="b" style="display:none">
+              <span class="st-val st-neg">0₽</span><span class="st-lbl">первый бюджет дизайн-системы</span>
+            </div>
+            <div class="st-row" data-stdelay="560" data-page="b" style="display:none">
+              <span class="st-val">99%</span><span class="st-lbl">перфекционизм (по&nbsp;ощущениям)</span>
             </div>
           </div>
         </div>
@@ -1629,8 +1681,11 @@
         <div class="title">showreel.gif</div>
       </div>
       <div class="body">
-        <div class="frame"><div class="play"></div></div>
-        <div class="cap"><span>[ шоурил · 2021–2026 ]</span><span>play</span></div>
+        <div class="frame"><img src="catcoding.gif" alt="showreel" loading="lazy"></div>
+        <div class="cap-gif">
+          <span class="cg-title">шоурил · в продакшн</span>
+          <span class="cg-sub">2021–2026</span>
+        </div>
       </div>
     </div>
 
@@ -1673,8 +1728,11 @@
         <div class="title">behind.gif</div>
       </div>
       <div class="body">
-        <div class="frame"><div class="play"></div></div>
-        <div class="cap"><span>[ ресёрч → стратегия ]</span><span>process loop</span></div>
+        <div class="frame"><img src="lizard.gif" alt="behind the scenes" loading="lazy"></div>
+        <div class="cap-gif">
+          <span class="cg-title">за кадром · ресёрч</span>
+          <span class="cg-sub">ongoing loop</span>
+        </div>
       </div>
     </div>
 
@@ -2547,17 +2605,28 @@ if (!IS_TOUCH) (() => {
 </script>
 
 <script>
-/* stats terminal animation */
+/* stats terminal animation — page A (3 stats) / page B (8 stats) */
 (function () {
-  function runStats() {
-    document.querySelectorAll('.st-row').forEach(function (row) {
+  var currentPage = 'a';
+
+  function showPage(page) {
+    var allRows = document.querySelectorAll('.st-row');
+    allRows.forEach(function (row) {
       row.classList.remove('st-in');
+      row.style.display = 'none';
     });
-    document.querySelectorAll('.st-row').forEach(function (row) {
+    var cmd = document.getElementById('statsCmd');
+    if (cmd) cmd.textContent = page === 'a' ? 'cat stats.json' : 'cat stats.json --more';
+    var pageRows = document.querySelectorAll('.st-row[data-page="' + page + '"]');
+    pageRows.forEach(function (row) {
+      row.style.display = 'flex';
       var d = parseInt(row.dataset.stdelay || 0);
       setTimeout(function () { row.classList.add('st-in'); }, d + 80);
     });
   }
+
+  function runStats() { showPage(currentPage); }
+
   var block = document.querySelector('.win--stats');
   if (block && 'IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
@@ -2567,8 +2636,22 @@ if (!IS_TOUCH) (() => {
   } else {
     setTimeout(runStats, 600);
   }
+
   var btn = document.getElementById('statsRerun');
-  if (btn) btn.addEventListener('click', runStats);
+  if (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      currentPage = currentPage === 'a' ? 'b' : 'a';
+      this.style.transform = '';
+      var self = this;
+      requestAnimationFrame(function () {
+        self.style.transform = 'rotate(-180deg)';
+        setTimeout(function () { self.style.transform = ''; }, 450);
+      });
+      showPage(currentPage);
+    });
+  }
+
   var prompt = document.getElementById('statsPrompt');
   if (prompt) prompt.addEventListener('click', runStats);
 })();
