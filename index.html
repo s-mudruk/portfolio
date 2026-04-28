@@ -1438,6 +1438,91 @@
     transition: opacity .15s;
   }
   .maint-tg:hover { opacity: .7; }
+
+  /* ============ STICKERS ============ */
+  .sticker {
+    position: fixed;
+    z-index: 9200;
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+    -webkit-user-drag: none;
+    transform: rotate(var(--rot, 0deg));
+    transition: transform .48s cubic-bezier(.34,1.56,.64,1);
+  }
+  .sticker.s-lift {
+    cursor: grabbing;
+    z-index: 9400;
+    transform: rotate(calc(var(--rot, 0deg) + 5deg)) scale(1.08) !important;
+    transition: transform .1s, filter .1s !important;
+  }
+  .stk-inner {
+    position: relative;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 1.35;
+    letter-spacing: -.01em;
+    min-width: 100px;
+    filter: drop-shadow(2px 3px 9px rgba(0,0,0,.38));
+    transition: filter .2s;
+  }
+  .sticker.s-lift .stk-inner { filter: drop-shadow(7px 14px 26px rgba(0,0,0,.58)); }
+  .stk-tape {
+    position: absolute;
+    top: -9px; left: 50%;
+    transform: translateX(-50%);
+    width: 44px; height: 14px;
+    background: rgba(255,255,255,.36);
+    border-radius: 1px;
+    pointer-events: none;
+  }
+  /* 1 – yellow, torn top */
+  .stk-1 .stk-inner {
+    background: #f5df3a; color: #191100;
+    padding: 20px 18px 14px;
+    clip-path: polygon(
+      0% 8%,4% 3%,8% 8%,12% 3%,16% 7%,20% 2%,24% 7%,28% 3%,32% 8%,
+      36% 3%,40% 7%,44% 2%,48% 7%,52% 3%,56% 8%,60% 3%,64% 7%,68% 2%,
+      72% 8%,76% 3%,80% 7%,84% 2%,88% 7%,92% 3%,96% 7%,100% 4%,
+      100% 100%,0% 100%
+    );
+  }
+  /* 2 – sky blue, torn bottom */
+  .stk-2 .stk-inner {
+    background: #bde5f6; color: #062438;
+    padding: 14px 18px 24px;
+    clip-path: polygon(
+      0% 0%,100% 0%,100% 80%,
+      97% 87%,94% 81%,91% 87%,88% 81%,85% 87%,82% 81%,79% 87%,76% 81%,
+      73% 87%,70% 81%,67% 87%,64% 81%,61% 86%,58% 80%,55% 86%,52% 81%,
+      49% 87%,46% 81%,43% 86%,40% 80%,37% 86%,34% 81%,31% 86%,28% 80%,
+      25% 86%,22% 81%,19% 87%,16% 81%,13% 86%,10% 80%,7% 86%,4% 80%,1% 86%,0% 81%
+    );
+  }
+  /* 3 – cream, torn right */
+  .stk-3 .stk-inner {
+    background: #f5f0d6; color: #231900;
+    padding: 14px 28px 14px 16px;
+    clip-path: polygon(
+      0% 0%,83% 0%,
+      89% 5%,82% 11%,89% 17%,82% 23%,88% 29%,81% 35%,88% 41%,
+      82% 47%,88% 53%,81% 59%,88% 65%,82% 71%,88% 77%,81% 83%,
+      88% 89%,82% 95%,87% 100%,
+      0% 100%
+    );
+  }
+  /* 4 – pink, rough all edges, ASCII */
+  .stk-4 .stk-inner {
+    background: #f9c5cd; color: #500018;
+    padding: 14px 18px;
+    clip-path: polygon(
+      3% 2%,11% 0%,20% 2%,29% 0%,38% 2%,47% 0%,56% 3%,65% 0%,74% 2%,83% 0%,93% 2%,99% 4%,
+      100% 13%,98% 22%,100% 31%,97% 41%,100% 50%,97% 59%,100% 68%,97% 77%,100% 86%,97% 95%,
+      93% 100%,83% 97%,73% 100%,63% 97%,53% 100%,43% 97%,33% 100%,23% 97%,13% 100%,4% 97%,1% 94%,
+      0% 85%,2% 76%,0% 67%,2% 58%,0% 49%,2% 40%,0% 31%,2% 22%,0% 13%,2% 4%
+    );
+  }
 </style>
 </head>
 <body>
@@ -1529,7 +1614,6 @@
       </div>
       <div class="body">
         <h1>
-          <span class="mono-intro">Привет, это Сергей,</span><br/>
           <span class="line2"><span class="mono-intro">я</span><span class="em-code"><span class="tag">&lt;em&gt;</span><span class="em">дизайнер.</span><span class="tag">&lt;/em&gt;</span></span></span>
         </h1>
         <p>Являюсь специалистом в&nbsp;сферах продуктового и&nbsp;коммуникативного дизайна, разработке дизайн и&nbsp;маркетинговых систем. Работаю над удобством по-человечески понятных продуктов, ориентируясь на&nbsp;уникальность каждого кейса.</p>
@@ -2524,6 +2608,67 @@ if (!IS_TOUCH) (() => {
     }
     requestAnimationFrame(tick);
   })();
+</script>
+
+<!-- STICKERS -->
+<div class="sticker stk-1" style="left:74vw;top:96px;--rot:-5deg">
+  <div class="stk-inner">★ open<br>to work</div>
+</div>
+<div class="sticker stk-2" style="left:16px;top:56vh;--rot:4deg">
+  <div class="stk-tape"></div>
+  <div class="stk-inner">// TODO:<br>hire me</div>
+</div>
+<div class="sticker stk-3" style="left:56vw;top:44vh;--rot:-2deg">
+  <div class="stk-tape"></div>
+  <div class="stk-inner">&gt;_ sudo<br>hire_me</div>
+</div>
+<div class="sticker stk-4" style="left:72vw;top:66vh;--rot:6deg">
+  <div class="stk-tape"></div>
+  <div class="stk-inner">( ˘ᵕ˘ )<br>let's build</div>
+</div>
+
+<script>
+/* stickers drag */
+(function () {
+  document.querySelectorAll('.sticker').forEach(function (stk) {
+    var active = false, ox = 0, oy = 0, sx = 0, sy = 0;
+
+    function grab(cx, cy) {
+      active = true;
+      var r = stk.getBoundingClientRect();
+      stk.style.left = r.left + 'px';
+      stk.style.top  = r.top  + 'px';
+      ox = r.left; oy = r.top;
+      sx = cx;     sy = cy;
+      stk.classList.add('s-lift');
+    }
+    function move(cx, cy) {
+      if (!active) return;
+      stk.style.left = (ox + cx - sx) + 'px';
+      stk.style.top  = (oy + cy - sy) + 'px';
+    }
+    function drop() {
+      if (!active) return;
+      active = false;
+      stk.classList.remove('s-lift');
+    }
+
+    stk.addEventListener('mousedown', function (e) {
+      e.stopPropagation(); e.preventDefault(); grab(e.clientX, e.clientY);
+    });
+    stk.addEventListener('touchstart', function (e) {
+      e.stopPropagation(); e.preventDefault();
+      grab(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: false });
+
+    document.addEventListener('mousemove', function (e) { move(e.clientX, e.clientY); });
+    document.addEventListener('touchmove', function (e) {
+      if (active) { e.preventDefault(); move(e.touches[0].clientX, e.touches[0].clientY); }
+    }, { passive: false });
+    document.addEventListener('mouseup', drop);
+    document.addEventListener('touchend', drop);
+  });
+})();
 </script>
 </body>
 </html>
