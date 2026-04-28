@@ -425,7 +425,7 @@
     letter-spacing: -.02em;
     margin: 0;
   }
-  .win--hero h1 .mono-intro { font-size: 1.1em; }
+  .win--hero h1 .mono-intro { font-size: .9em; }
   .win--hero h1 .em {
     font-family: var(--display);
     font-weight: 500;
@@ -504,32 +504,28 @@
   }
   @keyframes termBlink { 0%,100%{opacity:.8} 50%{opacity:0} }
   .st-out {
-    border-left: 2px solid var(--divider);
-    padding-left: 14px;
     display: flex; flex-direction: column; gap: 10px;
     margin-bottom: 16px;
   }
-  .st-brace { font-size: 14px; color: var(--divider); line-height: 1; }
   .st-row {
-    display: flex; align-items: baseline; flex-wrap: nowrap; gap: 0;
-    opacity: 0; transform: translateY(6px);
+    display: flex; align-items: baseline; gap: 0;
+    opacity: 0; transform: translateY(5px);
     transition: opacity .28s ease, transform .28s ease;
   }
   .st-row.st-in { opacity: 1; transform: none; }
-  .st-key { font-size: 13px; color: var(--secondary); min-width: 68px; }
-  .st-sep { font-size: 13px; color: var(--muted); margin: 0 7px 0 2px; }
+  .st-key { font-size: 13px; color: var(--muted); min-width: 64px; }
+  .st-sep { font-size: 13px; color: var(--divider); margin: 0 10px; }
   .st-val {
     font-size: 22px; font-weight: 700;
     color: var(--accent); letter-spacing: -.03em; line-height: 1;
   }
   .st-neg { color: var(--error); }
-  .st-comma { font-size: 13px; color: var(--muted); }
-  .st-cmt { font-size: 11px; color: var(--muted); opacity: .45; margin-left: 9px; letter-spacing: 0; }
+  .st-lbl { font-size: 12px; color: var(--muted); opacity: .5; margin-left: 9px; }
   .st-foot {
     display: flex; justify-content: space-between; align-items: center;
     padding-top: 12px; border-top: 1px solid var(--divider); font-size: 12px;
   }
-  .st-status { color: var(--accent); letter-spacing: .03em; }
+  .st-status { color: var(--muted); letter-spacing: .03em; opacity: .6; }
   .st-rerun {
     font-family: var(--mono); font-size: 12px; color: var(--muted);
     background: none; border: 1px solid var(--divider);
@@ -1583,17 +1579,15 @@
             <span class="st-cursor"></span>
           </div>
           <div class="st-out">
-            <div class="st-brace">{</div>
             <div class="st-row" data-stdelay="0">
-              <span class="st-key">"years"</span><span class="st-sep">:</span><span class="st-val">5&nbsp;ЛЕТ</span><span class="st-comma">,</span><span class="st-cmt">// в&nbsp;проектах</span>
+              <span class="st-key">years</span><span class="st-sep">/</span><span class="st-val">5&nbsp;ЛЕТ</span><span class="st-lbl">в&nbsp;проектах</span>
             </div>
             <div class="st-row" data-stdelay="130">
-              <span class="st-key">"cases"</span><span class="st-sep">:</span><span class="st-val">50+</span><span class="st-comma">,</span><span class="st-cmt">// кейсов</span>
+              <span class="st-key">cases</span><span class="st-sep">/</span><span class="st-val">50+</span><span class="st-lbl">кейсов</span>
             </div>
             <div class="st-row" data-stdelay="260">
-              <span class="st-key">"vision"</span><span class="st-sep">:</span><span class="st-val st-neg">-5</span><span class="st-cmt">// зрение&nbsp;💀</span>
+              <span class="st-key">vision</span><span class="st-sep">/</span><span class="st-val st-neg">-5</span><span class="st-lbl">зрение</span>
             </div>
-            <div class="st-brace">}</div>
           </div>
           <div class="st-foot">
             <span class="st-status">200&nbsp;OK&nbsp;·&nbsp;12ms</span>
