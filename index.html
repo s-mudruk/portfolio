@@ -425,19 +425,20 @@
     letter-spacing: -.02em;
     margin: 0;
   }
-  .win--hero h1 .mono-intro { font-size: .5em; }
+  .win--hero h1 .mono-intro { font-size: .65em; }
   .win--hero h1 .em {
     font-family: var(--display);
     font-weight: 500;
     color: var(--accent);
     font-style: italic;
+    font-size: .82em;
   }
   .win--hero h1 .tag {
     font-family: var(--display);
     color: var(--muted);
     font-style: italic;
     font-weight: 400;
-    font-size: .72em;
+    font-size: .62em;
     letter-spacing: -.01em;
   }
   .win--hero h1 .em-code { display: inline-flex; align-items: baseline; gap: 6px; }
@@ -488,33 +489,11 @@
      По референсу: плоский синий фон, белый лист со статистикой,
      тёмная "лицевая" карточка снизу с округлым вырезом-табом сверху-слева.
      На hover лист выезжает вправо-вверх с поворотом. */
-  /* ── win--stats: clean CSS folder ── */
+  /* ── win--stats: clean stats card ── */
   .win--stats {
     width: 320px;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 32px 0 0 !important;
-    overflow: visible !important;
   }
-  .win--stats > .bar { display: none; }
-  .win--stats .folder-wrap {
-    position: relative;
-    overflow: hidden;
-    border-radius: 0 14px 14px 14px;
-    background: var(--surface);
-    box-shadow: 0 4px 28px rgba(0,0,0,.38);
-  }
-  .win--stats .folder-wrap::before {
-    content: '';
-    position: absolute;
-    top: -32px; left: 0;
-    width: 92px; height: 34px;
-    background: var(--accent);
-    border-radius: 8px 8px 0 0;
-  }
-  .win--stats .folder-body {
-    padding: 22px 22px 20px;
+  .win--stats .body {
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -558,7 +537,7 @@
     margin-top: 2px;
   }
   @media (max-width: 1024px) {
-    .win--stats { width: 100%; max-width: 320px; }
+    .win--stats { width: 100%; max-width: none; }
   }
 
   /* services list */
@@ -1273,7 +1252,7 @@
       width: min(520px, 100%) !important;
       transform: none !important;
     }
-    .win--hero h1 { font-size: 30px; }
+    .win--hero h1 { font-size: 34px; }
     .modal { padding: 0; }
     .modal .sheet { border-radius: 0; height: 100dvh; width: 100%; border: 0; }
     .modal .content { padding: calc(20px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom)); max-width: none; }
@@ -1287,12 +1266,12 @@
     .modal .hero { display: none; }
     /* Футер на мобиле: верхний край плашки = нижняя граница хедера.
        АСКИИ-челик меньше и влезает по ширине. Инпут одной строкой, ] и ↵ впритык к тексту. */
-    .footer { padding: calc(86px + 12px) 12px calc(12px + env(safe-area-inset-bottom)); min-height: auto; }
+    .footer { padding: calc(86px + 12px) 0 0; min-height: auto; }
     .footer .terminal {
       flex: 0 0 auto;
-      min-height: calc(100dvh - 86px - 24px - env(safe-area-inset-bottom));
-      border-radius: 32px 32px 10px 10px;
-      padding: 28px 22px 22px;
+      min-height: calc(100dvh - 86px - 12px - env(safe-area-inset-bottom));
+      border-radius: 32px 32px 0 0;
+      padding: 28px 22px calc(22px + env(safe-area-inset-bottom));
     }
     .footer .ascii {
       font-size: clamp(20px, 7vw, 32px);
@@ -1338,7 +1317,7 @@
     .win .body { padding: 16px; }
     .win .bar { padding: 0 12px; }
     .win--quote .body { padding: 16px; }
-    .win--hero h1 { font-size: 26px; }
+    .win--hero h1 { font-size: 30px; }
   }
 
   /* ============ PAGE LOADER ============ */
@@ -1395,6 +1374,7 @@
 
   /* ============ STICKERS ============ */
   .sticker {
+    display: none;
     position: absolute;
     z-index: 10;
     cursor: grab;
@@ -1561,7 +1541,7 @@
       </div>
       <div class="body">
         <h1>
-          <span class="line2"><span class="mono-intro">я</span><span class="em-code"><span class="tag">&lt;em&gt;</span><span class="em">дизайнер.</span><span class="tag">&lt;/em&gt;</span></span></span>
+          <span class="line2"><span class="mono-intro">Я</span><span class="em-code"><span class="tag">&lt;em&gt;</span><span class="em">дизайнер.</span><span class="tag">&lt;/em&gt;</span></span></span>
         </h1>
         <p>Являюсь специалистом в&nbsp;сферах продуктового и&nbsp;коммуникативного дизайна, разработке дизайн и&nbsp;маркетинговых систем. Работаю над удобством по-человечески понятных продуктов, ориентируясь на&nbsp;уникальность каждого кейса.</p>
         <div class="tags">
@@ -1594,15 +1574,13 @@
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">numbers.json</div>
       </div>
-      <div class="folder-wrap">
-        <div class="folder-body">
-          <div class="row"><div class="big">5&nbsp;ЛЕТ</div><div class="lbl">в&nbsp;проектах</div></div>
-          <div class="row"><div class="big">50+</div><div class="lbl">коммерческих кейсов</div></div>
-          <div class="row"><div class="big">−5</div><div class="lbl">зрение</div></div>
-          <div class="folder-bottom">
-            <div class="folder-label">Обо мне</div>
-            <div class="folder-sub">В&nbsp;циферках</div>
-          </div>
+      <div class="body">
+        <div class="row"><div class="big">5&nbsp;ЛЕТ</div><div class="lbl">в&nbsp;проектах</div></div>
+        <div class="row"><div class="big">50+</div><div class="lbl">коммерческих кейсов</div></div>
+        <div class="row"><div class="big">−5</div><div class="lbl">зрение</div></div>
+        <div class="folder-bottom">
+          <div class="folder-label">Обо мне</div>
+          <div class="folder-sub">В&nbsp;циферках</div>
         </div>
       </div>
     </div>
