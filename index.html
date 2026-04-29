@@ -500,7 +500,7 @@
   .win--about p b { color: var(--text); font-weight: 600; }
 
   /* ── win--stats: terminal JSON ── */
-  .win--stats { width: 400px; }
+  .win--stats { width: 320px; }
   .stats-term { font-family: var(--mono); }
   .st-prompt {
     display: inline-flex; align-items: center; gap: 7px;
@@ -512,7 +512,7 @@
   .st-ps1 { color: var(--accent); font-weight: 500; }
   .st-out {
     display: flex; flex-direction: column; gap: 12px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
   .st-row {
     display: flex; flex-direction: column; gap: 3px;
@@ -526,16 +526,16 @@
   }
   .st-neg { color: var(--error); }
   .st-lbl { font-size: 13px; color: var(--muted); opacity: .6; }
-  .st-refresh {
-    margin-left: auto;
-    width: 22px; height: 22px;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-size: 16px; line-height: 1;
-    color: var(--muted);
-    transition: color .15s, transform .45s cubic-bezier(.34,1.56,.64,1);
-    user-select: none; cursor: pointer;
+  .st-more-row {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--muted);
+    cursor: pointer; user-select: none;
+    transition: color .15s;
+    padding-top: 4px;
   }
-  .st-refresh:hover { color: var(--text); transform: rotate(-180deg); }
+  .st-more-row:hover { color: var(--accent); }
+  .st-more-arrow { font-size: 14px; line-height: 1; transition: transform .2s ease; }
+  .st-more-row:hover .st-more-arrow { transform: translateX(3px); }
   .cap-gif {
     margin-top: 10px;
     padding-top: 10px;
@@ -571,7 +571,6 @@
 
   /* media */
   .win--media { width: 360px; }
-  .win--media .body { padding: 8px; }
   .win--media .frame {
     aspect-ratio: 1/1;
     background:
@@ -1194,7 +1193,7 @@
     .win--hero { width: 660px; }
     .win--hero h1 { font-size: 52px; }
     .win--about { width: 420px; }
-    .win--stats { width: 360px; }
+    .win--stats { width: 300px; }
     .win--list { width: 500px; }
     .win--media { width: 420px; }
     .win--gallery { width: 620px; }
@@ -1215,7 +1214,7 @@
     .win--hero { width: 760px; }
     .win--hero h1 { font-size: 60px; }
     .win--about { width: 480px; }
-    .win--stats { width: 380px; }
+    .win--stats { width: 340px; }
     .win--list { width: 580px; }
     .win--media { width: 480px; }
     .win--gallery { width: 720px; }
@@ -1562,9 +1561,11 @@
         <div class="drag-hint">окна можно двигать</div>
       </div>
       <div class="body">
-        <h1>
-          <span class="line2"><span class="mono-intro">Я</span><span class="em-code"><span class="tag">&lt;em&gt;</span><span class="em">дизайнер.</span><span class="tag">&lt;/em&gt;</span></span></span>
-        </h1>
+        <div class="circles-intro">
+          <div class="ci ci-a"></div>
+          <div class="ci ci-b"></div>
+          <div class="ci ci-c"></div>
+        </div>
         <p>Являюсь специалистом в&nbsp;сферах продуктового и&nbsp;коммуникативного дизайна, разработке дизайн и&nbsp;маркетинговых систем. Работаю над удобством по-человечески понятных продуктов, ориентируясь на&nbsp;уникальность каждого кейса.</p>
         <div class="tags">
           <span>Продукт-дизайн</span>
@@ -1591,11 +1592,10 @@
       </div>
     </div>
 
-    <div class="win win--stats" data-draggable style="left: 50%; top: 760px; transform: translateX(-50%);">
+    <div class="win win--stats" data-draggable style="left: 4%; top: 740px;">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">stats.json</div>
-        <button class="st-refresh" id="statsRerun" title="ещё данные">↺</button>
       </div>
       <div class="body">
         <div class="stats-term">
@@ -1638,6 +1638,10 @@
               <span class="st-val">99%</span><span class="st-lbl">перфекционизм (по&nbsp;ощущениям)</span>
             </div>
           </div>
+          <button class="st-more-row" id="statsRerun">
+            <span class="st-more-arrow">→</span>
+            <span id="statsMoreLabel">ещё данные</span>
+          </button>
         </div>
       </div>
     </div>
@@ -1684,8 +1688,7 @@
       <div class="body">
         <div class="frame"><img src="lizard.gif" alt="showreel" loading="lazy"></div>
         <div class="cap-gif">
-          <span class="cg-title">шоурил</span>
-          <span class="cg-sub">2021–2026</span>
+          <span class="cg-title">открыт к любым интересным предложениям</span>
         </div>
       </div>
     </div>
@@ -1731,8 +1734,7 @@
       <div class="body">
         <div class="frame"><img src="catcoding.gif" alt="behind the scenes" loading="lazy"></div>
         <div class="cap-gif">
-          <span class="cg-title">за кадром</span>
-          <span class="cg-sub">ресёрч → деплой</span>
+          <span class="cg-title">направляю в прод</span>
         </div>
       </div>
     </div>
@@ -2643,12 +2645,8 @@ if (!IS_TOUCH) (() => {
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       currentPage = currentPage === 'a' ? 'b' : 'a';
-      this.style.transform = '';
-      var self = this;
-      requestAnimationFrame(function () {
-        self.style.transform = 'rotate(-180deg)';
-        setTimeout(function () { self.style.transform = ''; }, 450);
-      });
+      var lbl = document.getElementById('statsMoreLabel');
+      if (lbl) lbl.textContent = currentPage === 'b' ? 'вернуть назад' : 'ещё данные';
       showPage(currentPage);
     });
   }
