@@ -537,7 +537,7 @@
   .st-more-row:hover { color: var(--muted); }
   .cap-gif {
     position: absolute;
-    bottom: 8px; left: 8px; right: 8px;
+    bottom: 8px; left: 10px; right: 8px;
     font-family: var(--mono);
     pointer-events: none;
   }
@@ -745,15 +745,16 @@
 
   /* case */
   .win--case { width: 420px; }
+  .win--case .body { overflow: hidden; }
   .win--case .thumb {
     aspect-ratio: 16/9;
     background:
       linear-gradient(135deg, rgba(255,255,255,.04) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.04) 50%, rgba(255,255,255,.04) 75%, transparent 75%) 0/16px 16px,
       var(--surface-2);
-    border-radius: var(--r-sm);
+    border-radius: 0;
     display: grid; place-items: center;
     font-family: var(--mono); font-size: 11px; color: var(--muted);
-    margin-bottom: 14px;
+    margin: -20px -20px 16px;
     overflow: hidden;
   }
   .win--case h4 {
@@ -1312,6 +1313,7 @@
     .win .body { padding: 16px; }
     .win .bar { padding: 0 12px; }
     .win--quote .body { padding: 16px; }
+    .win--case .thumb { margin: -16px -16px 14px; }
     .win--hero h1 { font-size: 30px; }
   }
 
