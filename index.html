@@ -1224,7 +1224,6 @@
     .burger,
     [data-handle], [data-open-case] { cursor: pointer; }
     .cursor, .cursor-label { display: none !important; }
-    html { background: var(--surface); }
     /* Safe-area для мобильных браузеров со скрывающимися тулбарами
        (Safari, Comet, Chrome iOS): хедер сдвигается под notch/Dynamic Island,
        контент — под нижнюю плашку. theme-color наверху красит саму плашку
@@ -2569,27 +2568,100 @@ if (!IS_TOUCH) (() => {
 
 
 <script>
-/* shot lightbox — tap to fullscreen, tap again to close */
+/* shot lightbox — tap fullscreen; mobile: swipe any direction to dismiss */
 (function () {
   var lb = document.createElement('div');
-  lb.style.cssText = 'display:none;position:fixed;inset:0;z-index:10010;background:rgba(0,0,0,.94);align-items:center;justify-content:center;padding:16px;box-sizing:border-box;cursor:zoom-out;touch-action:none;';
+  lb.style.cssText = 'display:none;position:fixed;inset:0;z-index:10010;background:rgba(0,0,0,.94);align-items:center;justify-content:center;padding:16px;box-sizing:border-box;touch-action:none;transition:opacity .2s;opacity:0;';
   document.body.appendChild(lb);
 
+  var wrap;   // inner wrapper for transform
+  var sx = 0, sy = 0, dx = 0, dy = 0, t0 = 0, swiping = false;
+
+  function openLb(shot) {
+    lb.innerHTML = '';
+    wrap = document.createElement('div');
+    wrap.style.cssText = 'width:100%;max-width:1200px;will-change:transform;';
+    var clone = shot.cloneNode(true);
+    clone.style.cssText = 'width:100%;aspect-ratio:16/9;border-radius:8px;cursor:' + (IS_TOUCH ? 'default' : 'zoom-out') + ';display:block;flex-shrink:0;';
+    wrap.appendChild(clone);
+    lb.appendChild(wrap);
+    lb.style.display = 'flex';
+    requestAnimationFrame(function () { lb.style.opacity = '1'; });
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLb(flyDx, flyDy) {
+    var hasFly = flyDx !== undefined;
+    if (hasFly && wrap) {
+      var scale = 320 / Math.max(Math.sqrt(flyDx * flyDx + flyDy * flyDy), 1);
+      wrap.style.transition = 'transform .22s ease-in';
+      wrap.style.transform = 'translate(' + flyDx * scale + 'px,' + flyDy * scale + 'px)';
+    }
+    lb.style.transition = 'opacity .2s';
+    lb.style.opacity = '0';
+    setTimeout(function () {
+      lb.style.display = 'none';
+      lb.style.opacity = '0';
+      if (wrap) { wrap.style.transition = ''; wrap.style.transform = ''; }
+      document.body.style.overflow = '';
+    }, 220);
+  }
+
+  // open on click/tap
   document.addEventListener('click', function (e) {
     var shot = e.target.closest('.modal .shot');
     if (!shot) return;
-    lb.innerHTML = '';
-    var clone = shot.cloneNode(true);
-    clone.style.cssText = 'width:100%;max-width:1200px;aspect-ratio:16/9;border-radius:8px;cursor:default;flex-shrink:0;';
-    lb.appendChild(clone);
-    lb.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+    openLb(shot);
   });
 
-  lb.addEventListener('click', function () {
-    lb.style.display = 'none';
-    document.body.style.overflow = '';
-  });
+  // desktop: click backdrop to close
+  if (!IS_TOUCH) {
+    lb.addEventListener('click', function () { closeLb(); });
+  }
+
+  // mobile: swipe-to-dismiss
+  if (IS_TOUCH) {
+    lb.addEventListener('touchstart', function (e) {
+      if (e.touches.length !== 1) return;
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+      dx = 0; dy = 0; t0 = Date.now(); swiping = true;
+      if (wrap) wrap.style.transition = '';
+      lb.style.transition = '';
+    }, { passive: true });
+
+    lb.addEventListener('touchmove', function (e) {
+      if (!swiping || e.touches.length !== 1) return;
+      e.preventDefault();
+      dx = e.touches[0].clientX - sx;
+      dy = e.touches[0].clientY - sy;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      var alpha = Math.max(0.08, 0.94 - dist / 260 * 0.86);
+      if (wrap) wrap.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+      lb.style.background = 'rgba(0,0,0,' + alpha + ')';
+    }, { passive: false });
+
+    lb.addEventListener('touchend', function () {
+      if (!swiping) return;
+      swiping = false;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      var vel = dist / Math.max(Date.now() - t0, 1);  // px/ms
+      if (dist > 80 || vel > 0.45) {
+        closeLb(dx, dy);
+      } else {
+        // snap back with spring
+        if (wrap) {
+          wrap.style.transition = 'transform .38s cubic-bezier(.34,1.56,.64,1)';
+          wrap.style.transform = 'translate(0,0)';
+        }
+        lb.style.transition = 'background .3s';
+        lb.style.background = 'rgba(0,0,0,.94)';
+        setTimeout(function () {
+          if (wrap) wrap.style.transition = '';
+          lb.style.transition = '';
+        }, 380);
+      }
+    }, { passive: true });
+  }
 })();
 </script>
 
