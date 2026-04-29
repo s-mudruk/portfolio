@@ -2202,10 +2202,6 @@ if (!IS_TOUCH) (() => {
     } else if (y > HIDE_AT) {
       header.classList.add('hide');
     }
-
-    // iOS bottom-bar colour: match footer surface when footer is visible
-    document.documentElement.style.background = inFooter ? 'var(--surface)' : '';
-
     ticking = false;
   }
 
