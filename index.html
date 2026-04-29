@@ -1224,6 +1224,7 @@
     .burger,
     [data-handle], [data-open-case] { cursor: pointer; }
     .cursor, .cursor-label { display: none !important; }
+    html { background: var(--surface); }
     /* Safe-area для мобильных браузеров со скрывающимися тулбарами
        (Safari, Comet, Chrome iOS): хедер сдвигается под notch/Dynamic Island,
        контент — под нижнюю плашку. theme-color наверху красит саму плашку
@@ -2206,6 +2207,11 @@ if (!IS_TOUCH) (() => {
 
     const gutter = document.getElementById('ios-gutter');
     if (gutter) gutter.style.opacity = inFooter ? '1' : '0';
+
+    // Dynamic theme-color: match footer surface when footer in view
+    document.querySelectorAll('meta[name="theme-color"]').forEach(function(m) {
+      m.content = inFooter ? '#2A2A2A' : '#131313';
+    });
 
     ticking = false;
   }
