@@ -1151,36 +1151,27 @@
     width: 100%;
   }
 
-  /* ============ EDGE FADES ============ */
-  /* Top fade: content dissolves as it scrolls past the top edge */
-  #top-fade {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    height: 70px;
-    background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
-    pointer-events: none;
-    z-index: 58;
-  }
-  /* Case modal — top fade */
-  .modal-fade-t {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 70px;
-    background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
-    pointer-events: none;
-    z-index: 2;
-  }
-  /* Case modal — bottom fade + safe-area zone */
-  .modal-fade-b {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: calc(60px + env(safe-area-inset-bottom, 0px));
-    background: linear-gradient(to top,
-      var(--bg) 0%,
-      var(--bg) env(safe-area-inset-bottom, 0px),
-      transparent 100%);
-    pointer-events: none;
-    z-index: 2;
+  /* ============ EDGE FADES (mobile only) ============ */
+  #top-fade, .modal-fade-t { display: none; }
+  @media (hover: none) and (pointer: coarse) {
+    #top-fade {
+      display: block;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 58;
+    }
+    .modal-fade-t {
+      display: block;
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 2;
+    }
   }
 
   /* ============ SCROLL HINT ============ */
@@ -1891,7 +1882,6 @@
 <!-- ===== CASE MODAL ===== -->
 <div class="modal" id="modal" role="dialog" aria-modal="true">
   <div class="modal-fade-t" aria-hidden="true"></div>
-  <div class="modal-fade-b" aria-hidden="true"></div>
   <div class="sheet">
     <div class="content">
       <div class="cols">
@@ -2240,11 +2230,20 @@ if (!IS_TOUCH) (() => {
     }
 
     const gutter = document.getElementById('ios-gutter');
-    if (gutter) gutter.style.opacity = inFooter ? '1' : '0';
+    const modalIsOpen = !!document.querySelector('.modal.open');
+    if (gutter) {
+      if (modalIsOpen) {
+        gutter.style.background = 'var(--bg)';
+        gutter.style.opacity = '1';
+      } else {
+        gutter.style.background = 'var(--surface)';
+        gutter.style.opacity = inFooter ? '1' : '0';
+      }
+    }
 
     // Dynamic theme-color: match footer surface when footer in view
     document.querySelectorAll('meta[name="theme-color"]').forEach(function(m) {
-      m.content = inFooter ? '#2A2A2A' : '#131313';
+      m.content = (inFooter && !modalIsOpen) ? '#2A2A2A' : '#131313';
     });
 
     ticking = false;
@@ -2517,6 +2516,11 @@ if (!IS_TOUCH) (() => {
       const sbw = window.innerWidth - document.documentElement.clientWidth;
       document.documentElement.style.setProperty('--sbw', sbw + 'px');
       document.documentElement.classList.add('modal-open');
+      (function() {
+        var g = document.getElementById('ios-gutter');
+        if (g) { g.style.background = 'var(--bg)'; g.style.opacity = '1'; }
+        document.querySelectorAll('meta[name="theme-color"]').forEach(function(m) { m.content = '#131313'; });
+      })();
     });
   });
   function closeModal() {
@@ -2528,6 +2532,11 @@ if (!IS_TOUCH) (() => {
     document.documentElement.dataset.modalClosing = '1';
     window.scrollTo({ top: _savedScrollY, behavior: 'instant' });
     requestAnimationFrame(() => delete document.documentElement.dataset.modalClosing);
+    (function() {
+      var g = document.getElementById('ios-gutter');
+      if (g) { g.style.background = 'var(--surface)'; g.style.opacity = '0'; }
+      document.querySelectorAll('meta[name="theme-color"]').forEach(function(m) { m.content = '#131313'; });
+    })();
   }
   close.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
