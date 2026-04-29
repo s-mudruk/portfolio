@@ -776,11 +776,11 @@
     background:
       linear-gradient(135deg, rgba(255,255,255,.04) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.04) 50%, rgba(255,255,255,.04) 75%, transparent 75%) 0/16px 16px,
       var(--surface-2);
-    border: 1px solid var(--divider);
     border-radius: var(--r-sm);
     display: grid; place-items: center;
     font-family: var(--mono); font-size: 11px; color: var(--muted);
     margin-bottom: 14px;
+    overflow: hidden;
   }
   .win--case h4 {
     margin: 0 0 4px;
@@ -798,9 +798,7 @@
     background: var(--surface-2);
     color: var(--text);
   }
-  .win--case .open::after { content: "↗"; color: var(--muted); }
   .win--case .open:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .win--case .open:hover::after { color: #fff; }
 
   /* quote — DS код-блок: { "quote": "…" } в Bitter, ключ синим в моно */
   .win--quote { width: 460px; }
@@ -1665,7 +1663,20 @@
   <section class="scene" id="services" data-screen-label="02 Делаю" style="min-height: 820px;">
     <div class="scene-label"><div class="num">02</div><div class="line"></div><div class="tag"># ДЕЛАЮ</div></div>
 
-    <div class="win win--list" data-draggable style="left: 6%; top: 120px;">
+    <div class="win win--media" data-draggable style="left: 6%; top: 120px;">
+      <div class="bar" data-handle>
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="title">showreel.gif</div>
+      </div>
+      <div class="body">
+        <div class="frame">
+          <img src="lizard.gif" alt="showreel" loading="lazy">
+          <div class="cap-gif"><span class="cg-title">открыт к любым интересным предложениям</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="win win--list" data-draggable style="right: 6%; top: 160px;">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">services/</div>
@@ -1678,19 +1689,6 @@
         <div class="item"><span>Лендинги, MVP, Telegram MiniApps</span><span class="num">05</span></div>
         <div class="item"><span>CJM, A/B-тестирование<br class="mob-br">&amp; аналитика</span><span class="num">06</span></div>
         <div class="item"><span>Event-маркетинг &amp; PR-<br class="mob-br">кампании</span><span class="num">07</span></div>
-      </div>
-    </div>
-
-    <div class="win win--media" data-draggable style="right: 6%; top: 160px;">
-      <div class="bar" data-handle>
-        <div class="dots"><span></span><span></span><span></span></div>
-        <div class="title">showreel.gif</div>
-      </div>
-      <div class="body">
-        <div class="frame">
-          <img src="lizard.gif" alt="showreel" loading="lazy">
-          <div class="cap-gif"><span class="cg-title">открыт к любым интересным предложениям</span></div>
-        </div>
       </div>
     </div>
 
@@ -1767,7 +1765,7 @@
         <div class="thumb">[ Lamoda B2B · мокап платформы ]</div>
         <h4>Lamoda B2B Media Platform</h4>
         <div class="meta">research · UX · MVP-фреймворк · 2025</div>
-        <button class="open" data-open-case="lamoda">Открыть кейс</button>
+        <button class="open" data-open-case="lamoda">Увидеть больше</button>
       </div>
     </div>
 
@@ -1780,7 +1778,7 @@
         <div class="thumb">[ КАМАЗ · креативы кампании ]</div>
         <h4>КАМАЗ — бренд &amp; lead-gen</h4>
         <div class="meta">CJM · SMM · ROI 150%+ · 2024</div>
-        <button class="open" data-open-case="kamaz">Открыть кейс</button>
+        <button class="open" data-open-case="kamaz">Увидеть больше</button>
       </div>
     </div>
 
@@ -1793,7 +1791,7 @@
         <div class="thumb">[ VetCity · OOH + SMM-концепт ]</div>
         <h4>VetCity Clinic</h4>
         <div class="meta">comms · OOH · коллаб с SurfCoffee · 2024</div>
-        <button class="open" data-open-case="vetcity">Открыть кейс</button>
+        <button class="open" data-open-case="vetcity">Увидеть больше</button>
       </div>
     </div>
 
@@ -1806,7 +1804,7 @@
         <div class="thumb">[ GiftSpin · MiniApp UI ]</div>
         <h4>GiftSpin · Telegram MiniApp</h4>
         <div class="meta">design system · A/B · gamification · 2025</div>
-        <button class="open" data-open-case="giftspin">Открыть кейс</button>
+        <button class="open" data-open-case="giftspin">Увидеть больше</button>
       </div>
     </div>
 
@@ -1819,7 +1817,7 @@
         <div class="thumb">[ Liberty · бренд &amp; VK ]</div>
         <h4>Liberty / НИЯУ МИФИ</h4>
         <div class="meta">ребренд · контент-стратегия · VK · 2023</div>
-        <button class="open" data-open-case="liberty">Открыть кейс</button>
+        <button class="open" data-open-case="liberty">Увидеть больше</button>
       </div>
     </div>
 
@@ -1832,7 +1830,7 @@
         <div class="thumb">[ Траектория · мерч ]</div>
         <h4>Форум «Траектория»</h4>
         <div class="meta">event · PR · phygital · 2023</div>
-        <button class="open" data-open-case="trajectory">Открыть кейс</button>
+        <button class="open" data-open-case="trajectory">Увидеть больше</button>
       </div>
     </div>
     <div class="sticker stk-4" style="left:26%;top:220px;--rot:4deg"><div class="stk-inner">( ˘ᵕ˘ )</div></div>
