@@ -540,12 +540,14 @@
     bottom: 8px; left: 10px; right: 8px;
     font-family: var(--mono);
     pointer-events: none;
+    text-align: left;
   }
   .cap-gif .cg-title {
-    display: block;
+    display: inline;
     font-size: 14px; font-weight: 500;
     color: #fff;
     text-shadow: 0 1px 5px rgba(0,0,0,.8);
+    line-height: 1.4;
   }
   @media (max-width: 1024px) {
     .win--stats { width: 100%; max-width: none; }
@@ -556,7 +558,7 @@
   .win--list .item {
     display: flex; justify-content: space-between; align-items: center;
     padding: 16px 4px;
-    border-bottom: 1px solid var(--divider);
+    border-bottom: 1px dashed var(--divider);
     font-family: var(--mono); font-size: 16px;
   }
   .win--list .item:last-child { border: 0; }
@@ -932,7 +934,7 @@
     line-height: 1.4;
     color: var(--text);
   }
-  .footer .term-input .prompt { color: var(--text); flex-shrink: 0; }
+  .footer .term-input .prompt { color: var(--muted); flex-shrink: 0; }
   .footer .term-input .cmd { color: var(--text); flex-shrink: 0; }
   .footer .term-input .target-toggle {
     color: var(--accent);
@@ -2541,7 +2543,7 @@ if (!IS_TOUCH) (() => {
     function tick(ts) {
       if (!start) start = ts;
       const t = Math.min((ts - start) / DUR, 1);
-      fill.textContent = ' ' + '|'.repeat(Math.round(t * MAX)) + ' ';
+      fill.textContent = '|'.repeat(Math.round(t * MAX)) + ' ';
       pct.textContent  = Math.round(t * 100) + '%]';
       t < 1 ? requestAnimationFrame(tick) : setTimeout(hide, 120);
     }
