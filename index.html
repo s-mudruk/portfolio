@@ -527,26 +527,26 @@
   .st-neg { color: var(--error); }
   .st-lbl { font-size: 13px; color: var(--muted); opacity: .6; }
   .st-more-row {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 12px; color: var(--muted);
+    display: inline-flex; align-items: center;
+    font-family: var(--mono); font-size: 13px;
+    color: var(--inactive);
     cursor: pointer; user-select: none;
     transition: color .15s;
     padding-top: 4px;
   }
-  .st-more-row:hover { color: var(--accent); }
-  .st-more-arrow { font-size: 14px; line-height: 1; transition: transform .2s ease; }
-  .st-more-row:hover .st-more-arrow { transform: translateX(3px); }
+  .st-more-row:hover { color: var(--muted); }
   .cap-gif {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid var(--divider);
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
+    position: absolute;
+    bottom: 8px; left: 8px; right: 8px;
     font-family: var(--mono);
+    pointer-events: none;
   }
-  .cap-gif .cg-title { font-size: 13px; color: var(--text); font-weight: 500; }
-  .cap-gif .cg-sub { font-size: 11px; color: var(--muted); }
+  .cap-gif .cg-title {
+    display: block;
+    font-size: 12px; font-weight: 500;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0,0,0,.65);
+  }
   @media (max-width: 1024px) {
     .win--stats { width: 100%; max-width: none; }
   }
@@ -1004,6 +1004,10 @@
   .footer .term-meta .footer-weather {
     display: inline-flex; align-items: center; gap: 8px;
   }
+
+  /* Cursor hidden while page loader is in DOM */
+  #page-loader ~ .cursor,
+  #page-loader ~ .cursor-label { opacity: 0 !important; pointer-events: none !important; }
 
   /* ============ CUSTOM CURSOR ============ */
   .cursor {
@@ -1592,7 +1596,7 @@
       </div>
     </div>
 
-    <div class="win win--stats" data-draggable style="left: 4%; top: 740px;">
+    <div class="win win--stats" data-draggable style="left: 50%; top: 660px; transform: translateX(-50%);">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">stats.json</div>
@@ -1638,10 +1642,7 @@
               <span class="st-val">99%</span><span class="st-lbl">перфекционизм (по&nbsp;ощущениям)</span>
             </div>
           </div>
-          <button class="st-more-row" id="statsRerun">
-            <span class="st-more-arrow">→</span>
-            <span id="statsMoreLabel">ещё данные</span>
-          </button>
+          <button class="st-more-row" id="statsRerun"><span id="statsMoreLabel">Далее…</span></button>
         </div>
       </div>
     </div>
@@ -1686,9 +1687,9 @@
         <div class="title">showreel.gif</div>
       </div>
       <div class="body">
-        <div class="frame"><img src="lizard.gif" alt="showreel" loading="lazy"></div>
-        <div class="cap-gif">
-          <span class="cg-title">открыт к любым интересным предложениям</span>
+        <div class="frame">
+          <img src="lizard.gif" alt="showreel" loading="lazy">
+          <div class="cap-gif"><span class="cg-title">открыт к любым интересным предложениям</span></div>
         </div>
       </div>
     </div>
@@ -1732,9 +1733,9 @@
         <div class="title">behind.gif</div>
       </div>
       <div class="body">
-        <div class="frame"><img src="catcoding.gif" alt="behind the scenes" loading="lazy"></div>
-        <div class="cap-gif">
-          <span class="cg-title">направляю в прод</span>
+        <div class="frame">
+          <img src="catcoding.gif" alt="behind the scenes" loading="lazy">
+          <div class="cap-gif"><span class="cg-title">направляю в прод</span></div>
         </div>
       </div>
     </div>
@@ -2471,14 +2472,14 @@ if (!IS_TOUCH) (() => {
   const modal = document.getElementById('modal');
   const close = document.getElementById('modalClose');
 
+  let _savedScrollY = 0;
+
   document.querySelectorAll('[data-open-case]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const key = btn.getAttribute('data-open-case');
       const c = cases[key]; if (!c) return;
       document.getElementById('modalTitle').textContent = c.title;
-      // Если в meta есть год (4 цифры) — выносим всё начиная с года на новую строку
-      // (по референсу: "BRANDING WORKS / 2022")
       const metaEl = document.getElementById('modalMeta');
       const yearMatch = c.meta.match(/^(.*?)(?:\s*[·•]\s*)?(\b(?:19|20)\d{2}\b.*)$/);
       if (yearMatch) {
@@ -2487,10 +2488,8 @@ if (!IS_TOUCH) (() => {
         metaEl.textContent = c.meta;
       }
       document.getElementById('modalDesc').textContent = c.desc;
+      _savedScrollY = window.scrollY || window.pageYOffset;
       modal.classList.add('open');
-      // Компенсируем исчезновение системного скроллбара — на десктопе с мышкой
-      // body теряет ~15px ширины, и весь layout (включая модалку) дёргался бы.
-      // Запоминаем ширину скроллбара и кладём её в CSS-переменную.
       const sbw = window.innerWidth - document.documentElement.clientWidth;
       document.documentElement.style.setProperty('--sbw', sbw + 'px');
       document.documentElement.classList.add('modal-open');
@@ -2500,6 +2499,7 @@ if (!IS_TOUCH) (() => {
     modal.classList.remove('open');
     document.documentElement.classList.remove('modal-open');
     document.documentElement.style.removeProperty('--sbw');
+    requestAnimationFrame(() => window.scrollTo(0, _savedScrollY));
   }
   close.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
@@ -2646,7 +2646,7 @@ if (!IS_TOUCH) (() => {
       e.stopPropagation();
       currentPage = currentPage === 'a' ? 'b' : 'a';
       var lbl = document.getElementById('statsMoreLabel');
-      if (lbl) lbl.textContent = currentPage === 'b' ? 'вернуть назад' : 'ещё данные';
+      if (lbl) lbl.textContent = currentPage === 'b' ? 'Назад…' : 'Далее…';
       showPage(currentPage);
     });
   }
