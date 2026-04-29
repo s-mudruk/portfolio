@@ -2188,6 +2188,7 @@ if (!IS_TOUCH) (() => {
   const SHOW_AT = 30;
 
   function update() {
+    if (document.documentElement.dataset.modalClosing) { ticking = false; return; }
     const y = window.scrollY;
     header.classList.toggle('scrolled', y > 8);
 
@@ -2221,7 +2222,13 @@ if (!IS_TOUCH) (() => {
       ticking = true;
     }
   }, { passive: true });
+
+  // Set correct initial header state after page loads
+  requestAnimationFrame(update);
 })();
+
+// Prevent browser from restoring scroll position to footer on reload
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
 /* ============ MOBILE MENU ============ */
 (() => {
@@ -2484,7 +2491,9 @@ if (!IS_TOUCH) (() => {
     document.documentElement.classList.remove('modal-open');
     document.documentElement.style.removeProperty('--sbw');
     document.body.style.top = '';
+    document.documentElement.dataset.modalClosing = '1';
     window.scrollTo({ top: _savedScrollY, behavior: 'instant' });
+    requestAnimationFrame(() => delete document.documentElement.dataset.modalClosing);
   }
   close.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
