@@ -1313,6 +1313,7 @@
     .nav-name .caret { width: 7px; height: 18px; }
     .scene { padding: 24px 16px; }
     .win .body { padding: 16px; }
+    .win--media .body { padding: 0 !important; }
     .win .bar { padding: 0 12px; }
     .win--quote .body { padding: 16px; }
     .win--case .thumb { margin: -16px -16px 14px; }
@@ -2202,6 +2203,10 @@ if (!IS_TOUCH) (() => {
     } else if (y > HIDE_AT) {
       header.classList.add('hide');
     }
+
+    const gutter = document.getElementById('ios-gutter');
+    if (gutter) gutter.style.opacity = inFooter ? '1' : '0';
+
     ticking = false;
   }
 
@@ -2676,6 +2681,9 @@ if (!IS_TOUCH) (() => {
   });
 })();
 </script>
+
+<!-- iOS safe-area bottom gutter -->
+<div id="ios-gutter" style="position:fixed;bottom:0;left:0;right:0;height:env(safe-area-inset-bottom,0px);background:var(--surface);pointer-events:none;z-index:9001;opacity:0;transition:opacity .25s;"></div>
 
 </body>
 </html>
