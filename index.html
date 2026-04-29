@@ -1151,6 +1151,26 @@
     width: 100%;
   }
 
+  /* ============ EDGE FADES ============ */
+  /* Top fade: content dissolves as it scrolls under the header */
+  #top-fade {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 110px;
+    background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 58;
+  }
+  /* Bottom fade inside case modal */
+  .modal-fade-b {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: linear-gradient(to top, var(--bg) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
   /* ============ SCROLL HINT ============ */
   .scroll-hint {
     position: fixed; z-index: 50;
@@ -1858,6 +1878,7 @@
 
 <!-- ===== CASE MODAL ===== -->
 <div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-fade-b" aria-hidden="true"></div>
   <div class="sheet">
     <div class="content">
       <div class="cols">
@@ -2778,6 +2799,9 @@ if (!IS_TOUCH) (() => {
   });
 })();
 </script>
+
+<!-- Top fade: content dissolves as it scrolls past the top -->
+<div id="top-fade" aria-hidden="true"></div>
 
 <!-- iOS safe-area bottom gutter -->
 <div id="ios-gutter" style="position:fixed;bottom:0;left:0;right:0;height:env(safe-area-inset-bottom,0px);background:var(--surface);pointer-events:none;z-index:9001;opacity:0;transition:opacity .25s;"></div>
