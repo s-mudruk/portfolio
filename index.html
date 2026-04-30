@@ -759,6 +759,10 @@
     margin: -20px -20px 16px;
     overflow: hidden;
   }
+  .win--case .thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+  }
   .win--case h4 {
     margin: 0 0 4px;
     font-family: var(--display); font-weight: 500;
@@ -1149,6 +1153,12 @@
     display: grid; place-items: center;
     font-family: var(--mono); font-size: 11px; color: var(--muted);
     width: 100%;
+    overflow: hidden;
+  }
+  .modal .shots .shot img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    border-radius: var(--r-md);
   }
 
   /* ============ EDGE FADES (mobile only) ============ */
@@ -1760,7 +1770,7 @@
         <div class="title">case · 001</div>
       </div>
       <div class="body">
-        <div class="thumb">[ Lamoda B2B · мокап платформы ]</div>
+        <div class="thumb"><img src="cases/lamoda/lm-1.png" alt="Lamoda B2B Media Platform" loading="lazy"></div>
         <h4>Lamoda B2B Media Platform</h4>
         <div class="meta">research · UX · MVP-фреймворк · 2025</div>
         <button class="open" data-open-case="lamoda">Увидеть больше</button>
@@ -1897,12 +1907,7 @@
             <div class="f"><span>Output</span>MVP-фреймворк</div>
           </div>
         </aside>
-        <div class="shots">
-          <div class="shot">[ изображение 01 · 16:9 ]</div>
-          <div class="shot">[ изображение 02 · 16:9 ]</div>
-          <div class="shot">[ изображение 03 · 16:9 ]</div>
-          <div class="shot">[ изображение 04 · 16:9 ]</div>
-        </div>
+        <div class="shots"></div>
       </div>
     </div>
   </div>
@@ -2457,7 +2462,19 @@ if (!IS_TOUCH) (() => {
       title: 'Lamoda B2B Media Platform',
       meta: 'research · UX · MVP-фреймворк · 2025 · 10 недель',
       crumb: '[ case · 001 ] — Lamoda B2B Media',
-      desc: 'Концепт B2B-медиа-платформы для Lamoda — fashion-аналог Pulse / T-Journal / VC.RU. Цель — построить контентный фреймворк, который привлекает бренд-партнёров, ключевых стейкхолдеров и инфлюенсеров в экосистему. Работал в analytics & MVP-команде: конкурентный ресёрч, фокус-группы, ToV и копирайт-фрейм, контент-направления и UX-вайрфрейм для старта разработки.'
+      desc: 'Концепт B2B-медиа-платформы для Lamoda — fashion-аналог Pulse / T-Journal / VC.RU. Цель — построить контентный фреймворк, который привлекает бренд-партнёров, ключевых стейкхолдеров и инфлюенсеров в экосистему. Работал в analytics & MVP-команде: конкурентный ресёрч, фокус-группы, ToV и копирайт-фрейм, контент-направления и UX-вайрфрейм для старта разработки.',
+      facts: [
+        { label: 'Роль', val: 'Research / UX' },
+        { label: 'Команда', val: '5 человек' },
+        { label: 'Год', val: '2025' },
+        { label: 'Output', val: 'MVP-фреймворк' }
+      ],
+      imgs: [
+        'cases/lamoda/lm-2.png',
+        'cases/lamoda/lm-3.png',
+        'cases/lamoda/lm-4.png',
+        'cases/lamoda/lm-5.png'
+      ]
     },
     'kamaz': {
       title: 'КАМАЗ — бренд & lead-gen',
@@ -2510,6 +2527,28 @@ if (!IS_TOUCH) (() => {
         metaEl.textContent = c.meta;
       }
       document.getElementById('modalDesc').textContent = c.desc;
+
+      // Facts
+      const factsEl = document.querySelector('.modal .facts');
+      if (factsEl && c.facts) {
+        factsEl.innerHTML = c.facts.map(f => `<div class="f"><span>${f.label}</span>${f.val}</div>`).join('');
+      }
+
+      // Shots
+      const shotsEl = document.querySelector('.modal .shots');
+      if (shotsEl) {
+        if (c.imgs && c.imgs.length) {
+          shotsEl.innerHTML = c.imgs.map(src =>
+            `<div class="shot"><img src="${src}" alt="" loading="lazy"></div>`
+          ).join('');
+        } else {
+          shotsEl.innerHTML = `
+            <div class="shot">[ изображение 01 · 16:9 ]</div>
+            <div class="shot">[ изображение 02 · 16:9 ]</div>
+            <div class="shot">[ изображение 03 · 16:9 ]</div>
+            <div class="shot">[ изображение 04 · 16:9 ]</div>`;
+        }
+      }
       _savedScrollY = window.scrollY || window.pageYOffset;
       document.body.style.top = `-${_savedScrollY}px`;
       modal.classList.add('open');
