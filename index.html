@@ -796,7 +796,7 @@
   #glb {
     position: fixed; inset: 0; z-index: 10010;
     display: flex; align-items: center; justify-content: center;
-    padding: 20px;
+    padding: 0;
     pointer-events: none; opacity: 0;
     transition: opacity .24s ease;
   }
@@ -809,10 +809,9 @@
   }
   #glb-wrap {
     position: relative; z-index: 1;
-    max-width: min(92vw, calc((100dvh - 48px) * 16 / 9));
-    max-height: calc(100dvh - 48px);
-    border-radius: 10px; overflow: hidden;
-    box-shadow: 0 32px 96px rgba(0,0,0,.85);
+    width: 100vw; height: 100dvh;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 0; overflow: hidden;
     transform: scale(.86);
     transition: transform .34s cubic-bezier(.22,1,.36,1);
     will-change: transform, opacity;
@@ -822,8 +821,9 @@
   #glb.glb-open #glb-wrap { transform: scale(1); }
   #glb-wrap.glb-drag { transition: none; cursor: grabbing; }
   #glb-wrap img {
-    display: block; width: 100%; height: auto;
-    max-height: calc(100dvh - 48px);
+    display: block;
+    max-width: 100vw; max-height: 100dvh;
+    width: auto; height: auto;
     object-fit: contain; pointer-events: none;
     -webkit-user-drag: none;
   }
@@ -2764,6 +2764,8 @@ if (!IS_TOUCH) (() => {
   document.body.appendChild(lb);
 
   var OPEN = false;
+  var _glbScrollY = 0;
+  var _glbAddedLock = false; // did WE add modal-open (vs modal already did it)
 
   function openGlb(src) {
     if (OPEN) return;
@@ -2773,12 +2775,17 @@ if (!IS_TOUCH) (() => {
     wrap.style.opacity    = '';
     wrap.style.transition = '';
     lb.classList.add('glb-open');
-    requestAnimationFrame(function () {
-      bg.style.opacity = '.92';
-    });
-    var sbw = window.innerWidth - document.documentElement.clientWidth;
-    document.documentElement.style.setProperty('--sbw', sbw + 'px');
-    document.documentElement.classList.add('modal-open');
+    requestAnimationFrame(function () { bg.style.opacity = '.92'; });
+
+    // Only lock scroll if main modal hasn't already locked it
+    _glbAddedLock = !document.documentElement.classList.contains('modal-open');
+    if (_glbAddedLock) {
+      _glbScrollY = window.scrollY || window.pageYOffset;
+      document.body.style.top = '-' + _glbScrollY + 'px';
+      var sbw = window.innerWidth - document.documentElement.clientWidth;
+      document.documentElement.style.setProperty('--sbw', sbw + 'px');
+      document.documentElement.classList.add('modal-open');
+    }
   }
 
   function closeGlb(throwX, throwY) {
@@ -2803,8 +2810,13 @@ if (!IS_TOUCH) (() => {
       wrap.style.opacity    = '';
       wrap.style.transition = '';
       img.src = '';
-      document.documentElement.classList.remove('modal-open');
-      document.documentElement.style.removeProperty('--sbw');
+      if (_glbAddedLock) {
+        document.documentElement.classList.remove('modal-open');
+        document.documentElement.style.removeProperty('--sbw');
+        document.body.style.top = '';
+        window.scrollTo({ top: _glbScrollY, behavior: 'instant' });
+      }
+      _glbAddedLock = false;
     }, 290);
   }
 
