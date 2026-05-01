@@ -2679,14 +2679,14 @@ if (!IS_TOUCH) (() => {
   // Инициализируем только если устройство НЕ touch (на тачах нативный inertia уже работает идеально).
   if (!document.documentElement.classList.contains('is-touch') && window.Lenis) {
     // Главная страница (window scroll)
-    const lenisMain = new Lenis({
+    window.__lenisMain = new Lenis({
       duration: 0.9,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       smoothTouch: false,
       wheelMultiplier: 1,
     });
-    function raf(time) { lenisMain.raf(time); requestAnimationFrame(raf); }
+    function raf(time) { window.__lenisMain.raf(time); requestAnimationFrame(raf); }
     requestAnimationFrame(raf);
     // Когда открывается модалка — главный Lenis ставим на паузу (body заблокирован overflow:hidden),
     // и запускаем отдельный Lenis на .modal .sheet для плавного скролла внутри кейса.
@@ -2697,7 +2697,7 @@ if (!IS_TOUCH) (() => {
       const observer = new MutationObserver(() => {
         const isOpen = modalRoot.classList.contains('open');
         if (isOpen && !lenisModal) {
-          lenisMain.stop();
+          window.__lenisMain.stop();
           lenisModal = new Lenis({
             wrapper: modalSheet,
             content: modalSheet.firstElementChild,
@@ -2713,7 +2713,7 @@ if (!IS_TOUCH) (() => {
         } else if (!isOpen && lenisModal) {
           lenisModal.destroy();
           lenisModal = null;
-          lenisMain.start();
+          window.__lenisMain.start();
         }
       });
       observer.observe(modalRoot, { attributes: true, attributeFilter: ['class'] });
@@ -2780,6 +2780,7 @@ if (!IS_TOUCH) (() => {
     // Only lock scroll if main modal hasn't already locked it
     _glbAddedLock = !document.documentElement.classList.contains('modal-open');
     if (_glbAddedLock) {
+      if (window.__lenisMain) window.__lenisMain.stop();
       _glbScrollY = window.scrollY || window.pageYOffset;
       document.body.style.top = '-' + _glbScrollY + 'px';
       var sbw = window.innerWidth - document.documentElement.clientWidth;
@@ -2815,6 +2816,10 @@ if (!IS_TOUCH) (() => {
         document.documentElement.style.removeProperty('--sbw');
         document.body.style.top = '';
         window.scrollTo({ top: _glbScrollY, behavior: 'instant' });
+        if (window.__lenisMain) {
+          window.__lenisMain.scrollTo(_glbScrollY, { immediate: true });
+          window.__lenisMain.start();
+        }
       }
       _glbAddedLock = false;
     }, 290);
