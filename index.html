@@ -722,13 +722,13 @@
       position: absolute;
       width: 120px; height: 120px;
       perspective: 900px;
-      cursor: grab;
+      cursor: none;
       z-index: 10;
       touch-action: none;
       user-select: none;
       -webkit-user-drag: none;
     }
-    .stk3d-scene.dragging { cursor: grabbing; z-index: 100; }
+    .stk3d-scene.dragging { cursor: none; z-index: 100; }
     .stk3d-body {
       width: 100%; height: 100%;
       position: relative;
@@ -1239,17 +1239,9 @@
   }
 
   /* ============ EDGE FADES (mobile only) ============ */
+  #top-fade { display: none; }
   #top-fade, .modal-fade-t { display: none; }
   @media (hover: none) and (pointer: coarse) {
-    #top-fade {
-      display: block;
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 24px;
-      background: linear-gradient(to bottom, rgba(19,19,19,.4) 0%, transparent 100%);
-      pointer-events: none;
-      z-index: 58;
-    }
     .modal-fade-t {
       display: block;
       position: absolute;
@@ -2187,7 +2179,11 @@ if (!IS_TOUCH) (() => {
     const t = e.target;
     cursor.classList.remove('ring', 'grab');
     label.classList.remove('show');
-    if (t.closest('[data-handle]') || t.closest('[data-sticker]')) {
+    if (t.closest('[data-stk3d]')) {
+      cursor.classList.add('grab');
+      label.textContent = 'переклеить';
+      label.classList.add('show');
+    } else if (t.closest('[data-handle]') || t.closest('[data-sticker]')) {
       cursor.classList.add('grab');
       label.textContent = 'потянуть';
       label.classList.add('show');
