@@ -2841,10 +2841,13 @@ if (!IS_TOUCH) (() => {
     openGlb(el.src || el.currentSrc);
   });
 
-  // ── ESC ───────────────────────────────────────────────────────────────
+  // ── ESC — capture phase so lightbox takes priority over modal ────────
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') closeGlb();
-  });
+    if (e.key === 'Escape' && OPEN) {
+      e.stopImmediatePropagation();
+      closeGlb();
+    }
+  }, true);
 
   // ── Click backdrop ────────────────────────────────────────────────────
   bg.addEventListener('click', function () { closeGlb(); });
