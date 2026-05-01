@@ -714,42 +714,62 @@
   .win--list .item:hover { padding-left: 12px; color: var(--accent); }
   .win--list .item:hover .num { color: var(--accent); }
 
-  /* ============ ASCII STICKERS (removed) ============
-     Класс .sticker оставлен пустым для совместимости JS, разметки нет.
-     Без подписей. Не в футере. */
-  .sticker {
-    position: absolute;
-    z-index: 7;
-    background: #FFFFFF;
-    color: #131313;
-    font-family: var(--mono);
-    font-weight: 600;
-    line-height: 1.05;
-    white-space: pre;
-    padding: 10px 14px;
-    border-radius: 4px;
-    /* Обводка как у "вырезанного" стикера: белая толстая обводка + лёгкая тень */
-    box-shadow:
-      0 0 0 6px #ffffff,
-      0 6px 14px rgba(0,0,0,.35),
-      0 1px 2px rgba(0,0,0,.25);
-    user-select: none;
-    transform-origin: center;
-    transition: transform .25s cubic-bezier(.2,.9,.25,1.05);
-    cursor: grab;
-    pointer-events: auto;
+  /* ============ 3D PNG STICKERS ============ */
+  .stk3d-scene { display: none; } /* mobile: hidden */
+  @media (pointer: fine) {
+    .stk3d-scene {
+      display: block;
+      position: absolute;
+      width: 120px; height: 120px;
+      perspective: 900px;
+      cursor: grab;
+      z-index: 10;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .stk3d-scene.dragging { cursor: grabbing; z-index: 100; }
+    .stk3d-body {
+      width: 100%; height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .stk3d-wrap {
+      position: relative;
+      width: 100%; height: 100%;
+      filter: drop-shadow(0 8px 22px rgba(0,0,0,.42));
+      transition: filter .28s ease;
+    }
+    .stk3d-wrap img {
+      display: block; width: 100%; height: 100%;
+      object-fit: contain; pointer-events: none;
+      -webkit-user-drag: none;
+    }
+    .stk3d-holo {
+      position: absolute; inset: 0; pointer-events: none;
+      opacity: 0; mix-blend-mode: screen;
+      background: linear-gradient(135deg, hsl(0,100%,60%) 0%, hsl(300,100%,60%) 100%);
+      filter: blur(5px) brightness(.65) contrast(1.5);
+      transition: opacity .18s ease;
+      -webkit-mask-image: var(--stk-mask);
+      -webkit-mask-size: contain;
+      -webkit-mask-position: center;
+      -webkit-mask-repeat: no-repeat;
+      mask-image: var(--stk-mask);
+      mask-size: contain;
+      mask-position: center;
+      mask-repeat: no-repeat;
+    }
+    .stk3d-scene:not(.dragging):hover .stk3d-wrap {
+      filter: drop-shadow(0 14px 28px rgba(0,0,0,.5));
+    }
+    .stk3d-scene.dragging .stk3d-wrap {
+      filter: drop-shadow(0 28px 48px rgba(0,0,0,.55));
+      transition: filter .08s ease;
+    }
+    .stk3d-scene.dragging .stk3d-holo { opacity: .6; }
   }
-  .sticker:hover { transform: scale(1.06) rotate(var(--rot, 0deg)); }
-  .sticker.dragging { z-index: 60 !important; transition: none; cursor: grabbing; }
-  /* Размеры */
-  .sticker--xs { font-size: 9px; }
-  .sticker--sm { font-size: 11px; }
-  .sticker--md { font-size: 13px; }
-  .sticker--lg { font-size: 15px; }
-  /* Цветные акценты */
-  .sticker--blue { color: #1395FF; }
-  .sticker--mono { color: #131313; }
-  .sticker--ink  { color: #2A2A2A; }
 
   /* case */
   .win--case { width: 420px; }
@@ -1225,8 +1245,8 @@
       display: block;
       position: fixed;
       top: 0; left: 0; right: 0;
-      height: 36px;
-      background: linear-gradient(to bottom, rgba(19,19,19,.6) 0%, transparent 100%);
+      height: 24px;
+      background: linear-gradient(to bottom, rgba(19,19,19,.4) 0%, transparent 100%);
       pointer-events: none;
       z-index: 58;
     }
@@ -1464,84 +1484,8 @@
 
   .mob-br { display: none; }
 
-  /* ============ STICKERS ============ */
-  .sticker {
-    display: none;
-    position: absolute;
-    z-index: 10;
-    cursor: grab;
-    user-select: none;
-    touch-action: none;
-    -webkit-user-drag: none;
-    transform: rotate(var(--rot, 0deg));
-    transition: transform .48s cubic-bezier(.34,1.56,.64,1);
-  }
-  .sticker.s-lift {
-    cursor: grabbing;
-    z-index: 100;
-    transform: rotate(calc(var(--rot, 0deg) + 5deg)) scale(1.08) !important;
-    transition: transform .1s, filter .1s !important;
-  }
-  .stk-inner {
-    position: relative;
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: 12px;
-    line-height: 1.35;
-    letter-spacing: -.01em;
-    min-width: 80px;
-    text-align: center;
-    filter: drop-shadow(2px 3px 9px rgba(0,0,0,.45));
-    transition: filter .2s;
-  }
-  .sticker.s-lift .stk-inner { filter: drop-shadow(7px 14px 26px rgba(0,0,0,.58)); }
-  .stk-3 .stk-inner { font-size: 22px; padding: 16px 20px; }
-  /* 1 – yellow, torn top */
-  .stk-1 .stk-inner {
-    background: #f5df3a; color: #191100;
-    padding: 20px 18px 14px;
-    clip-path: polygon(
-      0% 8%,4% 3%,8% 8%,12% 3%,16% 7%,20% 2%,24% 7%,28% 3%,32% 8%,
-      36% 3%,40% 7%,44% 2%,48% 7%,52% 3%,56% 8%,60% 3%,64% 7%,68% 2%,
-      72% 8%,76% 3%,80% 7%,84% 2%,88% 7%,92% 3%,96% 7%,100% 4%,
-      100% 100%,0% 100%
-    );
-  }
-  /* 2 – sky blue, torn bottom */
-  .stk-2 .stk-inner {
-    background: #bde5f6; color: #062438;
-    padding: 14px 18px 24px;
-    clip-path: polygon(
-      0% 0%,100% 0%,100% 80%,
-      97% 87%,94% 81%,91% 87%,88% 81%,85% 87%,82% 81%,79% 87%,76% 81%,
-      73% 87%,70% 81%,67% 87%,64% 81%,61% 86%,58% 80%,55% 86%,52% 81%,
-      49% 87%,46% 81%,43% 86%,40% 80%,37% 86%,34% 81%,31% 86%,28% 80%,
-      25% 86%,22% 81%,19% 87%,16% 81%,13% 86%,10% 80%,7% 86%,4% 80%,1% 86%,0% 81%
-    );
-  }
-  /* 3 – cream, torn right */
-  .stk-3 .stk-inner {
-    background: #f5f0d6; color: #231900;
-    padding: 14px 28px 14px 16px;
-    clip-path: polygon(
-      0% 0%,83% 0%,
-      89% 5%,82% 11%,89% 17%,82% 23%,88% 29%,81% 35%,88% 41%,
-      82% 47%,88% 53%,81% 59%,88% 65%,82% 71%,88% 77%,81% 83%,
-      88% 89%,82% 95%,87% 100%,
-      0% 100%
-    );
-  }
-  /* 4 – pink, rough all edges, ASCII */
-  .stk-4 .stk-inner {
-    background: #f9c5cd; color: #500018;
-    padding: 14px 18px;
-    clip-path: polygon(
-      3% 2%,11% 0%,20% 2%,29% 0%,38% 2%,47% 0%,56% 3%,65% 0%,74% 2%,83% 0%,93% 2%,99% 4%,
-      100% 13%,98% 22%,100% 31%,97% 41%,100% 50%,97% 59%,100% 68%,97% 77%,100% 86%,97% 95%,
-      93% 100%,83% 97%,73% 100%,63% 97%,53% 100%,43% 97%,33% 100%,23% 97%,13% 100%,4% 97%,1% 94%,
-      0% 85%,2% 76%,0% 67%,2% 58%,0% 49%,2% 40%,0% 31%,2% 22%,0% 13%,2% 4%
-    );
-  }
+  /* old sticker class — kept for JS compat, hidden */
+  .sticker { display: none !important; }
 </style>
 </head>
 <body>
@@ -1725,7 +1669,7 @@
         <span class="brace">}</span>
       </div>
     </div>
-    <div class="sticker stk-1" style="left:28%;top:158px;--rot:-6deg"><div class="stk-inner">=^.^=</div></div>
+    <div class="stk3d-scene" data-stk3d style="left:28%;top:158px;--stk-mask:url(sck-1.png)"><div class="stk3d-body"><div class="stk3d-wrap"><img src="sck-1.png" alt=""><div class="stk3d-holo"></div></div></div></div>
   </section>
 
   <!-- SCENE 2 — ДЕЛАЮ -->
@@ -1770,7 +1714,7 @@
         <a class="chip" href="#">Студия WNS</a>
       </div>
     </div>
-    <div class="sticker stk-2" style="left:60%;top:152px;--rot:5deg"><div class="stk-inner">ʕ·ᴥ·ʔ</div></div>
+    <div class="stk3d-scene" data-stk3d style="left:60%;top:152px;--stk-mask:url(sck-1.png)"><div class="stk3d-body"><div class="stk3d-wrap"><img src="sck-1.png" alt=""><div class="stk3d-holo"></div></div></div></div>
   </section>
 
   <!-- SCENE 3 — ПРОЦЕСС -->
@@ -1814,7 +1758,7 @@
         <span class="brace">}</span>
       </div>
     </div>
-    <div class="sticker stk-3" style="left:34%;top:158px;--rot:-3deg"><div class="stk-inner">♡</div></div>
+    <div class="stk3d-scene" data-stk3d style="left:34%;top:158px;--stk-mask:url(sck-1.png)"><div class="stk3d-body"><div class="stk3d-wrap"><img src="sck-1.png" alt=""><div class="stk3d-holo"></div></div></div></div>
   </section>
 
   <!-- SCENE 4 — РАБОТЫ -->
@@ -1898,7 +1842,7 @@
         <button class="open" data-open-case="trajectory">Увидеть больше</button>
       </div>
     </div>
-    <div class="sticker stk-4" style="left:26%;top:220px;--rot:4deg"><div class="stk-inner">( ˘ᵕ˘ )</div></div>
+    <div class="stk3d-scene" data-stk3d style="left:26%;top:220px;--stk-mask:url(sck-1.png)"><div class="stk3d-body"><div class="stk3d-wrap"><img src="sck-1.png" alt=""><div class="stk3d-holo"></div></div></div></div>
   </section>
 
 </main>
@@ -2982,47 +2926,123 @@ if (!IS_TOUCH) (() => {
 </script>
 
 <script>
-/* stickers drag — position: absolute within scene */
+/* ── 3D PNG stickers ── */
 (function () {
-  document.querySelectorAll('.sticker').forEach(function (stk) {
-    var active = false, ox = 0, oy = 0, sx = 0, sy = 0;
+  var TILT_MAX = 18, STIFFNESS = 0.08, DAMPING = 0.82, VEL_SMOOTH = 0.78, TILT_SCALE = 1.9;
+  var clamp = function (v, m) { return Math.max(-m, Math.min(m, v)); };
 
-    function grab(cx, cy) {
-      active = true;
-      var r  = stk.getBoundingClientRect();
-      var pr = stk.offsetParent ? stk.offsetParent.getBoundingClientRect() : { left: 0, top: 0 };
-      ox = r.left - pr.left;
-      oy = r.top  - pr.top;
-      stk.style.left = ox + 'px';
-      stk.style.top  = oy + 'px';
-      sx = cx; sy = cy;
-      stk.classList.add('s-lift');
+  document.querySelectorAll('[data-stk3d]').forEach(function (scene) {
+    var body = scene.querySelector('.stk3d-body');
+    var holo = scene.querySelector('.stk3d-holo');
+
+    var tiltX = 0, tiltY = 0, svelX = 0, svelY = 0;
+    var smVX = 0, smVY = 0;
+    var hovering = false, dragging = false, rafActive = false;
+    var posX = 0, posY = 0, dragStartX = 0, dragStartY = 0, elStartX = 0, elStartY = 0;
+    var mx = 0, my = 0, tid = null;
+
+    function loop() {
+      var tx = 0, ty = 0;
+      if (dragging) {
+        tx = clamp(smVY * -TILT_SCALE, TILT_MAX);
+        ty = clamp(smVX *  TILT_SCALE, TILT_MAX);
+        var hue = ((tiltY / TILT_MAX) * 0.5 + 0.5) * 300;
+        var ang = 115 + tiltY * 2.2;
+        holo.style.background =
+          'linear-gradient(' + ang + 'deg,' +
+          'hsl(' + hue + ',100%,62%) 0%,hsl(' + (hue+50) + ',100%,62%) 14%,' +
+          'hsl(' + (hue+100) + ',100%,62%) 28%,hsl(' + (hue+150) + ',100%,62%) 42%,' +
+          'hsl(' + (hue+200) + ',100%,62%) 57%,hsl(' + (hue+250) + ',100%,62%) 71%,' +
+          'hsl(' + (hue+300) + ',100%,62%) 85%,hsl(' + (hue+350) + ',100%,62%) 100%)';
+      }
+      svelX += (tx - tiltX) * STIFFNESS; svelY += (ty - tiltY) * STIFFNESS;
+      svelX *= DAMPING; svelY *= DAMPING;
+      tiltX += svelX; tiltY += svelY;
+      var sc = dragging ? 1.10 : (hovering ? 1.035 : 1);
+      var tz = dragging ? 28   : (hovering ? 9     : 0);
+      body.style.transform =
+        'rotateX(' + tiltX.toFixed(3) + 'deg) rotateY(' + tiltY.toFixed(3) + 'deg)' +
+        ' scale(' + sc + ') translateZ(' + tz + 'px)';
+      if (!dragging && !hovering &&
+          Math.abs(tiltX) < 0.01 && Math.abs(tiltY) < 0.01 &&
+          Math.abs(svelX) < 0.01 && Math.abs(svelY) < 0.01) {
+        rafActive = false; return;
+      }
+      requestAnimationFrame(loop);
     }
-    function move(cx, cy) {
-      if (!active) return;
-      stk.style.left = (ox + cx - sx) + 'px';
-      stk.style.top  = (oy + cy - sy) + 'px';
-    }
-    function drop() {
-      if (!active) return;
-      active = false;
-      stk.classList.remove('s-lift');
+    function startRAF() { if (!rafActive) { rafActive = true; requestAnimationFrame(loop); } }
+
+    function startDrag(cx, cy) {
+      var r  = scene.getBoundingClientRect();
+      var pr = scene.offsetParent ? scene.offsetParent.getBoundingClientRect() : { left: 0, top: 0 };
+      elStartX = r.left - pr.left; elStartY = r.top - pr.top;
+      posX = elStartX; posY = elStartY;
+      dragStartX = cx; dragStartY = cy;
+      smVX = 0; smVY = 0;
+      dragging = true;
+      scene.classList.add('dragging');
+      startRAF();
     }
 
-    stk.addEventListener('mousedown', function (e) {
-      e.stopPropagation(); e.preventDefault(); grab(e.clientX, e.clientY);
-    });
-    stk.addEventListener('touchstart', function (e) {
+    scene.addEventListener('mouseenter', function () { hovering = true; startRAF(); });
+    scene.addEventListener('mouseleave', function () { if (!dragging) hovering = false; });
+
+    scene.addEventListener('mousedown', function (e) {
       e.stopPropagation(); e.preventDefault();
-      grab(e.touches[0].clientX, e.touches[0].clientY);
+      mx = e.clientX; my = e.clientY;
+      startDrag(e.clientX, e.clientY);
+    });
+
+    document.addEventListener('mousemove', function (e) {
+      var rawVX = e.clientX - mx, rawVY = e.clientY - my;
+      mx = e.clientX; my = e.clientY;
+      if (!dragging) return;
+      smVX = smVX * VEL_SMOOTH + rawVX * (1 - VEL_SMOOTH);
+      smVY = smVY * VEL_SMOOTH + rawVY * (1 - VEL_SMOOTH);
+      posX = elStartX + (e.clientX - dragStartX);
+      posY = elStartY + (e.clientY - dragStartY);
+      scene.style.left = posX + 'px';
+      scene.style.top  = posY + 'px';
+    });
+
+    document.addEventListener('mouseup', function () {
+      if (!dragging) return;
+      dragging = false; hovering = false;
+      scene.classList.remove('dragging');
+      smVX = 0; smVY = 0;
+    });
+
+    scene.addEventListener('touchstart', function (e) {
+      e.stopPropagation(); e.preventDefault();
+      var t = e.touches[0]; tid = t.identifier;
+      mx = t.clientX; my = t.clientY;
+      hovering = true;
+      startDrag(t.clientX, t.clientY);
     }, { passive: false });
 
-    document.addEventListener('mousemove', function (e) { move(e.clientX, e.clientY); });
     document.addEventListener('touchmove', function (e) {
-      if (active) { e.preventDefault(); move(e.touches[0].clientX, e.touches[0].clientY); }
+      if (!dragging) return;
+      var t = Array.prototype.find
+        ? Array.from(e.touches).find(function (x) { return x.identifier === tid; })
+        : (function () { for (var i = 0; i < e.touches.length; i++) if (e.touches[i].identifier === tid) return e.touches[i]; })();
+      if (!t) return;
+      var rawVX = t.clientX - mx, rawVY = t.clientY - my;
+      mx = t.clientX; my = t.clientY;
+      smVX = smVX * VEL_SMOOTH + rawVX * (1 - VEL_SMOOTH);
+      smVY = smVY * VEL_SMOOTH + rawVY * (1 - VEL_SMOOTH);
+      posX = elStartX + (t.clientX - dragStartX);
+      posY = elStartY + (t.clientY - dragStartY);
+      scene.style.left = posX + 'px';
+      scene.style.top  = posY + 'px';
+      e.preventDefault();
     }, { passive: false });
-    document.addEventListener('mouseup', drop);
-    document.addEventListener('touchend', drop);
+
+    document.addEventListener('touchend', function () {
+      if (!dragging) return;
+      dragging = false; hovering = false; tid = null;
+      scene.classList.remove('dragging');
+      smVX = 0; smVY = 0;
+    });
   });
 })();
 </script>
