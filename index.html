@@ -546,10 +546,14 @@
   }
   .cap-gif .cg-title {
     display: inline;
-    font-size: 14px; font-weight: 500;
-    color: #fff;
-    text-shadow: 0 1px 5px rgba(0,0,0,.8);
+    font-size: 12px; font-weight: 400;
+    color: var(--muted);
     line-height: 1.4;
+    letter-spacing: .02em;
+  }
+  .cap-gif .cg-title::before {
+    content: '// ';
+    color: var(--inactive);
   }
   @media (max-width: 1024px) {
     .win--stats { width: 100%; max-width: none; }
@@ -771,7 +775,7 @@
   .win--case h4 {
     margin: 0 0 4px;
     font-family: var(--display); font-weight: 500;
-    font-size: 22px; letter-spacing: -.02em;
+    font-size: 28px; letter-spacing: -.03em;
   }
   .win--case .meta {
     font-family: var(--mono); font-size: 11px; color: var(--muted);
