@@ -896,26 +896,32 @@
     margin: 0 .35em 0 .15em;
   }
 
-  /* links / elsewhere */
+  /* links / elsewhere — ретро Mac Finder */
   .win--links { width: 280px; }
-  .win--links .body { display: flex; justify-content: center; }
-  .elw-grid { display: flex; gap: 16px; justify-content: center; align-items: flex-start; }
+  .win--links .body { display: flex; justify-content: center; background: #BEBEBE; }
+  .elw-grid { display: flex; gap: 14px; justify-content: center; align-items: flex-start; }
   .elw-item {
-    display: flex; flex-direction: column; align-items: center; gap: 9px;
-    text-decoration: none; color: var(--secondary);
-    transition: color .2s;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    text-decoration: none;
   }
-  .elw-item:hover { color: var(--text); }
   .elw-icon {
     width: 52px; height: 52px;
     display: flex; align-items: center; justify-content: center;
-    border: 1px solid var(--divider); border-radius: 14px;
-    background: var(--surface-2);
-    transition: border-color .2s, background .2s, color .2s;
+    background: #fff; color: #1a1a1a;
+    border: 1.5px solid #1a1a1a;
+    border-radius: 2px;
+    transition: background .07s, color .07s;
   }
-  .elw-item:hover .elw-icon { border-color: rgba(19,149,255,.45); background: rgba(19,149,255,.07); color: var(--accent); }
-  .elw-icon svg { width: 22px; height: 22px; }
-  .elw-name { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; text-align: center; white-space: nowrap; }
+  .elw-item:hover .elw-icon { background: #1a1a1a; color: #fff; }
+  .elw-icon svg { width: 30px; height: 30px; }
+  .elw-name {
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 9px; letter-spacing: 0;
+    text-align: center; white-space: nowrap;
+    color: #1a1a1a; padding: 1px 4px;
+    transition: background .07s, color .07s;
+  }
+  .elw-item:hover .elw-name { background: #1a1a1a; color: #BEBEBE; }
 
   /* form */
   .win--form { width: 440px; }
@@ -1711,19 +1717,50 @@
         <div class="elw-grid">
           <a class="elw-item" href="https://t.me/mudruks" target="_blank" rel="noopener">
             <div class="elw-icon">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+              <!-- pixel speech bubble -->
+              <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="currentColor">
+                <rect x="1" y="1" width="13" height="1"/><rect x="1" y="7" width="13" height="1"/>
+                <rect x="0" y="2" width="1" height="5"/><rect x="14" y="2" width="1" height="5"/>
+                <rect x="2" y="3" width="7" height="1"/><rect x="2" y="5" width="5" height="1"/>
+                <rect x="2" y="8" width="3" height="1"/><rect x="2" y="9" width="2" height="1"/>
+                <rect x="2" y="10" width="1" height="1"/>
+              </svg>
             </div>
             <span class="elw-name">Телеграм</span>
           </a>
           <a class="elw-item" href="mailto:s@mudruk.ru">
             <div class="elw-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <!-- pixel envelope -->
+              <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="currentColor">
+                <rect x="0" y="2" width="16" height="1"/><rect x="0" y="13" width="16" height="1"/>
+                <rect x="0" y="2" width="1" height="12"/><rect x="15" y="2" width="1" height="12"/>
+                <rect x="1" y="3" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/>
+                <rect x="3" y="5" width="1" height="1"/><rect x="4" y="6" width="1" height="1"/>
+                <rect x="5" y="7" width="1" height="1"/><rect x="6" y="8" width="1" height="1"/>
+                <rect x="7" y="9" width="2" height="1"/>
+                <rect x="9" y="8" width="1" height="1"/><rect x="10" y="7" width="1" height="1"/>
+                <rect x="11" y="6" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/>
+                <rect x="13" y="4" width="1" height="1"/><rect x="14" y="3" width="1" height="1"/>
+              </svg>
             </div>
             <span class="elw-name">Электропочта</span>
           </a>
           <a class="elw-item" href="#" target="_blank" rel="noopener">
             <div class="elw-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5 12 4l10 5.5v9L12 24 2 18.5V9.5z"/><path d="m2 9.5 10 5.5 10-5.5"/><path d="M12 15v9"/></svg>
+              <!-- pixel mac computer -->
+              <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="currentColor">
+                <rect x="2" y="0" width="10" height="1"/>
+                <rect x="1" y="1" width="1" height="8"/><rect x="12" y="1" width="1" height="8"/>
+                <rect x="2" y="8" width="10" height="1"/>
+                <rect x="4" y="9" width="5" height="1"/>
+                <rect x="1" y="10" width="12" height="1"/>
+                <rect x="5" y="11" width="4" height="1"/>
+                <rect x="2" y="12" width="10" height="2"/>
+                <!-- screen: happy mac pixel face -->
+                <rect x="5" y="3" width="2" height="1"/><rect x="8" y="3" width="2" height="1"/>
+                <rect x="4" y="5" width="1" height="1"/><rect x="10" y="5" width="1" height="1"/>
+                <rect x="5" y="6" width="5" height="1"/>
+              </svg>
             </div>
             <span class="elw-name">Студия WNS</span>
           </a>
