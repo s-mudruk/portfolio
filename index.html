@@ -795,7 +795,9 @@
   .win--case .thumb img {
     width: 100%; height: 100%;
     object-fit: contain; display: block;
+    pointer-events: none;
   }
+  .win--case .thumb[data-open-case] { cursor: none; }
   .win--case h4 {
     margin: 0 0 4px;
     font-family: var(--display); font-weight: 500;
@@ -1785,7 +1787,7 @@
         <div class="title">case · 001</div>
       </div>
       <div class="body">
-        <div class="thumb"><img src="cases/lamoda/lm-1.png" alt="Lamoda B2B Media Platform" loading="lazy" crossorigin="anonymous"></div>
+        <div class="thumb" data-open-case="lamoda"><img src="cases/lamoda/lm-1.png" alt="Lamoda B2B Media Platform" loading="lazy" crossorigin="anonymous"></div>
         <h4>Lamoda B2B Media Platform</h4>
         <div class="meta">research · UX · MVP-фреймворк · 2025</div>
         <button class="open" data-open-case="lamoda">Увидеть больше</button>
@@ -2797,14 +2799,13 @@ if (!IS_TOUCH) (() => {
   document.addEventListener('click', function (e) {
     if (OPEN) return;
     var el = e.target;
-    var isThumb = el.matches('.win--case .thumb img') || !!el.closest('.win--case .thumb img');
     var isShot  = el.matches('.modal .shots .shot img') || !!el.closest('.modal .shots .shot img');
     // also handle click on the shot div itself (fallback for wrapped img)
     if (!isShot) {
       var shotDiv = el.closest('.modal .shots .shot');
       if (shotDiv) { var si = shotDiv.querySelector('img'); if (si) { isShot = true; el = si; } }
     }
-    if (!isThumb && !isShot) return;
+    if (!isShot) return;
     e.stopPropagation();
     openGlb(el.src || el.currentSrc);
   });
