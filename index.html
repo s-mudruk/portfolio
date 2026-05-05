@@ -408,7 +408,7 @@
   .win .bar .drag-hint {
     margin-left: auto;
     font-family: var(--sans); font-size: 12px;
-    color: var(--inactive);
+    color: rgba(19,149,255,.30);
   }
   .win .body {
     padding: 20px;
@@ -493,14 +493,14 @@
   .win--about { width: 380px; }
   .win--about .photo {
     aspect-ratio: 4/5;
-    background:
-      repeating-linear-gradient(45deg, var(--surface-2) 0 8px, var(--surface) 8px 16px);
     border: 1px solid var(--divider);
     border-radius: var(--r-sm);
-    display: grid; place-items: center;
-    font-family: var(--mono); font-size: 11px;
-    color: var(--muted);
+    overflow: hidden;
     margin-bottom: 14px;
+  }
+  .win--about .photo img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
   }
   .win--about h3 {
     margin: 0 0 8px;
@@ -905,7 +905,7 @@
 
   /* links / elsewhere — ретро Mac Finder */
   .win--links { width: 280px; }
-  .win--links .body { display: flex; justify-content: center; background: #BEBEBE; }
+  .win--links .body { display: flex; justify-content: center; align-items: center; background: #BEBEBE; padding: 20px; }
   .elw-grid { display: flex; gap: 14px; justify-content: center; align-items: flex-start; }
   .elw-item {
     display: flex; flex-direction: column; align-items: center; gap: 5px;
@@ -1376,6 +1376,10 @@
     }
     .mob-br { display: block; }
     .win--hero h1 { font-size: 34px; }
+    .ci + .ci { margin-left: -33px; }
+    .ci-a { width: 130px; height: 130px; }
+    .ci-b { width: 108px; height: 108px; }
+    .ci-c { width: 88px; height: 88px; }
     .modal { padding: 0; }
     .modal .sheet { border-radius: 0; height: 100dvh; width: 100%; border: 0; }
     .modal .content { padding: calc(20px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom)); max-width: none; }
@@ -1589,7 +1593,7 @@
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
         <div class="title">intro.md</div>
-        <div class="drag-hint">окна можно двигать</div>
+        <div class="drag-hint">потяни</div>
       </div>
       <div class="body">
         <div class="circles-intro">
@@ -1597,7 +1601,7 @@
           <div class="ci ci-b"></div>
           <div class="ci ci-c"></div>
         </div>
-        <p>Являюсь специалистом в&nbsp;сферах <span class="hi" data-hi="product">продуктового</span> и&nbsp;<span class="hi" data-hi="comm">коммуникативного дизайна</span>, <span class="hi" data-hi="systems marketing smm">разработке дизайн и&nbsp;маркетинговых систем</span>. Работаю над <span class="hi" data-hi="product art">удобством по-человечески понятных продуктов</span>, ориентируясь на&nbsp;<span class="hi" data-hi="research event">уникальность каждого кейса</span>.</p>
+        <p>Специализируюсь в&nbsp;<span class="hi" data-hi="product">продуктовом</span> и&nbsp;<span class="hi" data-hi="comm">коммуникативном дизайне</span>, <span class="hi" data-hi="systems marketing smm">разработке дизайн-систем и&nbsp;маркетинговых стратегий</span>. Создаю <span class="hi" data-hi="product art">удобные, по-человечески понятные продукты</span>&nbsp;— с&nbsp;фокусом на&nbsp;<span class="hi" data-hi="research event">исследованиях и&nbsp;уникальности каждого кейса</span>.</p>
         <div class="tags">
           <span data-tag="product">Продукт-дизайн</span>
           <span data-tag="systems">Дизайн-системы</span>
@@ -1614,12 +1618,12 @@
     <div class="win win--about" data-draggable style="right: 5%; top: 160px;">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
-        <div class="title">about.md</div>
+        <div class="title">wenneedsite.md</div>
       </div>
       <div class="body">
-        <div class="photo">[ портрет · 4:5 ]</div>
-        <h3>Со-основатель WNS&nbsp;Design.</h3>
-        <p>5&nbsp;лет работаю с&nbsp;B2B-платформами и&nbsp;B2C-продуктами&nbsp;— от&nbsp;<b>КАМАЗ</b> и&nbsp;<b>Lamoda</b> до&nbsp;ранних стартапов и&nbsp;Telegram MiniApps. В&nbsp;2025 со-основал <b>WNS&nbsp;Design</b>&nbsp;— микросервисную студию для&nbsp;быстрых, бизнес-ориентированных запусков.</p>
+        <div class="photo"><img src="weneedsite.png" alt="WNS Design"></div>
+        <h3>Немного про WNS&nbsp;Design</h3>
+        <p>5&nbsp;лет работаю с&nbsp;B2B-платформами и&nbsp;B2C-продуктами&nbsp;— от&nbsp;<b>КАМАЗ</b> и&nbsp;<b>Lamoda</b> до&nbsp;мини-игр и&nbsp;бьюти-ботов. В&nbsp;2025 стартовал проект <b>WNS</b>, где компанией профессионалов мы делаем цифровое, понятное и&nbsp;близкое всем людям.</p>
       </div>
     </div>
 
