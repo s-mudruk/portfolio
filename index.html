@@ -465,6 +465,14 @@
     border-radius: 9999px;
     color: var(--text);
     line-height: 1.4;
+    cursor: default;
+    transition: border-color .15s, background .15s;
+  }
+  .win--hero .tags span:hover { border-color: var(--text); background: rgba(255,255,255,.05); }
+  .win--hero .hi { transition: color .2s, text-shadow .2s; }
+  .win--hero .hi.lit {
+    color: var(--text);
+    text-shadow: 0 0 16px rgba(255,255,255,.28);
   }
   .circles-intro {
     display: flex;
@@ -1590,16 +1598,16 @@
           <div class="ci ci-b"></div>
           <div class="ci ci-c"></div>
         </div>
-        <p>Являюсь специалистом в&nbsp;сферах продуктового и&nbsp;коммуникативного дизайна, разработке дизайн и&nbsp;маркетинговых систем. Работаю над удобством по-человечески понятных продуктов, ориентируясь на&nbsp;уникальность каждого кейса.</p>
+        <p>Являюсь специалистом в&nbsp;сферах <span class="hi" data-hi="product">продуктового</span> и&nbsp;<span class="hi" data-hi="comm">коммуникативного дизайна</span>, <span class="hi" data-hi="systems marketing smm">разработке дизайн и&nbsp;маркетинговых систем</span>. Работаю над <span class="hi" data-hi="product art">удобством по-человечески понятных продуктов</span>, ориентируясь на&nbsp;<span class="hi" data-hi="research event">уникальность каждого кейса</span>.</p>
         <div class="tags">
-          <span>Продукт-дизайн</span>
-          <span>Дизайн-системы</span>
-          <span>Ресерч и&nbsp;CJM</span>
-          <span>Коммуникативный дизайн</span>
-          <span>Ивент-дизайн</span>
-          <span>Арт-дирекшн</span>
-          <span>SMM &amp; Инфлюэнс</span>
-          <span>Маркетинг и&nbsp;PR</span>
+          <span data-tag="product">Продукт-дизайн</span>
+          <span data-tag="systems">Дизайн-системы</span>
+          <span data-tag="research">Ресерч и&nbsp;CJM</span>
+          <span data-tag="comm">Коммуникативный дизайн</span>
+          <span data-tag="event">Ивент-дизайн</span>
+          <span data-tag="art">Арт-дирекшн</span>
+          <span data-tag="smm">SMM &amp; Инфлюэнс</span>
+          <span data-tag="marketing">Маркетинг и&nbsp;PR</span>
         </div>
       </div>
     </div>
@@ -3098,6 +3106,22 @@ if (!IS_TOUCH) (() => {
       dragging = false; hovering = false; tid = null;
       scene.classList.remove('dragging');
       smVX = 0; smVY = 0;
+    });
+  });
+})();
+
+(function () {
+  var tags = document.querySelectorAll('.win--hero .tags span[data-tag]');
+  var hints = document.querySelectorAll('.win--hero .hi[data-hi]');
+  tags.forEach(function (tag) {
+    var key = tag.dataset.tag;
+    tag.addEventListener('mouseenter', function () {
+      hints.forEach(function (h) {
+        if (h.dataset.hi.split(' ').indexOf(key) !== -1) h.classList.add('lit');
+      });
+    });
+    tag.addEventListener('mouseleave', function () {
+      hints.forEach(function (h) { h.classList.remove('lit'); });
     });
   });
 })();
