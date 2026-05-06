@@ -1689,7 +1689,7 @@
         <div class="title">showreel.gif</div>
       </div>
       <div class="body">
-        <img src="lizard.gif" alt="showreel" loading="lazy">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="lizard.gif" alt="showreel" decoding="async" width="480" height="480">
         <div class="cap-gif"><span class="cg-title">открыт для интересных предложений</span></div>
       </div>
     </div>
@@ -1746,11 +1746,11 @@
         <div class="title">process.md</div>
       </div>
       <div class="body">
-        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Бриф &amp; бизнес-цели — KPI, аудитория, рынок</div></div>
-        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Ресёрч — аудит, фокус-группы, CJM, конкуренты</div></div>
-        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Стратегия &amp; концепт — позиционирование, ToV, контент</div></div>
-        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Дизайн &amp; система — бренд, UX, креативы, прототипы</div></div>
-        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Запуск &amp; A/B — измеряем, итерируем, масштабируем</div></div>
+        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Бриф и бизнес цели (KPI, ЦУ, рынок)</div></div>
+        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Ресёрч (аудит, фокус-группы, конкуренты)</div></div>
+        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Стратегия и концепты (позишн, ToV, CJM)</div></div>
+        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Дизайн-система (коммуникация, UX/UI, креатив)</div></div>
+        <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Запуск и A/B (изменяем, итерируем, масштабируем)</div></div>
         <div class="all-done" id="processAllDone">кейс готов &nbsp;( ˘ᵕ˘ )</div>
       </div>
     </div>
@@ -1761,7 +1761,7 @@
         <div class="title">behind.gif</div>
       </div>
       <div class="body">
-        <img src="catcoding.gif" alt="behind the scenes" loading="lazy">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="catcoding.gif" alt="behind the scenes" decoding="async" width="480" height="480">
         <div class="cap-gif"><span class="cg-title">направляю в прод</span></div>
       </div>
     </div>
@@ -1790,7 +1790,7 @@
         <div class="title">case · 001</div>
       </div>
       <div class="body">
-        <div class="thumb" data-open-case="lamoda"><img src="cases/lamoda/lm-1.png" alt="Lamoda B2B Media Platform" loading="lazy" decoding="async" crossorigin="anonymous"></div>
+        <div class="thumb" data-open-case="lamoda"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="cases/lamoda/lm-1.png" alt="Lamoda B2B Media Platform" decoding="async" crossorigin="anonymous"></div>
         <h4>Lamoda B2B Media Platform</h4>
         <div class="meta">research · UX · MVP-фреймворк · 2025</div>
         <button class="open" data-open-case="lamoda">Увидеть больше</button>
@@ -2080,10 +2080,10 @@ document.documentElement.classList.toggle('is-touch', IS_TOUCH);
     } else {
       setStatus('...', '', 0);
       try {
-        const res = await fetch('https://api.telegram.org/bot8559767363:AAHzcb8CTIUqlf9gqnjoyQ61UnnANAqW4Fg/sendMessage', {
+        const res = await fetch('/api/send', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: 394067557, text: '[me.sergun.space]\n' + text })
+          body: JSON.stringify({ text })
         });
         if (res.ok) {
           field.value = '';
@@ -3097,6 +3097,34 @@ if (!IS_TOUCH) (() => {
     tag.addEventListener('mouseleave', function () {
       hints.forEach(function (h) { h.classList.remove('lit'); });
     });
+  });
+})();
+
+/* ── Lazy image loader via IntersectionObserver ──
+   Watches elements with data-src and swaps in the real src when
+   the element's nearest .win ancestor is within 400px of the viewport.
+*/
+(function () {
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('img[data-src]').forEach(function (img) {
+      img.src = img.dataset.src;
+      img.removeAttribute('data-src');
+    });
+    return;
+  }
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var win = entry.target;
+      win.querySelectorAll('img[data-src]').forEach(function (img) {
+        img.src = img.dataset.src;
+        img.removeAttribute('data-src');
+      });
+      obs.unobserve(win);
+    });
+  }, { rootMargin: '400px 0px', threshold: 0 });
+  document.querySelectorAll('.win').forEach(function (win) {
+    if (win.querySelector('img[data-src]')) obs.observe(win);
   });
 })();
 </script>
