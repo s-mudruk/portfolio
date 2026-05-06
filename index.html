@@ -2611,7 +2611,7 @@ if (!IS_TOUCH) (() => {
       if (shotsEl) {
         if (c.imgs && c.imgs.length) {
           shotsEl.innerHTML = c.imgs.map(src =>
-            `<div class="shot"><img src="${src}" alt="" loading="lazy"></div>`
+            `<div class="shot"><img src="${src}" alt="" decoding="async"></div>`
           ).join('');
         } else {
           shotsEl.innerHTML = `
@@ -3097,6 +3097,30 @@ if (!IS_TOUCH) (() => {
     tag.addEventListener('mouseleave', function () {
       hints.forEach(function (h) { h.classList.remove('lit'); });
     });
+  });
+})();
+
+/* ── Case image preloader ──
+   When a case card enters the viewport, preload its modal gallery imgs
+   via Image() so they are in browser cache before the modal opens.
+*/
+(function () {
+  if (!('IntersectionObserver' in window)) return;
+  var preloaded = {};
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var key = entry.target.getAttribute('data-case');
+      if (!key || preloaded[key]) return;
+      var c = (typeof cases !== 'undefined') && cases[key];
+      if (!c || !c.imgs) return;
+      preloaded[key] = true;
+      c.imgs.forEach(function (src) { (new Image()).src = src; });
+      obs.unobserve(entry.target);
+    });
+  }, { rootMargin: '300px 0px', threshold: 0 });
+  document.querySelectorAll('.win--case[data-case]').forEach(function (win) {
+    obs.observe(win);
   });
 })();
 
