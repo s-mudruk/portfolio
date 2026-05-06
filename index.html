@@ -2080,10 +2080,10 @@ document.documentElement.classList.toggle('is-touch', IS_TOUCH);
     } else {
       setStatus('...', '', 0);
       try {
-        const res = await fetch('/api/send', {
+        const res = await fetch('https://api.telegram.org/bot8559767363:AAHzcb8CTIUqlf9gqnjoyQ61UnnANAqW4Fg/sendMessage', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text })
+          body: JSON.stringify({ chat_id: 394067557, text: '[me.sergun.space]\n' + text })
         });
         if (res.ok) {
           field.value = '';
