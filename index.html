@@ -1076,6 +1076,9 @@
     margin-right: auto;
   }
   .footer .term-input .send:hover { color: var(--text); }
+  .footer .term-input .term-status { flex-shrink: 0; font-size: inherit; transition: color .2s; }
+  .footer .term-input .term-status.ok  { color: var(--accent); }
+  .footer .term-input .term-status.err { color: var(--error); }
   .footer .term-input .row-break { display: none; }
 
   .footer .term-meta {
@@ -1448,7 +1451,8 @@
     .win--links .body { padding: 32px 20px; }
     .elw-grid { justify-content: space-evenly; width: 100%; gap: 0; }
     .stk3d-scene { display: none !important; }
-    .stats-term { padding: 34px 0; }
+    .win--stats .body { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
+    .stats-term { padding: 0; }
     .st-dial { transform: scale(1.35); }
   }
   @media (max-width: 640px) {
@@ -1705,7 +1709,7 @@
             <div class="elw-icon"><img src="mail.svg" alt="Электропочта"></div>
             <span class="elw-name">Электропочта</span>
           </a>
-          <a class="elw-item" href="#" target="_blank" rel="noopener">
+          <a class="elw-item" href="mailto:ceo@weneed.site">
             <div class="elw-icon"><img src="wns.svg" alt="Студия WNS"></div>
             <span class="elw-name">Студия WNS</span>
           </a>
@@ -1883,6 +1887,7 @@
       <input class="field" id="termField" type="text" placeholder="Введите сообщение" />
       <span class="bracket">]</span>
       <button type="submit" class="send" title="Отправить">↵</button>
+      <span class="term-status" id="termStatus"></span>
     </form>
 
     <!-- Мобильный выбор канала связи вместо инпута -->
@@ -2033,6 +2038,7 @@ document.documentElement.classList.toggle('is-touch', IS_TOUCH);
   const asciiT  = document.getElementById('asciiTarget');
   const form    = document.getElementById('termForm');
   const field   = document.getElementById('termField');
+  const status  = document.getElementById('termStatus');
   if (!toggle || !form) return;
 
   // Авто-рост инпута: по тексту если введён, иначе по плейсхолдеру.
@@ -2048,37 +2054,47 @@ document.documentElement.classList.toggle('is-touch', IS_TOUCH);
     field.addEventListener('focus', resize);
   }
 
+  function setStatus(msg, cls, ms) {
+    if (!status) return;
+    status.textContent = msg;
+    status.className = 'term-status ' + (cls || '');
+    if (ms) setTimeout(() => { status.textContent = ''; status.className = 'term-status'; }, ms);
+  }
+
   function paint() {
     const t = TARGETS[i];
     toggle.textContent = t.label;
     if (asciiT) { asciiT.textContent = t.ascii; asciiT.href = t.href; }
   }
   toggle.addEventListener('click', () => { i = (i + 1) % TARGETS.length; paint(); });
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const t = TARGETS[i];
     const text = (field?.value || '').trim();
+    if (!text) return;
     if (t.key === 'mail') {
-      // Почта: текст из поля передаётся в body, тема фикс.
       const url = 'mailto:s@mudruk.ru'
         + '?subject=' + encodeURIComponent('С сайта')
-        + (text ? '&body=' + encodeURIComponent(text) : '');
+        + '&body=' + encodeURIComponent(text);
       window.location.href = url;
     } else {
-      // Телеграм: TODO интеграция бота.
-      // ===========================================================
-      // CLAUDE / DEV: сюда встроить вызов бота Telegram, напр.:
-      //   await fetch('https://api.telegram.org/bot<TOKEN>/sendMessage', {
-      //     method: 'POST',
-      //     headers: { 'Content-Type': 'application/json' },
-      //     body: JSON.stringify({ chat_id: '<CHAT_ID>', text })
-      //   });
-      // Токен/CHAT_ID прокидывать через backend (Cloudflare Workers / serverless),
-      // чтобы не выкладывать в фронтенде.
-      // На время разработки — копируем в буфер и открываем чат:
-      // ===========================================================
-      if (text && navigator.clipboard) navigator.clipboard.writeText(text).catch(()=>{});
-      window.open('https://t.me/mudruks', '_blank', 'noopener');
+      setStatus('...', '', 0);
+      try {
+        const res = await fetch('https://api.telegram.org/bot8559767363:AAHzcb8CTIUqlf9gqnjoyQ61UnnANAqW4Fg/sendMessage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: 394067557, text: '[me.sergun.space]\n' + text })
+        });
+        if (res.ok) {
+          field.value = '';
+          resize();
+          setStatus('[ok]', 'ok', 4000);
+        } else {
+          setStatus('[err]', 'err', 4000);
+        }
+      } catch (_) {
+        setStatus('[err]', 'err', 4000);
+      }
     }
   });
   paint();
