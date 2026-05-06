@@ -1265,12 +1265,16 @@
     overflow: hidden;
   }
   .modal .shots .shot:has(img) {
-    aspect-ratio: unset;
+    aspect-ratio: 16/9;
     background: var(--surface);
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
   }
   .modal .shots .shot img {
-    width: 100%; height: auto;
+    width: 100%; height: 100%;
+    object-fit: contain;
     display: block;
   }
 
@@ -1781,7 +1785,7 @@
   </section>
 
   <!-- SCENE 4 — РАБОТЫ -->
-  <section class="scene" id="work" data-screen-label="04 Работы" style="min-height: 2520px;">
+  <section class="scene" id="work" data-screen-label="04 Работы" style="min-height: 2940px;">
     <div class="scene-label"><div class="num">04</div><div class="line"></div><div class="tag"># РАБОТЫ</div></div>
 
     <div class="win win--case" data-draggable data-case="lamoda" style="left: 6%; top: 140px;">
@@ -1790,7 +1794,7 @@
         <div class="title">case · 001</div>
       </div>
       <div class="body">
-        <div class="thumb" data-open-case="lamoda"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="cases/lamoda/lm-1.png" alt="Lamoda B2B Media Platform" decoding="async" crossorigin="anonymous"></div>
+        <div class="thumb" data-open-case="lamoda"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="cases/lamoda/lm-1.webp" alt="Lamoda B2B Media Platform" decoding="async"></div>
         <h4>Lamoda B2B Media Platform</h4>
         <div class="meta">research · UX · MVP-фреймворк · 2025</div>
         <button class="open" data-open-case="lamoda">Увидеть больше</button>
@@ -1803,7 +1807,7 @@
         <div class="title">case · 002</div>
       </div>
       <div class="body">
-        <div class="thumb">[ КАМАЗ · креативы кампании ]</div>
+        <div class="thumb" data-open-case="kamaz"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="cases/kamaz/km-1.webp" alt="КАМАЗ" decoding="async"></div>
         <h4>КАМАЗ — бренд &amp; lead-gen</h4>
         <div class="meta">CJM · SMM · ROI 150%+ · 2024</div>
         <button class="open" data-open-case="kamaz">Увидеть больше</button>
@@ -1816,7 +1820,7 @@
         <div class="title">case · 003</div>
       </div>
       <div class="body">
-        <div class="thumb">[ VetCity · OOH + SMM-концепт ]</div>
+        <div class="thumb" data-open-case="vetcity"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="cases/vetcity/vc-1.webp" alt="VetCity" decoding="async"></div>
         <h4>VetCity Clinic</h4>
         <div class="meta">comms · OOH · коллаб с SurfCoffee · 2024</div>
         <button class="open" data-open-case="vetcity">Увидеть больше</button>
@@ -1842,7 +1846,7 @@
         <div class="title">case · 005</div>
       </div>
       <div class="body">
-        <div class="thumb">[ Liberty · бренд &amp; VK ]</div>
+        <div class="thumb" data-open-case="liberty"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="cases/liberty/lib-1.webp" alt="Liberty МИФИ" decoding="async"></div>
         <h4>Liberty / НИЯУ МИФИ</h4>
         <div class="meta">ребренд · контент-стратегия · VK · 2023</div>
         <button class="open" data-open-case="liberty">Увидеть больше</button>
@@ -1859,6 +1863,18 @@
         <h4>Форум «Траектория»</h4>
         <div class="meta">event · PR · phygital · 2023</div>
         <button class="open" data-open-case="trajectory">Увидеть больше</button>
+      </div>
+    </div>
+    <div class="win win--case" data-draggable data-case="kofeynya" style="left: 30%; top: 2280px;">
+      <div class="bar" data-handle>
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="title">case · 007</div>
+      </div>
+      <div class="body">
+        <div class="thumb" data-open-case="kofeynya"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="cases/kofeynya/kk-1.webp" alt="Кофейня" decoding="async"></div>
+        <h4>Кофейня — бренд &amp; айдентика</h4>
+        <div class="meta">брендинг · айдентика · дизайн-система · 2024</div>
+        <button class="open" data-open-case="kofeynya">Увидеть больше</button>
       </div>
     </div>
     <!-- stk4: placeholder -->
@@ -2420,6 +2436,7 @@ if (!IS_TOUCH) (() => {
     'giftspin':   [170, 110, 230],  // фиолетовый (NFT/gamification)
     'liberty':    [230, 165, 70],   // янтарный (vintage / ребренд)
     'trajectory': [80, 180, 200],   // циан (event/phygital)
+    'kofeynya':   [180, 130, 80],   // кофейный тёплый
   };
   const FALLBACK = Object.values(CASE_TINT);
 
@@ -2542,23 +2559,38 @@ if (!IS_TOUCH) (() => {
         { label: 'Output', val: 'MVP-фреймворк' }
       ],
       imgs: [
-        'cases/lamoda/lm-2.png',
-        'cases/lamoda/lm-3.png',
-        'cases/lamoda/lm-4.png',
-        'cases/lamoda/lm-5.png'
+        'cases/lamoda/lm-2.webp',
+        'cases/lamoda/lm-3.webp',
+        'cases/lamoda/lm-4.webp',
+        'cases/lamoda/lm-5.webp'
       ]
     },
     'kamaz': {
       title: 'КАМАЗ — бренд & lead-gen',
       meta: 'CJM · SMM · event-маркетинг · ROI 150%+ · 2024',
       crumb: '[ case · 002 ] — КАМАЗ',
-      desc: 'Полный digital и медиа-аудит КАМАЗ — сайт, Telegram-канал, лендинги суббрендов. Построил CJM для B2B и B2C сценариев входа, интегрировал event-маркетинг в стратегию материнского бренда и подготовил рекомендации по медиа суббрендов. Итог: ребренд и редизайн лендингов, рост OTS, рост B2B и B2C лидов после раскатки. ER кампании 4%, ROI > 150%.'
+      desc: 'Полный digital и медиа-аудит КАМАЗ — сайт, Telegram-канал, лендинги суббрендов. Построил CJM для B2B и B2C сценариев входа, интегрировал event-маркетинг в стратегию материнского бренда и подготовил рекомендации по медиа суббрендов. Итог: ребренд и редизайн лендингов, рост OTS, рост B2B и B2C лидов после раскатки. ER кампании 4%, ROI > 150%.',
+      imgs: [
+        'cases/kamaz/km-1.webp',
+        'cases/kamaz/km-2.webp',
+        'cases/kamaz/km-3.webp',
+        'cases/kamaz/km-4.webp'
+      ]
     },
     'vetcity': {
       title: 'VetCity Clinic',
       meta: 'коммуникационная стратегия · OOH · SMM · 2024 · 6 недель',
       crumb: '[ case · 003 ] — VetCity',
-      desc: 'Новый филиал на Жукова получал низкий трафик. Провели полный digital-аудит, нашли пробелы в частоте постинга и контент-планировании, затем построили новый контент-план, OOH-креативы для самых эффективных размещений, визуальный концепт для онлайна и оффлайна, а также партнёрство с SurfCoffee — кросс-постинг, размещения в кафе, охват пересекающейся аудитории.'
+      desc: 'Новый филиал на Жукова получал низкий трафик. Провели полный digital-аудит, нашли пробелы в частоте постинга и контент-планировании, затем построили новый контент-план, OOH-креативы для самых эффективных размещений, визуальный концепт для онлайна и оффлайна, а также партнёрство с SurfCoffee — кросс-постинг, размещения в кафе, охват пересекающейся аудитории.',
+      imgs: [
+        'cases/vetcity/vc-1.webp',
+        'cases/vetcity/vc-2.webp',
+        'cases/vetcity/vc-3.webp',
+        'cases/vetcity/vc-4.webp',
+        'cases/vetcity/vc-5.webp',
+        'cases/vetcity/vc-6.webp',
+        'cases/vetcity/vc-7.webp'
+      ]
     },
     'giftspin': {
       title: 'GiftSpin · Telegram MiniApp',
@@ -2570,13 +2602,36 @@ if (!IS_TOUCH) (() => {
       title: 'Liberty / НИЯУ МИФИ',
       meta: 'ребренд · контент-стратегия · VK · 2023',
       crumb: '[ case · 005 ] — Liberty',
-      desc: 'Ребренд и контент-стратегия для студенческого танцевального клуба технического вуза. Вызов: выделиться среди десятков клубов с ограниченными ресурсами, временем и визуальной экспертизой. Output — визуальная айдентика, копи и ToV, контент-план и операционные правила, полное использование инструментов VK. Результат: бренд клуба, который привлекает новых студентов и поддерживает мотивацию команды.'
+      desc: 'Ребренд и контент-стратегия для студенческого танцевального клуба технического вуза. Вызов: выделиться среди десятков клубов с ограниченными ресурсами, временем и визуальной экспертизой. Output — визуальная айдентика, копи и ToV, контент-план и операционные правила, полное использование инструментов VK. Результат: бренд клуба, который привлекает новых студентов и поддерживает мотивацию команды.',
+      imgs: [
+        'cases/liberty/lib-1.webp',
+        'cases/liberty/lib-2.webp',
+        'cases/liberty/lib-3.webp',
+        'cases/liberty/lib-4.webp',
+        'cases/liberty/lib-5.webp',
+        'cases/liberty/lib-6.webp',
+        'cases/liberty/lib-7.webp',
+        'cases/liberty/lib-8.webp'
+      ]
     },
     'trajectory': {
       title: 'Форум «Траектория»',
       meta: 'event · PR · phygital · 2023',
       crumb: '[ case · 006 ] — Траектория',
       desc: 'Образовательный форум для лидеров и активистов студенческих организаций. Построил мероприятие с нуля — поиск партнёров и экспертов, программные блоки под сегменты аудитории, PR и SMM-раскатка, мерч и event-дизайн. По итогам форума зафиксировали наиболее эффективные форматы phygital-коммуникации для целевой группы.'
+    },
+    'kofeynya': {
+      title: 'Кофейня — бренд & айдентика',
+      meta: 'брендинг · айдентика · дизайн-система · 2024',
+      crumb: '[ case · 007 ] — Кофейня',
+      desc: 'Разработка бренд-платформы и визуальной айдентики для локальной кофейни. Исследование аудитории, позиционирование, нейминг-концепт, логотип и фирменный стиль, дизайн-система для digital и физических носителей.',
+      imgs: [
+        'cases/kofeynya/kk-1.webp',
+        'cases/kofeynya/kk-2.webp',
+        'cases/kofeynya/kk-3.webp',
+        'cases/kofeynya/kk-4.webp',
+        'cases/kofeynya/kk-5.webp'
+      ]
     }
   };
 
