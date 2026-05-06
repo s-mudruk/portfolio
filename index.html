@@ -2696,11 +2696,11 @@ if (!IS_TOUCH) (() => {
     if (!modal.classList.contains('open')) return;
     modal.classList.remove('open');
     document.documentElement.dataset.modalClosing = '1';
-    // scrollTo BEFORE unfixing body — sets native scroll while position:fixed, no visual jump
-    window.scrollTo({ top: _savedScrollY, behavior: 'instant' });
+    // Unfix body FIRST, then scrollTo — scrollTo is ignored while position:fixed
     document.documentElement.classList.remove('modal-open');
     document.documentElement.style.removeProperty('--sbw');
     document.body.style.top = '';
+    window.scrollTo({ top: _savedScrollY, behavior: 'instant' });
     // Immediately hide gutter; keep bg=var(--bg) so any brief flash is invisible
     var g = document.getElementById('ios-gutter');
     if (g) { g.style.background = 'var(--bg)'; g.style.opacity = '0'; }
