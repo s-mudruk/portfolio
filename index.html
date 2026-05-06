@@ -2771,6 +2771,8 @@ if (!IS_TOUCH) (() => {
         } else if (!isOpen && lenisModal) {
           lenisModal.destroy();
           lenisModal = null;
+          // Sync Lenis to the native scroll position restored by closeModal before resuming
+          window.__lenisMain.scrollTo(window.scrollY, { immediate: true });
           window.__lenisMain.start();
         }
       });
