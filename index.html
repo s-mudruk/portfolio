@@ -905,10 +905,10 @@
   /* links / elsewhere — ретро Mac Finder */
   .win--links { width: 300px; }
   .win--links .body { display: flex; justify-content: center; align-items: center; background: var(--surface); padding: 20px; }
-  .elw-grid { display: flex; gap: 14px; justify-content: center; align-items: flex-start; }
+  .elw-grid { display: flex; gap: 22px; justify-content: center; align-items: center; }
   .elw-item {
     display: flex; flex-direction: column; align-items: center; gap: 8px;
-    text-decoration: none; flex: 1; max-width: 80px;
+    text-decoration: none;
   }
   .elw-icon {
     width: 60px; height: 60px;
@@ -921,14 +921,7 @@
     filter: brightness(0) invert(1);
     image-rendering: pixelated;
   }
-  .elw-name {
-    font-family: var(--mono);
-    font-size: 12px; letter-spacing: .04em;
-    text-align: center;
-    color: var(--secondary);
-    transition: color .18s;
-  }
-  .elw-item:hover .elw-name { color: var(--text); }
+  .elw-name { display: none; }
 
   /* form */
   .win--form { width: 440px; }
