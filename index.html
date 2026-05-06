@@ -903,9 +903,9 @@
   }
 
   /* links / elsewhere — ретро Mac Finder */
-  .win--links { width: 300px; }
-  .win--links .body { display: flex; justify-content: center; align-items: center; background: var(--surface); padding: 20px; }
-  .elw-grid { display: flex; justify-content: space-around; align-items: center; width: 100%; }
+  .win--links { width: fit-content; }
+  .win--links .body { display: flex; justify-content: center; align-items: center; background: var(--surface); padding: 28px; }
+  .elw-grid { display: flex; gap: 18px; align-items: center; }
   .elw-item {
     display: flex; flex-direction: column; align-items: center; gap: 8px;
     text-decoration: none;
@@ -1298,7 +1298,6 @@
     .win--process { width: 520px; }
     .win--case { width: 480px; }
     .win--quote { width: 440px; }
-    .win--links { width: 300px; }
     .win--form { width: 500px; }
   }
   @media (min-width: 2000px) {
@@ -1319,7 +1318,6 @@
     .win--process { width: 600px; }
     .win--case { width: 540px; }
     .win--quote { width: 500px; }
-    .win--links { width: 320px; }
     .win--form { width: 580px; }
     .win--case h4 { font-size: 26px; }
   }
@@ -1431,6 +1429,8 @@
     .footer .term-meta { font-size: 11px; margin-top: 22px; }
     .elw-icon { width: 76px; height: 76px; }
     .elw-name { display: none; }
+    .win--links .body { padding: 20px; }
+    .elw-grid { justify-content: space-evenly; width: 100%; gap: 0; }
   }
   @media (max-width: 640px) {
     .header { padding: 12px 16px; }
