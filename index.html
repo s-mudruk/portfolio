@@ -509,32 +509,36 @@
   .win--about p { margin: 0; font-size: 13px; color: var(--secondary); }
   .win--about p b { color: var(--text); font-weight: 600; }
 
-  /* ── win--stats: carousel ── */
-  .win--stats { width: 320px; }
+  /* ── win--stats: odometer ── */
+  .win--stats { width: 280px; }
   .stats-term { font-family: var(--mono); }
-  .st-slider-wrap {
-    overflow: hidden;
+  .st-board {
     border-top: 1px solid var(--divider);
     border-bottom: 1px solid var(--divider);
-    margin-bottom: 12px;
+    padding: 26px 0 22px; margin-bottom: 12px;
   }
-  .st-slider { display: flex; transition: transform .32s cubic-bezier(.4,0,.2,1); }
-  .st-slide {
-    min-width: 100%; padding: 22px 0;
-    display: flex; flex-direction: column; gap: 8px;
+  .st-num-clip { overflow: hidden; line-height: 1; }
+  .st-num {
+    font-size: 52px; font-weight: 500; letter-spacing: -.04em; line-height: 1;
+    color: var(--accent); display: block; will-change: transform, opacity;
   }
-  .st-val {
-    font-size: 40px; font-weight: 500;
-    color: var(--accent); letter-spacing: -.04em; line-height: 1;
-  }
-  .st-neg { color: var(--error); }
+  .st-num.neg { color: var(--error); }
+  .st-num.exit-fwd  { animation: stExitFwd  .17s ease-in  forwards; }
+  .st-num.exit-back { animation: stExitBack .17s ease-in  forwards; }
+  .st-num.enter-fwd { animation: stEnterFwd .26s ease-out forwards; }
+  .st-num.enter-back{ animation: stEnterBack.26s ease-out forwards; }
   .st-lbl {
+    display: block; margin-top: 10px;
     font-size: 10px; color: var(--muted);
-    text-transform: uppercase; letter-spacing: .1em; line-height: 1.3;
+    text-transform: uppercase; letter-spacing: .12em; line-height: 1.3;
+    transition: opacity .14s, transform .14s;
   }
-  .st-nav {
-    display: flex; justify-content: space-between; align-items: center;
-  }
+  .st-lbl.off { opacity: 0; transform: translateY(3px); }
+  @keyframes stExitFwd  { to { transform: translateY(-115%); opacity: 0; } }
+  @keyframes stExitBack { to { transform: translateY( 115%); opacity: 0; } }
+  @keyframes stEnterFwd { from { transform: translateY( 115%); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes stEnterBack{ from { transform: translateY(-115%); opacity: 0; } to { transform: none; opacity: 1; } }
+  .st-nav { display: flex; justify-content: space-between; align-items: center; }
   .st-navbtn {
     font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
     color: var(--muted); cursor: pointer; transition: color .15s; padding: 4px 0;
@@ -1631,15 +1635,11 @@
       </div>
       <div class="body">
         <div class="stats-term">
-          <div class="st-slider-wrap">
-            <div class="st-slider" id="stSlider">
-              <div class="st-slide"><span class="st-val">5&nbsp;ЛЕТ</span><span class="st-lbl">в&nbsp;проектах</span></div>
-              <div class="st-slide"><span class="st-val">50+</span><span class="st-lbl">кейсов</span></div>
-              <div class="st-slide"><span class="st-val st-neg">–5</span><span class="st-lbl">зрение</span></div>
-              <div class="st-slide"><span class="st-val">12</span><span class="st-lbl">брендов с&nbsp;нуля</span></div>
-              <div class="st-slide"><span class="st-val">2</span><span class="st-lbl">стартапа</span></div>
-              <div class="st-slide"><span class="st-val st-neg">0₽</span><span class="st-lbl">первый бюджет кампании</span></div>
+          <div class="st-board">
+            <div class="st-num-clip">
+              <span class="st-num" id="stNum">5&nbsp;ЛЕТ</span>
             </div>
+            <span class="st-lbl" id="stLbl">в&nbsp;проектах</span>
           </div>
           <div class="st-nav">
             <button class="st-navbtn" id="stPrev">[←]</button>
@@ -2881,51 +2881,74 @@ if (!IS_TOUCH) (() => {
 
 
 <script>
-/* stats carousel */
+/* stats odometer */
 (function () {
-  var slider = document.getElementById('stSlider');
-  if (!slider) return;
-  var slides = slider.querySelectorAll('.st-slide');
-  var total = slides.length;
-  var cur = 0;
-  var dotsEl = document.getElementById('stDots');
-  var dots = [];
-  var timer;
+  var DATA = [
+    { val: '5 ЛЕТ', lbl: 'в проектах',         neg: false },
+    { val: '50+',         lbl: 'кейсов',                   neg: false },
+    { val: '–5',     lbl: 'зрение',                   neg: true  },
+    { val: '12',          lbl: 'брендов с нуля',      neg: false },
+    { val: '2',           lbl: 'стартапа',                 neg: false },
+    { val: '0₽',     lbl: 'первый бюджет кампании',   neg: true  },
+  ];
+  var total = DATA.length, cur = 0, busy = false, timer;
 
-  slides.forEach(function (_, i) {
+  var numEl = document.getElementById('stNum');
+  var lblEl = document.getElementById('stLbl');
+  var dotsEl = document.getElementById('stDots');
+  if (!numEl) return;
+
+  var dots = DATA.map(function (_, i) {
     var d = document.createElement('span');
     d.className = 'st-dot' + (i === 0 ? ' active' : '');
     dotsEl.appendChild(d);
-    dots.push(d);
+    return d;
   });
 
-  function go(n) {
+  function go(n, dir) {
+    if (busy) return;
+    busy = true;
     cur = (n + total) % total;
-    slider.style.transform = 'translateX(-' + (cur * 100) + '%)';
-    dots.forEach(function (d, i) { d.classList.toggle('active', i === cur); });
+    var exitCls  = dir > 0 ? 'exit-fwd'  : 'exit-back';
+    var enterCls = dir > 0 ? 'enter-fwd' : 'enter-back';
+
+    numEl.classList.add(exitCls);
+    lblEl.classList.add('off');
+
+    setTimeout(function () {
+      numEl.classList.remove(exitCls);
+      numEl.className = 'st-num' + (DATA[cur].neg ? ' neg' : '') + ' ' + enterCls;
+      numEl.textContent = DATA[cur].val;
+      lblEl.textContent = DATA[cur].lbl;
+      dots.forEach(function (d, i) { d.classList.toggle('active', i === cur); });
+
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { lblEl.classList.remove('off'); });
+      });
+
+      setTimeout(function () { numEl.classList.remove(enterCls); busy = false; }, 280);
+    }, 170);
   }
 
-  function startAuto() { timer = setInterval(function () { go(cur + 1); }, 3800); }
-  function stopAuto() { clearInterval(timer); }
+  function startAuto() { timer = setInterval(function () { go(cur + 1, 1); }, 3800); }
+  function stopAuto()  { clearInterval(timer); }
 
-  document.getElementById('stPrev').addEventListener('click', function () { stopAuto(); go(cur - 1); startAuto(); });
-  document.getElementById('stNext').addEventListener('click', function () { stopAuto(); go(cur + 1); startAuto(); });
+  document.getElementById('stPrev').addEventListener('click', function () { stopAuto(); go(cur - 1, -1); startAuto(); });
+  document.getElementById('stNext').addEventListener('click', function () { stopAuto(); go(cur + 1,  1); startAuto(); });
 
-  var win = slider.closest('.win--stats');
+  var win = numEl.closest('.win--stats');
   if (win) {
     win.addEventListener('mouseenter', stopAuto);
     win.addEventListener('mouseleave', startAuto);
+    var tx0;
+    win.addEventListener('touchstart', function (e) { tx0 = e.touches[0].clientX; }, { passive: true });
+    win.addEventListener('touchend', function (e) {
+      if (tx0 == null) return;
+      var dx = e.changedTouches[0].clientX - tx0;
+      if (Math.abs(dx) > 30) { stopAuto(); go(cur + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1); startAuto(); }
+      tx0 = null;
+    }, { passive: true });
   }
-
-  /* swipe */
-  var tx0;
-  slider.addEventListener('touchstart', function (e) { tx0 = e.touches[0].clientX; }, { passive: true });
-  slider.addEventListener('touchend', function (e) {
-    if (tx0 == null) return;
-    var dx = e.changedTouches[0].clientX - tx0;
-    if (Math.abs(dx) > 30) { stopAuto(); go(cur + (dx < 0 ? 1 : -1)); startAuto(); }
-    tx0 = null;
-  }, { passive: true });
 
   startAuto();
 })();
