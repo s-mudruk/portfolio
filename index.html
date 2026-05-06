@@ -2642,12 +2642,26 @@ if (!IS_TOUCH) (() => {
     document.body.style.top = '';
     document.documentElement.dataset.modalClosing = '1';
     window.scrollTo({ top: _savedScrollY, behavior: 'instant' });
-    requestAnimationFrame(() => delete document.documentElement.dataset.modalClosing);
-    (function() {
-      var g = document.getElementById('ios-gutter');
-      if (g) { g.style.background = 'var(--surface)'; g.style.opacity = '0'; }
-      document.querySelectorAll('meta[name="theme-color"]').forEach(function(m) { m.content = '#131313'; });
-    })();
+    // Immediately hide gutter; keep bg=var(--bg) so any brief flash is invisible
+    var g = document.getElementById('ios-gutter');
+    if (g) { g.style.background = 'var(--bg)'; g.style.opacity = '0'; }
+    document.querySelectorAll('meta[name="theme-color"]').forEach(function(m) { m.content = '#131313'; });
+    // Block scroll handler for 200ms to suppress iOS multi-event scroll restore,
+    // then recalculate gutter state from actual scroll position
+    setTimeout(function() {
+      delete document.documentElement.dataset.modalClosing;
+      var footer = document.querySelector('.footer');
+      var inFooter = false;
+      if (footer) {
+        var r = footer.getBoundingClientRect();
+        inFooter = r.top < window.innerHeight * 0.25 && r.bottom > 0;
+      }
+      var gg = document.getElementById('ios-gutter');
+      if (gg) { gg.style.background = 'var(--surface)'; gg.style.opacity = inFooter ? '1' : '0'; }
+      document.querySelectorAll('meta[name="theme-color"]').forEach(function(m) {
+        m.content = inFooter ? '#2A2A2A' : '#131313';
+      });
+    }, 200);
   }
   close.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
