@@ -2678,6 +2678,9 @@ if (!IS_TOUCH) (() => {
       }
       _savedScrollY = window.scrollY || window.pageYOffset;
       document.body.style.top = `-${_savedScrollY}px`;
+      // Reset sheet to top before opening so new case always starts from beginning
+      var sheet = modal.querySelector('.sheet');
+      if (sheet) sheet.scrollTop = 0;
       modal.classList.add('open');
       const sbw = window.innerWidth - document.documentElement.clientWidth;
       document.documentElement.style.setProperty('--sbw', sbw + 'px');
@@ -2692,11 +2695,12 @@ if (!IS_TOUCH) (() => {
   function closeModal() {
     if (!modal.classList.contains('open')) return;
     modal.classList.remove('open');
+    document.documentElement.dataset.modalClosing = '1';
+    // scrollTo BEFORE unfixing body — sets native scroll while position:fixed, no visual jump
+    window.scrollTo({ top: _savedScrollY, behavior: 'instant' });
     document.documentElement.classList.remove('modal-open');
     document.documentElement.style.removeProperty('--sbw');
     document.body.style.top = '';
-    document.documentElement.dataset.modalClosing = '1';
-    window.scrollTo({ top: _savedScrollY, behavior: 'instant' });
     // Immediately hide gutter; keep bg=var(--bg) so any brief flash is invisible
     var g = document.getElementById('ios-gutter');
     if (g) { g.style.background = 'var(--bg)'; g.style.opacity = '0'; }
