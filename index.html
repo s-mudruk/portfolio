@@ -527,27 +527,18 @@
   }
   .st-hand {
     position: absolute; bottom: 50%; left: 50%;
-    width: 1.5px; height: 78px;
-    background: linear-gradient(to top, transparent 0%, var(--accent) 30%);
-    border-radius: 2px 2px 0 0;
-    transform-origin: center bottom;
-    transform: translateX(-50%) rotate(0deg);
+    width: 0; height: 97px;
+    transform-origin: 0 100%;
+    transform: rotate(0deg);
     transition: transform .7s cubic-bezier(.4,0,.2,1);
   }
   .st-hand::before {
     content: '';
-    position: absolute; top: -3px; left: 50%;
-    transform: translateX(-50%);
-    width: 5px; height: 5px; border-radius: 50%;
+    position: absolute; top: 0; left: 0;
+    transform: translate(-50%, -50%);
+    width: 8px; height: 8px; border-radius: 50%;
     background: var(--accent);
-    box-shadow: 0 0 8px rgba(19,149,255,.7);
-  }
-  .st-hand::after {
-    content: '';
-    position: absolute; bottom: -5px; left: 50%;
-    transform: translateX(-50%);
-    width: 9px; height: 9px; border-radius: 50%;
-    background: var(--surface); border: 1.5px solid var(--divider);
+    box-shadow: 0 0 10px rgba(19,149,255,.85);
   }
   .st-center {
     position: absolute; inset: 0;
@@ -1066,7 +1057,7 @@
   .footer .term-input .bracket { color: var(--muted); flex-shrink: 0; }
   .footer .term-input .field {
     flex: 0 1 auto;
-    min-width: 4ch;
+    min-width: 1ch;
     max-width: 100%;
     background: transparent;
     border: 0;
@@ -1466,6 +1457,7 @@
     .nav-name .caret { width: 7px; height: 18px; }
     .scene { padding: 24px 16px; }
     .win .body { padding: 16px; }
+    .win--links .body { padding: 32px 20px !important; }
     .win--media .body { padding: 0 !important; }
     .win .bar { padding: 0 12px; }
     .win--quote .body { padding: 16px; }
@@ -1698,22 +1690,6 @@
       </div>
     </div>
 
-    <div class="win win--list" data-draggable style="right: 6%; top: 160px;">
-      <div class="bar" data-handle>
-        <div class="dots"><span></span><span></span><span></span></div>
-        <div class="title">services/</div>
-      </div>
-      <div class="body">
-        <div class="item"><span>Бренд-платформа &amp; айдентика</span><span class="num">01</span></div>
-        <div class="item"><span>Коммуникационная стратегия<br class="mob-br">&amp; ToV</span><span class="num">02</span></div>
-        <div class="item"><span>SMM &amp; Influence-маркетинг</span><span class="num">03</span></div>
-        <div class="item"><span>Продукт / UX &amp; дизайн-<br class="mob-br">системы</span><span class="num">04</span></div>
-        <div class="item"><span>Лендинги, MVP, Telegram MiniApps</span><span class="num">05</span></div>
-        <div class="item"><span>CJM, A/B-тестирование<br class="mob-br">&amp; аналитика</span><span class="num">06</span></div>
-        <div class="item"><span>Event-маркетинг &amp; PR-<br class="mob-br">кампании</span><span class="num">07</span></div>
-      </div>
-    </div>
-
     <div class="win win--links" data-draggable style="left: 38%; top: 540px;">
       <div class="bar" data-handle>
         <div class="dots"><span></span><span></span><span></span></div>
@@ -1736,6 +1712,23 @@
         </div>
       </div>
     </div>
+
+    <div class="win win--list" data-draggable style="right: 6%; top: 160px;">
+      <div class="bar" data-handle>
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="title">services/</div>
+      </div>
+      <div class="body">
+        <div class="item"><span>Бренд-платформа &amp; айдентика</span><span class="num">01</span></div>
+        <div class="item"><span>Коммуникационная стратегия<br class="mob-br">&amp; ToV</span><span class="num">02</span></div>
+        <div class="item"><span>SMM &amp; Influence-маркетинг</span><span class="num">03</span></div>
+        <div class="item"><span>Продукт / UX &amp; дизайн-<br class="mob-br">системы</span><span class="num">04</span></div>
+        <div class="item"><span>Лендинги, MVP, Telegram MiniApps</span><span class="num">05</span></div>
+        <div class="item"><span>CJM, A/B-тестирование<br class="mob-br">&amp; аналитика</span><span class="num">06</span></div>
+        <div class="item"><span>Event-маркетинг &amp; PR-<br class="mob-br">кампании</span><span class="num">07</span></div>
+      </div>
+    </div>
+
     <!-- stk2: placeholder -->
   </section>
 
@@ -1754,7 +1747,7 @@
         <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Стратегия &amp; концепт — позиционирование, ToV, контент</div></div>
         <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Дизайн &amp; система — бренд, UX, креативы, прототипы</div></div>
         <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Запуск &amp; A/B — измеряем, итерируем, масштабируем</div></div>
-        <div class="all-done" id="processAllDone">✓&nbsp;кейс готов</div>
+        <div class="all-done" id="processAllDone">кейс готов &nbsp;( ˘ᵕ˘ )</div>
       </div>
     </div>
 
