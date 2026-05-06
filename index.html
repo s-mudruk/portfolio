@@ -509,47 +509,65 @@
   .win--about p { margin: 0; font-size: 13px; color: var(--secondary); }
   .win--about p b { color: var(--text); font-weight: 600; }
 
-  /* ── win--stats: odometer ── */
+  /* ── win--stats: dial ── */
   .win--stats { width: 280px; }
-  .stats-term { font-family: var(--mono); }
-  .st-board {
-    border-top: 1px solid var(--divider);
-    border-bottom: 1px solid var(--divider);
-    padding: 26px 0 22px; margin-bottom: 12px;
+  .stats-term { font-family: var(--mono); display: flex; justify-content: center; padding: 6px 0; }
+  .st-dial { position: relative; width: 210px; height: 210px; flex-shrink: 0; }
+  .st-ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 1px solid var(--divider);
   }
-  .st-num-clip { overflow: hidden; line-height: 1; }
+  .st-tick {
+    position: absolute; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--divider); transition: background .35s, box-shadow .35s;
+  }
+  .st-tick.active {
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(19,149,255,.55);
+  }
+  .st-hand {
+    position: absolute; bottom: 50%; left: 50%;
+    width: 1.5px; height: 78px;
+    background: linear-gradient(to top, transparent 0%, var(--accent) 30%);
+    border-radius: 2px 2px 0 0;
+    transform-origin: center bottom;
+    transform: translateX(-50%) rotate(0deg);
+    transition: transform .7s cubic-bezier(.4,0,.2,1);
+  }
+  .st-hand::before {
+    content: '';
+    position: absolute; top: -3px; left: 50%;
+    transform: translateX(-50%);
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(19,149,255,.7);
+  }
+  .st-hand::after {
+    content: '';
+    position: absolute; bottom: -5px; left: 50%;
+    transform: translateX(-50%);
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--surface); border: 1.5px solid var(--divider);
+  }
+  .st-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 5px; pointer-events: none;
+  }
   .st-num {
-    font-size: 52px; font-weight: 500; letter-spacing: -.04em; line-height: 1;
-    color: var(--accent); display: block; will-change: transform, opacity;
+    font-size: 40px; font-weight: 500; letter-spacing: -.03em; line-height: 1;
+    color: var(--accent); font-variant-numeric: tabular-nums;
+    transition: opacity .22s;
   }
   .st-num.neg { color: var(--error); }
-  .st-num.exit-fwd  { animation: stExitFwd  .17s ease-in  forwards; }
-  .st-num.exit-back { animation: stExitBack .17s ease-in  forwards; }
-  .st-num.enter-fwd { animation: stEnterFwd .26s ease-out forwards; }
-  .st-num.enter-back{ animation: stEnterBack.26s ease-out forwards; }
   .st-lbl {
-    display: block; margin-top: 10px;
-    font-size: 10px; color: var(--muted);
-    text-transform: uppercase; letter-spacing: .12em; line-height: 1.3;
-    transition: opacity .14s, transform .14s;
+    font-size: 9px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .1em;
+    text-align: center; max-width: 100px; line-height: 1.4;
+    transition: opacity .22s;
   }
-  .st-lbl.off { opacity: 0; transform: translateY(3px); }
-  @keyframes stExitFwd  { to { transform: translateY(-115%); opacity: 0; } }
-  @keyframes stExitBack { to { transform: translateY( 115%); opacity: 0; } }
-  @keyframes stEnterFwd { from { transform: translateY( 115%); opacity: 0; } to { transform: none; opacity: 1; } }
-  @keyframes stEnterBack{ from { transform: translateY(-115%); opacity: 0; } to { transform: none; opacity: 1; } }
-  .st-nav { display: flex; justify-content: space-between; align-items: center; }
-  .st-navbtn {
-    font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
-    color: var(--muted); cursor: pointer; transition: color .15s; padding: 4px 0;
-  }
-  .st-navbtn:hover { color: var(--text); }
-  .st-dots { display: flex; gap: 5px; align-items: center; }
-  .st-dot {
-    width: 5px; height: 5px; border-radius: 50%;
-    background: var(--divider); transition: background .2s;
-  }
-  .st-dot.active { background: var(--accent); }
+  .st-num.fade, .st-lbl.fade { opacity: 0; }
   .cap-gif {
     position: absolute;
     bottom: 0; left: 0; right: 0;
@@ -561,8 +579,8 @@
   }
   .cap-gif .cg-title {
     display: inline;
-    font-size: 12px; font-weight: 400;
-    color: var(--muted);
+    font-size: 13px; font-weight: 400;
+    color: var(--secondary);
     line-height: 1.4;
     letter-spacing: .02em;
   }
@@ -716,8 +734,8 @@
     pointer-events: none;
   }
   .win--process .all-done.show {
-    margin-top: 14px; margin-bottom: 10px; max-height: 96px;
-    padding: 14px 16px;
+    margin-top: 14px; margin-bottom: 10px; max-height: 48px;
+    padding: 10px 16px;
     opacity: 1; transform: translateY(0); pointer-events: auto;
   }
 
@@ -1635,16 +1653,13 @@
       </div>
       <div class="body">
         <div class="stats-term">
-          <div class="st-board">
-            <div class="st-num-clip">
+          <div class="st-dial">
+            <div class="st-ring" id="stRing"></div>
+            <div class="st-hand" id="stHand"></div>
+            <div class="st-center">
               <span class="st-num" id="stNum">5&nbsp;ЛЕТ</span>
+              <span class="st-lbl" id="stLbl">в&nbsp;проектах</span>
             </div>
-            <span class="st-lbl" id="stLbl">в&nbsp;проектах</span>
-          </div>
-          <div class="st-nav">
-            <button class="st-navbtn" id="stPrev">[←]</button>
-            <span class="st-dots" id="stDots"></span>
-            <button class="st-navbtn" id="stNext">[→]</button>
           </div>
         </div>
       </div>
@@ -1735,7 +1750,7 @@
         <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Стратегия &amp; концепт — позиционирование, ToV, контент</div></div>
         <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Дизайн &amp; система — бренд, UX, креативы, прототипы</div></div>
         <div class="step" data-step><div class="box" aria-hidden="true"></div><div class="label">Запуск &amp; A/B — измеряем, итерируем, масштабируем</div></div>
-        <div class="all-done" id="processAllDone">Кейс готов<br/>( ˘ᵕ˘ )</div>
+        <div class="all-done" id="processAllDone">✓&nbsp;кейс готов</div>
       </div>
     </div>
 
@@ -2881,76 +2896,57 @@ if (!IS_TOUCH) (() => {
 
 
 <script>
-/* stats odometer */
+/* stats dial */
 (function () {
   var DATA = [
-    { val: '5 ЛЕТ', lbl: 'в проектах',         neg: false },
-    { val: '50+',         lbl: 'кейсов',                   neg: false },
-    { val: '–5',     lbl: 'зрение',                   neg: true  },
-    { val: '12',          lbl: 'брендов с нуля',      neg: false },
-    { val: '2',           lbl: 'стартапа',                 neg: false },
-    { val: '0₽',     lbl: 'первый бюджет кампании',   neg: true  },
+    { val: '5 ЛЕТ', lbl: 'в проектах',          neg: false },
+    { val: '50+',   lbl: 'кейсов',                neg: false },
+    { val: '–5',    lbl: 'зрение',                neg: true  },
+    { val: '12',    lbl: 'брендов с нуля',         neg: false },
+    { val: '2',     lbl: 'стартапа',              neg: false },
+    { val: '0₽',   lbl: 'первый бюджет кампании', neg: true  },
   ];
-  var total = DATA.length, cur = 0, busy = false, timer;
+  var N = DATA.length, cur = 0, deg = 0;
 
+  var ring  = document.getElementById('stRing');
+  var hand  = document.getElementById('stHand');
   var numEl = document.getElementById('stNum');
   var lblEl = document.getElementById('stLbl');
-  var dotsEl = document.getElementById('stDots');
-  if (!numEl) return;
+  if (!ring) return;
 
-  var dots = DATA.map(function (_, i) {
-    var d = document.createElement('span');
-    d.className = 'st-dot' + (i === 0 ? ' active' : '');
-    dotsEl.appendChild(d);
-    return d;
+  var CX = 105, R = 97, TS = 5;
+  var ticks = DATA.map(function (_, i) {
+    var a = (i * 60 - 90) * Math.PI / 180;
+    var el = document.createElement('span');
+    el.className = 'st-tick' + (i === 0 ? ' active' : '');
+    el.style.cssText = 'left:' + (CX + R * Math.cos(a) - TS / 2).toFixed(1) + 'px;top:' + (CX + R * Math.sin(a) - TS / 2).toFixed(1) + 'px';
+    ring.appendChild(el);
+    return el;
   });
 
-  function go(n, dir) {
-    if (busy) return;
-    busy = true;
-    cur = (n + total) % total;
-    var exitCls  = dir > 0 ? 'exit-fwd'  : 'exit-back';
-    var enterCls = dir > 0 ? 'enter-fwd' : 'enter-back';
-
-    numEl.classList.add(exitCls);
-    lblEl.classList.add('off');
-
+  function step() {
+    ticks[cur].classList.remove('active');
+    numEl.classList.add('fade');
+    lblEl.classList.add('fade');
+    cur = (cur + 1) % N;
+    deg += 60;
+    hand.style.transform = 'translateX(-50%) rotate(' + deg + 'deg)';
     setTimeout(function () {
-      numEl.classList.remove(exitCls);
-      numEl.className = 'st-num' + (DATA[cur].neg ? ' neg' : '') + ' ' + enterCls;
-      numEl.textContent = DATA[cur].val;
-      lblEl.textContent = DATA[cur].lbl;
-      dots.forEach(function (d, i) { d.classList.toggle('active', i === cur); });
-
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () { lblEl.classList.remove('off'); });
-      });
-
-      setTimeout(function () { numEl.classList.remove(enterCls); busy = false; }, 280);
-    }, 170);
+      var d = DATA[cur];
+      numEl.textContent = d.val;
+      numEl.className = 'st-num' + (d.neg ? ' neg' : '');
+      lblEl.textContent = d.lbl;
+      lblEl.classList.remove('fade');
+      ticks[cur].classList.add('active');
+    }, 290);
   }
 
-  function startAuto() { timer = setInterval(function () { go(cur + 1, 1); }, 3800); }
-  function stopAuto()  { clearInterval(timer); }
-
-  document.getElementById('stPrev').addEventListener('click', function () { stopAuto(); go(cur - 1, -1); startAuto(); });
-  document.getElementById('stNext').addEventListener('click', function () { stopAuto(); go(cur + 1,  1); startAuto(); });
-
-  var win = numEl.closest('.win--stats');
+  var win = ring.closest('.win--stats');
+  var timer = setInterval(step, 3200);
   if (win) {
-    win.addEventListener('mouseenter', stopAuto);
-    win.addEventListener('mouseleave', startAuto);
-    var tx0;
-    win.addEventListener('touchstart', function (e) { tx0 = e.touches[0].clientX; }, { passive: true });
-    win.addEventListener('touchend', function (e) {
-      if (tx0 == null) return;
-      var dx = e.changedTouches[0].clientX - tx0;
-      if (Math.abs(dx) > 30) { stopAuto(); go(cur + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1); startAuto(); }
-      tx0 = null;
-    }, { passive: true });
+    win.addEventListener('mouseenter', function () { clearInterval(timer); });
+    win.addEventListener('mouseleave', function () { timer = setInterval(step, 3200); });
   }
-
-  startAuto();
 })();
 </script>
 
