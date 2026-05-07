@@ -1286,8 +1286,8 @@
       display: block;
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 56px;
-      background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
+      height: 36px;
+      background: linear-gradient(to bottom, rgba(19,19,19,0.55) 0%, transparent 100%);
       pointer-events: none;
       z-index: 2;
     }
@@ -2270,8 +2270,18 @@ if (!IS_TOUCH) (() => {
 
   function update() {
     if (document.documentElement.dataset.modalClosing) { ticking = false; return; }
+    const modalIsOpen = !!document.querySelector('#modal.open');
     const y = window.scrollY;
-    header.classList.toggle('scrolled', y > 8);
+
+    // Don't touch header state while modal is open (body is position:fixed → y=0 → wrong state)
+    if (!modalIsOpen) {
+      header.classList.toggle('scrolled', y > 8);
+      if (y < SHOW_AT) {
+        header.classList.remove('hide');
+      } else if (y > HIDE_AT) {
+        header.classList.add('hide');
+      }
+    }
 
     // Show header when footer is in viewport (any part visible).
     let inFooter = false;
@@ -2280,21 +2290,22 @@ if (!IS_TOUCH) (() => {
       inFooter = r.top < window.innerHeight * 0.25 && r.bottom > 0;
     }
 
-    if (inFooter || y < SHOW_AT) {
+    if (!modalIsOpen && inFooter) {
       header.classList.remove('hide');
-    } else if (y > HIDE_AT) {
-      header.classList.add('hide');
     }
 
     const gutter = document.getElementById('ios-gutter');
-    const modalIsOpen = !!document.querySelector('.modal.open');
     if (gutter) {
       if (modalIsOpen) {
         gutter.style.background = 'var(--bg)';
         gutter.style.opacity = '1';
-      } else {
+      } else if (inFooter) {
         gutter.style.background = 'var(--surface)';
-        gutter.style.opacity = inFooter ? '1' : '0';
+        gutter.style.opacity = '1';
+      } else {
+        // Keep bg=var(--bg) when hidden so iOS Liquid Glass doesn't bleed --surface colour
+        gutter.style.background = 'var(--bg)';
+        gutter.style.opacity = '0';
       }
     }
 
@@ -2696,9 +2707,12 @@ if (!IS_TOUCH) (() => {
       }
       _savedScrollY = window.scrollY || window.pageYOffset;
       document.body.style.top = `-${_savedScrollY}px`;
-      // Reset sheet to top before opening so new case always starts from beginning
+      // Reset sheet + Lenis virtual transform so new case always starts from the top
       var sheet = modal.querySelector('.sheet');
-      if (sheet) sheet.scrollTop = 0;
+      if (sheet) {
+        sheet.scrollTop = 0;
+        if (sheet.firstElementChild) sheet.firstElementChild.style.transform = '';
+      }
       modal.classList.add('open');
       const sbw = window.innerWidth - document.documentElement.clientWidth;
       document.documentElement.style.setProperty('--sbw', sbw + 'px');
@@ -2719,7 +2733,7 @@ if (!IS_TOUCH) (() => {
     document.documentElement.style.removeProperty('--sbw');
     document.body.style.top = '';
     window.scrollTo({ top: _savedScrollY, behavior: 'instant' });
-    // Immediately hide gutter; keep bg=var(--bg) so any brief flash is invisible
+    // Immediately hide gutter; bg stays var(--bg) so no Liquid Glass bleed
     var g = document.getElementById('ios-gutter');
     if (g) { g.style.background = 'var(--bg)'; g.style.opacity = '0'; }
     document.querySelectorAll('meta[name="theme-color"]').forEach(function(m) { m.content = '#131313'; });
@@ -2727,17 +2741,8 @@ if (!IS_TOUCH) (() => {
     // then recalculate gutter state from actual scroll position
     setTimeout(function() {
       delete document.documentElement.dataset.modalClosing;
-      var footer = document.querySelector('.footer');
-      var inFooter = false;
-      if (footer) {
-        var r = footer.getBoundingClientRect();
-        inFooter = r.top < window.innerHeight * 0.25 && r.bottom > 0;
-      }
-      var gg = document.getElementById('ios-gutter');
-      if (gg) { gg.style.background = 'var(--surface)'; gg.style.opacity = inFooter ? '1' : '0'; }
-      document.querySelectorAll('meta[name="theme-color"]').forEach(function(m) {
-        m.content = inFooter ? '#2A2A2A' : '#131313';
-      });
+      // Trigger update() to recalculate header, gutter and theme-color from real scroll position
+      window.dispatchEvent(new Event('scroll'));
     }, 200);
   }
   close.addEventListener('click', closeModal);
@@ -2787,7 +2792,10 @@ if (!IS_TOUCH) (() => {
           }
           requestAnimationFrame(rafModal);
         } else if (!isOpen && lenisModal) {
+          // Clear Lenis virtual-scroll transform before destroy so next case starts at 0
+          const prevContent = modalSheet.firstElementChild;
           lenisModal.destroy();
+          if (prevContent) prevContent.style.transform = '';
           lenisModal = null;
           // Sync Lenis to the native scroll position restored by closeModal before resuming
           window.__lenisMain.scrollTo(window.scrollY, { immediate: true });
