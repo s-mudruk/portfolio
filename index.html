@@ -2735,13 +2735,16 @@ if (!IS_TOUCH) (() => {
       }
       _savedScrollY = window.scrollY || window.pageYOffset;
       document.body.style.top = `-${_savedScrollY}px`;
-      // Reset sheet + Lenis virtual transform so new case always starts from the top
-      var sheet = modal.querySelector('.sheet');
-      if (sheet) {
-        sheet.scrollTop = 0;
-        if (sheet.firstElementChild) sheet.firstElementChild.style.transform = '';
-      }
       modal.classList.add('open');
+      // Reset AFTER modal is shown — iOS Safari restores scroll on display:none→flex,
+      // so scrollTop=0 must happen after the element is actually visible
+      requestAnimationFrame(function() {
+        var sheet = modal.querySelector('.sheet');
+        if (sheet) {
+          sheet.scrollTop = 0;
+          if (sheet.firstElementChild) sheet.firstElementChild.style.transform = '';
+        }
+      });
       const sbw = window.innerWidth - document.documentElement.clientWidth;
       document.documentElement.style.setProperty('--sbw', sbw + 'px');
       document.documentElement.classList.add('modal-open');
