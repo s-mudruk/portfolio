@@ -746,7 +746,7 @@
     .stk3d-scene {
       display: block;
       position: absolute;
-      width: 120px; height: 120px;
+      width: 96px; height: 96px;
       perspective: 900px;
       cursor: none;
       z-index: 10;
@@ -1633,8 +1633,6 @@
       <div class="body">
         <div class="circles-intro">
           <div class="ci ci-a"><img src="ava.png" alt="Сергей Мудрук" loading="eager" decoding="async"></div>
-          <div class="ci ci-b"></div>
-          <div class="ci ci-c"></div>
         </div>
         <p>Специализируюсь в&nbsp;<span class="hi" data-hi="product">продуктовом</span> и&nbsp;<span class="hi" data-hi="comm">коммуникативном дизайне</span>, <span class="hi" data-hi="systems marketing smm">разработке дизайн-систем и&nbsp;маркетинговых стратегий</span>. Создаю <span class="hi" data-hi="product art">удобные, по-человечески понятные продукты</span>&nbsp;— с&nbsp;фокусом на&nbsp;<span class="hi" data-hi="research event">исследованиях и&nbsp;уникальности каждого кейса</span>.</p>
         <div class="tags">
@@ -1692,7 +1690,7 @@
         <span class="brace">}</span>
       </div>
     </div>
-    <div class="stk3d-scene" data-stk3d style="left:28%;top:158px;--stk-mask:url(sck-1.png);display:none"><div class="stk3d-body"><div class="stk3d-wrap"><img src="sck-1.png" alt="" loading="lazy" decoding="async"><div class="stk3d-holo"></div></div></div></div>
+    <div class="stk3d-scene" data-stk3d style="left:72%;top:92px;--stk-mask:url(stk-wns.png)"><div class="stk3d-body"><div class="stk3d-wrap"><img src="stk-wns.png" alt="" loading="lazy" decoding="async"><div class="stk3d-holo"></div></div></div></div>
   </section>
 
   <!-- SCENE 2 — ДЕЛАЮ -->
@@ -1749,7 +1747,7 @@
       </div>
     </div>
 
-    <!-- stk2: placeholder -->
+    <div class="stk3d-scene" data-stk3d style="right:6%;top:68px;--stk-mask:url(stk-services.png)"><div class="stk3d-body"><div class="stk3d-wrap"><img src="stk-services.png" alt="" loading="lazy" decoding="async"><div class="stk3d-holo"></div></div></div></div>
   </section>
 
   <!-- SCENE 3 — ПРОЦЕСС -->
@@ -1889,7 +1887,9 @@
         <button class="open" data-open-case="roomflow">Увидеть больше</button>
       </div>
     </div>
-    <!-- stk4: placeholder -->
+    <div class="stk3d-scene" data-stk3d style="right:28%;top:288px;--stk-mask:url(stk-cap.png)"><div class="stk3d-body"><div class="stk3d-wrap"><img src="stk-cap.png" alt="" loading="lazy" decoding="async"><div class="stk3d-holo"></div></div></div></div>
+    <div class="stk3d-scene" data-stk3d style="left:26%;top:1414px;--stk-mask:url(stk-liberty.png)"><div class="stk3d-body"><div class="stk3d-wrap"><img src="stk-liberty.png" alt="" loading="lazy" decoding="async"><div class="stk3d-holo"></div></div></div></div>
+    <div class="stk3d-scene" data-stk3d style="left:7%;top:1794px;--stk-mask:url(stk-cafe.png)"><div class="stk3d-body"><div class="stk3d-wrap"><img src="stk-cafe.png" alt="" loading="lazy" decoding="async"><div class="stk3d-holo"></div></div></div></div>
   </section>
 
 </main>
@@ -3110,10 +3110,10 @@ if (!IS_TOUCH) (() => {
   }
 
   var win = ring.closest('.win--stats');
-  var timer = setInterval(step, 3200);
+  var timer = setInterval(step, 2000);
   if (win) {
-    win.addEventListener('mouseenter', function () { clearInterval(timer); });
-    win.addEventListener('mouseleave', function () { timer = setInterval(step, 3200); });
+    win.addEventListener('mouseenter', function () { clearInterval(timer); timer = null; });
+    win.addEventListener('mouseleave', function () { clearInterval(timer); timer = setInterval(step, 2000); });
   }
 })();
 </script>
